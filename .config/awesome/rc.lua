@@ -778,5 +778,18 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 
 -- Customisation
--- Run Insync on start
---awesome.spawn.once("insync start")
+awful.spawn.single_instance("google-chrome", {
+	tag = "1",
+	screen = 1
+})
+
+awful.spawn.single_instance("teams", {
+	tag = "2",
+	screen = 2
+})
+
+awful.spawn.single_instance("vncviewer", {
+	tag = "3",
+	screen = 2
+})
+
