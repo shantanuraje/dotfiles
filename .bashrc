@@ -118,4 +118,4 @@ fi
 
 neofetch
 PS1="$"
-alias dot='/usr/bin/git --git-dir=/home/shantanu/dotfiles --work-tree=/home/shantanu'
+alias dotfiles='/usr/bin/git --git-dir=/home/shantanu/dotfiles --work-tree=/home/shantanu'
