@@ -115,6 +115,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
+Plug 'instant-markdown/vim-instant-markdown'
 call plug#end()
 
 colorscheme jellybeans 
