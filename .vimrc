@@ -88,6 +88,7 @@ set scrolloff=8
 set signcolumn=yes
 set colorcolumn=80
 
+imap jj <Esc>
 " plugins
 " vim plug: automatic install missing plugins
 " Install vim-plug if not found
