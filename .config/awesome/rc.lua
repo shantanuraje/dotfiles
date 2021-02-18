@@ -779,4 +779,4 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 -- Customisation
 -- Run Insync on start
---awesome.spawn.once("insync start")
+awful.spawn.single_instance("insync start")

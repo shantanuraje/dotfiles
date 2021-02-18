@@ -112,6 +112,8 @@ Plug 'scrooloose/syntastic'
 Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
 call plug#end()
 
 colorscheme jellybeans 
