@@ -119,3 +119,4 @@ fi
 neofetch
 PS1="$"
 alias dotfiles='/usr/bin/git --git-dir=/home/shantanu/dotfiles --work-tree=/home/shantanu'
+. /home/shantanu/.local/lib/python3.8/site-packages/powerline/bindings/bash/powerline.sh
