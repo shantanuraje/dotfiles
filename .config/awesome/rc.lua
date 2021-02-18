@@ -778,6 +778,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 
 -- Customisation
+-- Work
 awful.spawn.single_instance("google-chrome", {
 	tag = "1",
 	screen = 1

@@ -58,7 +58,63 @@ endif
 "custom vim settings
 
 "line numbers
-set number
+
+"Customizations
+"tutorial - youtube theprimeagen
+"use :h commandname for documentation
+"use :options - list all options available in vim
 set softtabstop=4
 set tabstop=4
 set shiftwidth=4
+set expandtab
+set smartindent
+set exrc
+set guicursor=
+set relativenumber
+set nu
+set nohlsearch
+set hidden
+set noerrorbells
+"set nowrap
+"set smartcase
+set noswapfile
+set nobackup
+"with undo tree plugin
+set undodir=~/.vim/undodir
+set undofile
+
+set incsearch
+set scrolloff=8
+set signcolumn=yes
+set colorcolumn=80
+
+imap jj <Esc>
+" plugins
+" vim plug: automatic install missing plugins
+" Install vim-plug if not found
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+endif
+
+" Run PlugInstall if there are missing plugins
+autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \| PlugInstall --sync | source $MYVIMRC
+\| endif
+
+" vimawesome.com
+call plug#begin('~/.vim/plugged')
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'rafi/awesome-vim-colorschemes'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/syntastic'
+Plug 'airblade/vim-gitgutter'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
+call plug#end()
+
+colorscheme jellybeans 
