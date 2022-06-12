@@ -86,7 +86,7 @@ set undofile
 set incsearch
 set scrolloff=8
 set signcolumn=yes
-set colorcolumn=80
+" set colorcolumn=80
 
 imap jj <Esc>
 " plugins
@@ -117,4 +117,17 @@ Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 call plug#end()
 
-colorscheme jellybeans 
+colorscheme sonokai 
+
+" Start NERDTree and leave the cursor in it.
+autocmd VimEnter * NERDTree
+
+" Exit Vim if NERDTree is the only window left.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() |
+    \ quit | endif
+
+" for navigation between splits
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
