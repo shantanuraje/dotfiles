@@ -115,7 +115,19 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
-Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown'}
 call plug#end()
 
 colorscheme jellybeans 
+
+" Start NERDTree and leave the cursor in it.
+autocmd VimEnter * NERDTree
+
+" Exit Vim if NERDTree is the only window left.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() |
+    \ quit | endif
+let NERDTreeShowHidden=1
+" for navigation between splits
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
