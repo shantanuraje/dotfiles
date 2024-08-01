@@ -145,3 +145,5 @@ fi
 
 
 export PATH="$PATH:/opt/nvim/"
+export EDITOR="nvim"
+export VISUAL="nvim"
