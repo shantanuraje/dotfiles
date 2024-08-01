@@ -25,3 +25,10 @@ fi
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
+
+# Check if the username is 'john' or the hostname is 'workstation'
+if [ "$USER" = "fra-server" ] || [ "$(hostname)" = "bedgear" ]; then
+    # Execute the script from the specified directory
+    /home/$USER/.screenlayout/work-desktop.sh
+
+fi
