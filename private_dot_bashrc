@@ -155,6 +155,97 @@ fi
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND"
 
+# Add these aliases to your ~/.bashrc or ~/.bash_profile
+
+# File Finder
+alias ffind='fzf --preview "cat {}"'
+
+# Directory Navigation
+alias fcd='cd $(find . -type d | fzf)'
+
+# Shell History Search
+alias fhist='eval "$(history | fzf --bind=ctrl-r:accept --tac --preview \"echo {}\" | sed \"s/ *[0-9]* *//\")"'
+
+# Git Checkout Branch
+alias gco='git checkout $(git branch --all | fzf)'
+
+# Git Files
+alias gf='git ls-files | fzf'
+
+# Kill Processes
+alias fkill='kill -9 $(ps -ef | fzf | awk "{print $2}")'
+
+# SSH Connections
+alias fssh='ssh $(cat ~/.ssh/config | grep "Host " | awk "{print $2}" | fzf)'
+
+# Ripgrep Integration
+alias frg='rg --files | fzf --preview "rg --color=always {}"'
+
+# Select and Export Environment Variables
+alias fenv='export $(printenv | fzf)'
+
+# Chezmoi Integration
+alias fchezmoi='chezmoi edit $(chezmoi managed | fzf)'
+
+# Clipboard Manager
+alias fclip='xclip -o | fzf | xclip -selection clipboard'
+
+# Custom Command Palette
+alias fcmd='echo -e "update\nclean\nbackup" | fzf | xargs -I {} bash -c "{}"'
+
+# Todo List Management
+alias ftodo='cat ~/todo.txt | fzf --preview "echo {}"'
+
+# Open Files at Specific Lines
+alias fvim='vim $(rg --line-number "" | fzf --delimiter : --nth 1,2,3)'
+
+# Save the script to your ~/.bashrc or ~/.bash_profile
+#cat << 'EOF' >> ~/.bashrc
+
+# File Finder
+alias ffind='fzf --preview "cat {}"'
+
+# Directory Navigation
+alias fcd='cd $(find . -type d | fzf)'
+
+# Shell History Search
+alias fhist='eval "$(history | fzf --bind=ctrl-r:accept --tac --preview \"echo {}\" | sed \"s/ *[0-9]* *//\")"'
+
+# Git Checkout Branch
+alias gco='git checkout $(git branch --all | fzf)'
+
+# Git Files
+alias gf='git ls-files | fzf'
+
+# Kill Processes
+alias fkill='kill -9 $(ps -ef | fzf | awk "{print $2}")'
+
+# SSH Connections
+alias fssh='ssh $(cat ~/.ssh/config | grep "Host " | awk "{print $2}" | fzf)'
+
+# Ripgrep Integration
+alias frg='rg --files | fzf --preview "rg --color=always {}"'
+
+# Select and Export Environment Variables
+alias fenv='export $(printenv | fzf)'
+
+# Chezmoi Integration
+alias fchezmoi='chezmoi edit $(chezmoi managed | fzf)'
+
+# Clipboard Manager
+alias fclip='xclip -o | fzf | xclip -selection clipboard'
+
+# Custom Command Palette
+alias fcmd='echo -e "update\nclean\nbackup" | fzf | xargs -I {} bash -c "{}"'
+
+# Todo List Management
+alias ftodo='cat ~/todo.txt | fzf --preview "echo {}"'
+
+# Open Files at Specific Lines
+alias fvim='vim $(rg --line-number "" | fzf --delimiter : --nth 1,2,3)'
+
+
+
 # alias for searching command history using fzf
 # alias sc='eval "$(cat ~/.bash_history | fzf)"'
 # alias sc='fc -s $(cat ~/.bash_history | fzf)'
