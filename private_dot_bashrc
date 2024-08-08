@@ -148,5 +148,43 @@ export PATH="$PATH:/opt/nvim/"
 export EDITOR="nvim"
 export VISUAL="nvim"
 
+if [ -x "$(command -v fzf)"  ]; then
+    source /data/data/com.termux/files/usr/share/fzf/key-bindings.bash
+fi
 
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND"
+
+# alias for searching command history using fzf
+# alias sc='eval "$(cat ~/.bash_history | fzf)"'
+# alias sc='fc -s $(cat ~/.bash_history | fzf)'
+# alias sc='BUFFER=$(cat ~/.bash_history | fzf) && echo "$BUFFER"' > `tty`
+
+#alias sc='BUFFER=$(cat ~/.bash_history | fzf); if [ -n "$BUFFER" ]; then print -z "$BUFFER"; fi'
+
+#alias ffc='bind "$(cat ~/.bash_history | fzf | sed "s/\'/\\\\\'/g" | awk "{print \"\\e[2K\\e[1G\\e[$((${#BASH} - ${#BASH#*@}) + 1))H\" \$0}")"; echo'
+
+# Explanation:cat ~/.bash_history | fzf selects a command from your history.sed "s/\'/\\\\\'/g" escapes single quotes.awk "{print \"\\e[2K\\e[1G\\e[$((${#BASH} - ${#BASH#*@}) + 1))H\" \$0}" formats the command to be used with the bind command.bind inserts the command into your current command line for editing.To use this alias, add it to your .bashrc or .bash_profile file and then source the file:
+#
+
+#sc(){
+#  local cmd=$(cat ~/.bash_history | fzf)
+#  if [ -n "$cmd" ]; then
+#    READLINE_LINE="$cmd"
+#    READLINE_POINT=${#cmd}
+#  fi
+#}
+#bind -x '"\C-r": sc'
+
+#ffc() {
+#  local cmd
+#  cmd=$(cat ~/.bash_history | fzf)
+#  if [ -n "$cmd" ]; then
+#    # Insert the command into the current command line
+#    READLINE_LINE="${READLINE_LINE:+$READLINE_LINE }$cmd"
+#    READLINE_POINT=${#READLINE_LINE}
+#  fi
+#}
+
+#bind -x '"\C-r": ffc'
 
