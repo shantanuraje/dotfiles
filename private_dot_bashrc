@@ -148,8 +148,18 @@ export PATH="$PATH:/opt/nvim/"
 export EDITOR="nvim"
 export VISUAL="nvim"
 
-if [ -x "$(command -v fzf)"  ]; then
-    source /data/data/com.termux/files/usr/share/fzf/key-bindings.bash
+# if [ -x "$(command -v fzf)"  ]; then
+#    source /data/data/com.termux/files/usr/share/fzf/key-bindings.bash
+# fi
+
+if [ -x "$(command -v fzf)" ]; then
+    if [ -n "$ANDROID_ROOT" ] && [ -n "$PREFIX" ]; then
+        # We're in Termux
+        source /data/data/com.termux/files/usr/share/fzf/key-bindings.bash
+    else
+        # We're on Ubuntu or another Linux system
+        source /usr/share/doc/fzf/examples/key-bindings.bash
+    fi
 fi
 
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
