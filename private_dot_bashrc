@@ -174,7 +174,10 @@ alias ffind='fzf --preview "cat {}"'
 alias fcd='cd $(find . -type d | fzf)'
 
 # Shell History Search
-alias fhist='eval "$(history | fzf --bind=ctrl-r:accept --tac --preview \"echo {}\" | sed \"s/ *[0-9]* *//\")"'
+# alias fhist='eval "$(history | fzf --bind=ctrl-r:accept --tac --preview \"echo {}\" | sed \"s/ *[0-9]* *//\")"'
+alias fhist='eval "$(history | fzf --bind=ctrl-r:accept --tac --preview="echo {}" | sed -E "s/^[ ]*[0-9]+[ ]*//")"'
+# alias fhist='eval "$(history | fzf --bind=ctrl-r:accept --tac --preview="echo {}" | sed "s/^[ ]*[0-9]\+[ ]*//")"'
+
 
 # Git Checkout Branch
 alias gco='git checkout $(git branch --all | fzf)'
@@ -219,7 +222,7 @@ alias ffind='fzf --preview "cat {}"'
 alias fcd='cd $(find . -type d | fzf)'
 
 # Shell History Search
-alias fhist='eval "$(history | fzf --bind=ctrl-r:accept --tac --preview \"echo {}\" | sed \"s/ *[0-9]* *//\")"'
+#alias fhist='eval "$(history | fzf --bind=ctrl-r:accept --tac --preview \"echo {}\" | sed \"s/ *[0-9]* *//\")"'
 
 # Git Checkout Branch
 alias gco='git checkout $(git branch --all | fzf)'
