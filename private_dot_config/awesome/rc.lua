@@ -300,8 +300,11 @@ globalkeys = my_table.join(
 	-- Hotkeys
 	awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
 	-- Tag browsing
-	awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
-	awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
+	--awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
+	--awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
+	awful.key({ "Mod1" }, "Up", function() end, { description = "unbind Alt+Up", group = "custom" }),
+	awful.key({ "Mod1" }, "Down", function() end, { description = "unbind Alt+Down", group = "custom" }),
+
 	awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
 
 	-- Non-empty tag browsing
