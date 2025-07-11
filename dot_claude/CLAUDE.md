@@ -31,6 +31,9 @@ chezmoi apply --dry-run
 
 ### Git Operations
 ```bash
+# Navigate to chezmoi source directory
+chezmoi cd
+
 # Check status
 git status
 
@@ -51,3 +54,4 @@ git push
 - Use conventional commit messages (feat:, fix:, docs:, etc.)
 - Test configuration changes in safe environment when possible
 - Keep dotfiles organized and well-documented
+- Never run chezmoi cd and other commands together, always run `chezmoi cd` first, then run next command
