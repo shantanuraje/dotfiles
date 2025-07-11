@@ -1,0 +1,7 @@
+# pack-refs with: peeled fully-peeled sorted 
+c388ac55563ddeea0afe9df79d4bfff0096b146b refs/remotes/origin/main
+9cc3ca553f5525237ac0160961a060242863558a refs/remotes/origin/renovate/catppuccin-whiskers-2.x
+c344c37a5527bba0a9fae85262706409aebbcbe0 refs/tags/v1.0
+ce07c2ff667d51722479164f6bfc8aaf6c9eda69 refs/tags/v1.1
+99a88fd21fac270bd999d4a26cf0f4a4222c58be refs/tags/v1.2
+13d7b4e3db178bb01520eb68e16e4cf4e11da6ab refs/tags/v1.3
