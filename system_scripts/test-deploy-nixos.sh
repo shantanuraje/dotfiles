@@ -27,24 +27,74 @@ if [[ ! -d "$SOURCE_DIR" ]]; then
     exit 1
 fi
 
+# Machine selection (test mode)
+MACHINES_DIR="$SOURCE_DIR/machines"
+if [[ ! -d "$MACHINES_DIR" ]]; then
+    error "Machines directory $MACHINES_DIR not found!"
+    exit 1
+fi
+
 log "=== NixOS Configuration Test Deployment ==="
 log "Source: $SOURCE_DIR"
 log "Target: /etc/nixos"
 log ""
 
-log "Files that would be deployed:"
+log "Available machine configurations:"
+machines=()
+for machine_file in "$MACHINES_DIR"/*.nix; do
+    if [[ -f "$machine_file" ]]; then
+        machine_name=$(basename "$machine_file" .nix)
+        machines+=("$machine_name")
+        echo "  [$((${#machines[@]})))] $machine_name"
+    fi
+done
+
+if [[ ${#machines[@]} -eq 0 ]]; then
+    error "No machine configurations found in $MACHINES_DIR"
+    exit 1
+fi
+
+echo
+read -p "Select machine configuration to test (1-${#machines[@]}): " choice
+
+if [[ ! "$choice" =~ ^[0-9]+$ ]] || [[ $choice -lt 1 ]] || [[ $choice -gt ${#machines[@]} ]]; then
+    error "Invalid selection!"
+    exit 1
+fi
+
+selected_machine="${machines[$((choice-1))]}"
+selected_config="$MACHINES_DIR/${selected_machine}.nix"
+
+log "Testing deployment of: $selected_machine"
+log "Config file: $selected_config"
+log ""
+
+# Show what would happen to configuration.nix
+log "configuration.nix would be replaced with $selected_machine config:"
+if [[ -f "/etc/nixos/configuration.nix" ]]; then
+    echo -e "${YELLOW}    Differences from current configuration.nix:${NC}"
+    diff -u "/etc/nixos/configuration.nix" "$selected_config" | head -20 || true
+    echo ""
+else
+    echo -e "${GREEN}    New configuration.nix file${NC}"
+fi
+
+log "Other files that would be deployed:"
 for file in "$SOURCE_DIR"/*; do
     if [[ -f "$file" ]]; then
         filename=$(basename "$file")
-        log "  → $filename"
-        
-        # Show diff if file exists
-        if [[ -f "/etc/nixos/$filename" ]]; then
-            echo -e "${YELLOW}    Differences:${NC}"
-            diff -u "/etc/nixos/$filename" "$file" | head -10 || true
-            echo ""
-        else
-            echo -e "${GREEN}    New file${NC}"
+        # Skip configuration.nix as we handle it separately
+        if [[ "$filename" != "configuration.nix" ]]; then
+            log "  → $filename"
+            
+            # Show diff if file exists
+            if [[ -f "/etc/nixos/$filename" ]]; then
+                echo -e "${YELLOW}    Differences:${NC}"
+                diff -u "/etc/nixos/$filename" "$file" | head -10 || true
+                echo ""
+            else
+                echo -e "${GREEN}    New file${NC}"
+            fi
         fi
     fi
 done
