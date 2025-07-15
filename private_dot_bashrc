@@ -156,8 +156,11 @@ if [ -x "$(command -v fzf)" ]; then
     if [ -n "$ANDROID_ROOT" ] && [ -n "$PREFIX" ]; then
         # We're in Termux
         source /data/data/com.termux/files/usr/share/fzf/key-bindings.bash
-    else
-        # We're on Ubuntu or another Linux system
+    elif [ -f "$(dirname $(which fzf))/../share/fzf/key-bindings.bash" ]; then
+        # NixOS - fzf is in the store
+        source "$(dirname $(which fzf))/../share/fzf/key-bindings.bash"
+    elif [ -f /usr/share/doc/fzf/examples/key-bindings.bash ]; then
+        # Ubuntu/Debian systems
         source /usr/share/doc/fzf/examples/key-bindings.bash
     fi
 fi
