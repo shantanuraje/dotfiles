@@ -195,6 +195,13 @@ in
     # redshift  # Temporarily disabled due to build issues in nixos-unstable
     xorg.xwininfo
     xorg.xprop
+    
+    # Polybar and dependencies
+    polybar
+    pavucontrol
+    pulseaudio  # For polybar pulseaudio module support
+    pavucontrol # Audio control GUI
+
 
     # Development tools
     android-tools

@@ -79,6 +79,9 @@ local function autostart()
     for _, cmd in ipairs(cmds) do
         awful.spawn.with_shell(string.format("pgrep -u $USER -fx '%s' > /dev/null || (%s)", cmd, cmd))
     end
+    
+    -- Start Polybar directly
+    awful.spawn.with_shell("pgrep -u $USER -x polybar > /dev/null || (pkill -f polybar; sleep 1; polybar main -c ~/.config/polybar/config.ini &)")
 end
 
 autostart()
@@ -360,7 +363,8 @@ awful.screen.connect_for_each_screen(function(s)
         },
     }
 
-    -- Create the wibox (status bar)
+    -- Create the wibox (status bar) - DISABLED FOR POLYBAR
+    --[[
     s.mywibox = awful.wibar({ 
         position = "top", 
         screen = s, 
@@ -407,6 +411,7 @@ awful.screen.connect_for_each_screen(function(s)
             }
         },
     }
+    --]]
 end)
 
 -- Mouse bindings
@@ -543,9 +548,10 @@ globalkeys = gears.table.join(
     -- Lock screen (matches Hyprland)
     awful.key({ modkey,           }, "l",
         function () awful.spawn("i3lock -c 000000") end,
-        {description = "lock screen", group = "hotkeys"}),
+        {description = "lock screen", group = "hotkeys"})
 
-    -- Toggle bar visibility
+    -- Toggle bar visibility - DISABLED FOR POLYBAR
+    --[[
     awful.key({ modkey,           }, "b",
         function ()
             for s in screen do
@@ -553,6 +559,7 @@ globalkeys = gears.table.join(
             end
         end,
         {description = "toggle bar", group = "awesome"})
+    --]]
 )
 
 clientkeys = gears.table.join(
