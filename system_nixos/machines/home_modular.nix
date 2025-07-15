@@ -169,6 +169,11 @@ in
     redshift
     xorg.xwininfo
     xorg.xprop
+    
+    # Polybar and dependencies
+    polybar
+    pavucontrol
+    pulseaudio  # For polybar pulseaudio module support
 
     # Development tools
     android-tools

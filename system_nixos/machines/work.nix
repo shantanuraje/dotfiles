@@ -178,12 +178,15 @@
     libei
     inkscape
     # librealsense-gui
-     usbutils    
-    # python3
-    # (python312.withPackages (ps: with ps;[
-    #   pyrealsense2
-    #   kivy
-    # ]))
+    usbutils    
+    
+    # Optional: Polybar and dependencies (for AwesomeWM if needed)
+    polybar
+    pavucontrol
+    pulseaudio  # For polybar pulseaudio module support
+    pamixer
+    
+    # Other applications
     libreoffice-qt
     claude-code
   ];

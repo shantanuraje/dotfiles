@@ -158,6 +158,11 @@ in
     dunst
     fzf    
     playerctl
+    
+    # Polybar and dependencies for AwesomeWM
+    polybar
+    pavucontrol
+    pulseaudio  # For polybar pulseaudio module support
     wlogout
     swaylock
     networkmanagerapplet

@@ -226,6 +226,11 @@ in
     redshift
     xorg.xwininfo
     xorg.xprop
+    
+    # Polybar and dependencies
+    polybar
+    pavucontrol
+    pulseaudio  # For polybar pulseaudio module support
 
     #python3
     (python3.withPackages (ps: with ps; [
