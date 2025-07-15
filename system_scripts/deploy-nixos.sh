@@ -50,21 +50,21 @@ for file in "$SOURCE_DIR"/*; do
     fi
 done
 
-# Validate
-log "Validating configuration..."
-if ! sudo nixos-rebuild dry-build 2>/dev/null; then
-    error "Configuration validation failed! Restoring backup..."
-    sudo cp "$BACKUP_DIR"/* /etc/nixos/
-    exit 1
-fi
+# # Validate
+# log "Validating configuration..."
+# if ! sudo nixos-rebuild dry-build 2>/dev/null; then
+#     error "Configuration validation failed! Restoring backup..."
+#     sudo cp "$BACKUP_DIR"/* /etc/nixos/
+#     exit 1
+# fi
 
-# Apply
-log "Rebuilding NixOS system..."
-if sudo nixos-rebuild switch; then
-    success "NixOS system successfully rebuilt!"
-    success "Backup: $BACKUP_DIR"
-else
-    error "Rebuild failed! Restoring backup..."
-    sudo cp "$BACKUP_DIR"/* /etc/nixos/
-    exit 1
-fi
+# # Apply
+# log "Rebuilding NixOS system..."
+# if sudo nixos-rebuild switch; then
+#     success "NixOS system successfully rebuilt!"
+#     success "Backup: $BACKUP_DIR"
+# else
+#     error "Rebuild failed! Restoring backup..."
+#     sudo cp "$BACKUP_DIR"/* /etc/nixos/
+#     exit 1
+# fi

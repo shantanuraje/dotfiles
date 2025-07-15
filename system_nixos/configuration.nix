@@ -193,6 +193,7 @@ in
     neofetch
     powerline
     jq
+    ripgrep
 
     claude-desktop-linux-flake.packages.${pkgs.system}.claude-desktop
     claude-code
@@ -225,7 +226,7 @@ in
       webdriver-manager
       curl-cffi
       playwright
-      playwright-browsers
+      # playwright-browsers  # Not available in nixpkgs
     ]))    
     
 
