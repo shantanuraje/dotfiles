@@ -97,3 +97,19 @@ sudo diff -r /etc/nixos/ ~/.local/share/chezmoi/system_nixos/
 - Never run chezmoi cd and other commands together, always run `chezmoi cd` first, then run next command
 - For NixOS: Always test with test-deploy-nixos.sh before actual deployment
 - NixOS deployments create automatic backups in /tmp/nixos-backup-*
+
+## Documentation Maintenance
+- **CRITICAL**: Always update documentation after any configuration changes
+- Run `bash ~/.local/share/chezmoi/scripts/update-docs.sh` after making changes
+- Use `--force` flag to force update all documentation
+- Validate docs with `--validate` flag before committing
+- Check for undocumented configs with `--check` flag
+- Documentation files to maintain:
+  - `README.md`: Main repository documentation
+  - `CONFIGURATION_GUIDE.md`: Detailed file-by-file guide
+  - `NIXOS_USAGE.md`: NixOS-specific instructions
+  - Application-specific `README.md` files in config directories
+- Always update timestamps and statistics when modifying docs
+- Keep documentation comprehensive and up-to-date for future reference
+- Create backups before major documentation changes
+- Ensure all new configurations are properly documented
