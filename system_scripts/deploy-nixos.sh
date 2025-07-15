@@ -76,14 +76,15 @@ sudo cp "$selected_config" "/etc/nixos/configuration.nix"
 sudo chown root:root "/etc/nixos/configuration.nix"
 sudo chmod 644 "/etc/nixos/configuration.nix"
 
-# Copy other essential files (excluding machine configs and old configuration.nix)
+# Copy other essential files (excluding machine configs, configuration.nix, and hardware-configuration.nix)
 log "Copying shared configuration files..."
 for file in "$SOURCE_DIR"/*; do
     if [[ -f "$file" ]]; then
         filename=$(basename "$file")
         # Skip configuration.nix (we already copied the selected machine config)
+        # Skip hardware-configuration.nix (system-specific, should not be overwritten)
         # and machines directory
-        if [[ "$filename" != "configuration.nix" ]]; then
+        if [[ "$filename" != "configuration.nix" && "$filename" != "hardware-configuration.nix" ]]; then
             log "  → $filename"
             sudo cp "$file" "/etc/nixos/$filename"
             sudo chown root:root "/etc/nixos/$filename"
@@ -91,6 +92,21 @@ for file in "$SOURCE_DIR"/*; do
         fi
     fi
 done
+
+# Check if flake.lock exists and offer to regenerate
+if [[ -f "$SOURCE_DIR/flake.lock" ]]; then
+    warning "Found existing flake.lock from another system"
+    echo "This may cause hash mismatches. Consider regenerating."
+    read -p "Regenerate flake.lock? (y/N): " regen_lock
+    if [[ "$regen_lock" =~ ^[Yy]$ ]]; then
+        log "Removing old flake.lock and regenerating..."
+        cd "$SOURCE_DIR"
+        rm -f flake.lock
+        nix flake lock
+        cd - > /dev/null
+        success "Flake lock regenerated"
+    fi
+fi
 
 # # Validate
 # log "Validating configuration..."

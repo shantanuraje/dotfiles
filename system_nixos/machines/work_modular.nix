@@ -1,14 +1,14 @@
 # Work Configuration - Modular Version  
 # Office workstation with static networking and RealSense support
 
-{ config, pkgs, lib, claude-desktop-linux-flake, ... }:
+{ config, pkgs, lib, ... }:
 let
-  gemini-cli = pkgs.callPackage ../gemini-cli.nix {};
+  # gemini-cli = pkgs.callPackage ./gemini-cli.nix {};
 in
 {
   imports =
     [ # Include the results of the hardware scan.
-      ../hardware-configuration.nix
+      ./hardware-configuration.nix
     ];
 
   # Bootloader.
@@ -192,7 +192,7 @@ in
     lm_sensors
     libnotify
     noto-fonts-emoji
-    redshift
+    # redshift  # Temporarily disabled due to build issues in nixos-unstable
     xorg.xwininfo
     xorg.xprop
 
@@ -205,7 +205,7 @@ in
     lazygit
 
     # Creative and productivity
-    gimp
+    # gimp  # Temporarily disabled due to build issues in nixos-unstable
     shotwell
     bambu-studio
     libsForQt5.okular
@@ -218,9 +218,9 @@ in
     libei
 
     # AI and specialized tools
-    claude-desktop-linux-flake.packages.${pkgs.system}.claude-desktop
+    # claude-desktop-linux-flake.packages.${pkgs.system}.claude-desktop
     claude-code
-    gemini-cli
+    # gemini-cli  # Temporarily disabled due to hash issues
     pulsemixer
 
     # Python development environment (merged from both configs)

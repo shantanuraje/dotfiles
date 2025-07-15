@@ -397,6 +397,43 @@ This document preserves our research and planning, ensuring that when we're read
 
 ---
 
+## 📝 **Recent Development Sessions**
+
+### Session: July 15, 2025 - Work Machine Deployment & Troubleshooting
+
+**Achievements**:
+- Successfully deployed work_modular.nix configuration to new work machine
+- Identified and resolved multiple deployment issues
+- Created comprehensive troubleshooting documentation
+- Improved deployment script with better error handling
+
+**Key Issues Resolved**:
+1. **Hardware Configuration Management**: Learned that `hardware-configuration.nix` must be system-specific and not managed by chezmoi
+2. **Path Resolution Problems**: Fixed relative path issues in machine configurations (paths must be relative to `/etc/nixos/`, not chezmoi structure)
+3. **Package Build Failures**: Handled multiple broken packages in nixos-unstable (redshift, gimp, claude-desktop, gemini-cli)
+4. **Flake Lock Conflicts**: Resolved hash mismatches by regenerating `flake.lock` on new systems
+
+**Documentation Created**:
+- **NIXOS_TROUBLESHOOTING.md**: Comprehensive troubleshooting guide with common issues and solutions
+- **Enhanced CONFIGURATION_GUIDE.md**: Added "Deployment Lessons Learned" section
+- **Improved deploy-nixos.sh**: Added flake.lock regeneration option
+
+**Technical Insights**:
+- nixos-unstable can have widespread package build failures
+- Machine configurations need different path handling than chezmoi directory structure
+- Flake lock files should be regenerated per system rather than copied
+- Systematic debugging approach crucial for complex NixOS issues
+
+**Future Improvements Identified**:
+- Consider not tracking flake.lock in chezmoi for system configs
+- Add automatic package build validation before deployment
+- Implement better machine detection for configuration selection
+- Create package fallback/alternative mechanisms
+
+This session significantly improved the robustness and maintainability of the NixOS deployment system.
+
+---
+
 **Status**: Research and Planning Phase  
 **Next Steps**: Continue with modular NixOS approach, gather user feedback, validate assumptions  
 **Review Date**: [To be determined based on project priorities]

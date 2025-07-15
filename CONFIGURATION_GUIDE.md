@@ -309,6 +309,140 @@ All configurations use **Catppuccin Macchiato** as the primary theme:
 - Rollback capabilities for failed updates
 - Version control for all changes
 
+## 🚀 Deployment Lessons Learned
+
+### NixOS Deployment Best Practices
+
+#### Machine-Specific vs Shared Configuration
+
+**Key Learning**: Hardware configuration should never be managed by chezmoi as it's system-specific.
+
+**Implementation**:
+- `hardware-configuration.nix` stays in `/etc/nixos/` on each machine
+- Machine configurations import `./hardware-configuration.nix` (relative to `/etc/nixos/`)
+- Deployment script excludes `hardware-configuration.nix` from copying
+
+**Why This Matters**:
+- Different machines have different hardware (disk UUIDs, filesystems, CPU types)
+- Copying hardware config from one machine to another causes boot failures
+- Each machine should generate its own with `nixos-generate-config`
+
+#### Relative Path Consistency
+
+**Key Learning**: All paths in machine configurations must be relative to `/etc/nixos/`, not to the chezmoi directory structure.
+
+**Before** (Incorrect):
+```nix
+# In machines/work_modular.nix
+gemini-cli = pkgs.callPackage ../gemini-cli.nix {};  # Wrong: relative to machines/
+imports = [ ../hardware-configuration.nix ];          # Wrong: tries to go up from machines/
+```
+
+**After** (Correct):
+```nix
+# In machines/work_modular.nix (when copied to /etc/nixos/configuration.nix)
+gemini-cli = pkgs.callPackage ./gemini-cli.nix {};    # Correct: relative to /etc/nixos/
+imports = [ ./hardware-configuration.nix ];           # Correct: looks in /etc/nixos/
+```
+
+**Why This Matters**: The deployment script copies machine configs to `/etc/nixos/configuration.nix`, so paths must work from that location.
+
+#### Package Build Failures & Channel Management
+
+**Key Learning**: nixos-unstable can have broken packages; be prepared to disable problematic packages or switch channels.
+
+**Common Issues Encountered**:
+- `redshift`: autotools compatibility issues
+- `gimp`: similar autotools problems  
+- `claude-desktop`: hash mismatches from upstream changes
+- `gemini-cli`: outdated package hashes
+
+**Mitigation Strategies**:
+1. **Temporarily disable packages**: Comment out broken packages to get system building
+2. **Use nixos-stable**: Switch to stable channel for more reliable builds
+3. **Pin specific package versions**: Use specific commits/versions for critical packages
+4. **Monitor upstream**: Track package status and re-enable when fixed
+
+**Example Package Disabling**:
+```nix
+environment.systemPackages = with pkgs; [
+  # redshift     # Temporarily disabled due to build issues - 2025-07-15
+  # gimp         # Autotools issues in unstable - 2025-07-15
+  firefox        # This one works fine
+];
+```
+
+#### Flake Lock File Management
+
+**Key Learning**: `flake.lock` files are machine/environment specific and should be regenerated on new systems.
+
+**Problem**: Copying `flake.lock` from one machine to another can cause hash mismatches.
+
+**Solution**: Always regenerate flake locks on new deployments:
+```bash
+rm flake.lock
+nix flake lock
+```
+
+**Best Practice**: Consider not tracking `flake.lock` in chezmoi for system configs, or add regeneration to deployment script.
+
+#### Error Debugging Strategy
+
+**Key Learning**: NixOS errors can be cryptic; follow systematic debugging approach.
+
+**Debugging Steps**:
+1. **Check for absolute paths**: Look for `/nix/store/` references in error messages
+2. **Verify relative paths**: Ensure imports work from deployment location (`/etc/nixos/`)
+3. **Test incremental builds**: Comment out packages one by one to isolate issues
+4. **Check channel status**: Sometimes switching to stable resolves widespread build issues
+5. **Update flake inputs**: Hash mismatches often need `nix flake update`
+
+#### Deployment Script Improvements
+
+**Key Learning**: The deployment script should be more resilient and informative.
+
+**Implemented Improvements**:
+- Exclude `hardware-configuration.nix` from copying
+- Better error handling and rollback mechanisms
+- Clear feedback about what's being copied and why
+
+**Future Improvements to Consider**:
+- Automatic flake.lock regeneration option
+- Package build validation before full deployment
+- Better machine detection/configuration selection
+- Integration with chezmoi apply workflow
+
+### Recommended Deployment Workflow
+
+1. **Fresh System Setup**:
+   ```bash
+   # Generate hardware config (once per machine)
+   sudo nixos-generate-config
+   
+   # Deploy chezmoi config
+   ./system_scripts/deploy-nixos.sh
+   
+   # If build fails, regenerate flake.lock
+   cd system_nixos && rm flake.lock && nix flake lock
+   ```
+
+2. **Troubleshooting Build Failures**:
+   ```bash
+   # Test build without applying
+   sudo nixos-rebuild dry-build --flake /etc/nixos
+   
+   # If specific packages fail, temporarily disable them
+   # Edit /etc/nixos/configuration.nix to comment out problematic packages
+   
+   # Try stable channel if unstable has widespread issues
+   # Edit flake.nix: nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11"
+   ```
+
+3. **Successful Deployment**:
+   ```bash
+   sudo nixos-rebuild switch --flake /etc/nixos
+   ```
+
 ---
 
 This guide covers all major configuration files and their purposes. Each application has its own detailed configuration that can be customized while maintaining the overall theme and functionality consistency.

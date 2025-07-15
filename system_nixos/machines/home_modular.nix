@@ -3,12 +3,12 @@
 
 { config, pkgs, claude-desktop-linux-flake, ... }:
 let
-  gemini-cli = pkgs.callPackage ../gemini-cli.nix {};
+  gemini-cli = pkgs.callPackage ./gemini-cli.nix {};
 in
 {
   imports =
     [ # Include the results of the hardware scan.
-      ../hardware-configuration.nix
+      ./hardware-configuration.nix
     ];
 
   # Bootloader.

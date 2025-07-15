@@ -266,6 +266,13 @@ chezmoi apply
 3. Test changes in isolation
 4. Use backup and rollback features
 
+## 📖 Documentation
+
+- **[CONFIGURATION_GUIDE.md](CONFIGURATION_GUIDE.md)** - Detailed configuration documentation and deployment lessons learned
+- **[NIXOS_USAGE.md](NIXOS_USAGE.md)** - NixOS-specific setup and usage instructions  
+- **[NIXOS_TROUBLESHOOTING.md](NIXOS_TROUBLESHOOTING.md)** - Comprehensive troubleshooting guide for NixOS deployment issues
+- **[FUTURE_SCOPE.md](FUTURE_SCOPE.md)** - Future improvements and feature plans
+
 ## 🔄 Updates & Maintenance
 
 ### Regular Maintenance
