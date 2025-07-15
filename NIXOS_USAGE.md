@@ -12,7 +12,7 @@ Your NixOS system configuration is now managed alongside your dotfiles in chezmo
 │   ├── flake.lock                  # Flake lock file
 │   ├── hardware-configuration.nix  # Hardware-specific settings
 │   └── gemini-cli.nix              # Custom module
-├── scripts/
+├── system_scripts/
 │   └── deploy-nixos.sh             # Manual deployment script
 └── ... (your dotfiles)
 ```
@@ -31,7 +31,7 @@ nvim ~/.local/share/chezmoi/system_nixos/configuration.nix
 ### 2. Deploy Changes
 ```bash
 # Option A: Manual deployment (recommended)
-~/.local/share/chezmoi/scripts/deploy-nixos.sh
+~/.local/share/chezmoi/system_scripts/deploy-nixos.sh
 
 # Option B: Copy and rebuild manually
 sudo cp ~/.local/share/chezmoi/system_nixos/* /etc/nixos/
@@ -58,7 +58,7 @@ git push
 Add these to your `.bashrc`:
 ```bash
 alias nixos-edit='chezmoi edit system_nixos/configuration.nix'
-alias nixos-deploy='~/.local/share/chezmoi/scripts/deploy-nixos.sh'
+alias nixos-deploy='~/.local/share/chezmoi/system_scripts/deploy-nixos.sh'
 alias nixos-commit='chezmoi cd && git add system_nixos/ && git commit'
 ```
 
@@ -95,7 +95,7 @@ sudo nixos-rebuild switch
 chezmoi edit system_nixos/configuration.nix
 
 # Deploy changes  
-~/.local/share/chezmoi/scripts/deploy-nixos.sh
+~/.local/share/chezmoi/system_scripts/deploy-nixos.sh
 
 # Test configuration
 sudo nixos-rebuild dry-build

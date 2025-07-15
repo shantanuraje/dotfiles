@@ -40,9 +40,10 @@ chezmoi init && chezmoi apply
 │   ├── rofi/                  # Application launcher
 │   ├── waybar/                # Status bar for wayland
 │   └── zellij/                # Terminal multiplexer
-├── scripts/                    # Utility scripts
+├── system_scripts/             # System utility scripts
 │   ├── deploy-nixos.sh        # NixOS deployment automation
-│   └── test-deploy-nixos.sh   # NixOS deployment testing
+│   ├── test-deploy-nixos.sh   # NixOS deployment testing
+│   └── update-docs.sh         # Documentation maintenance automation
 └── system_nixos/              # NixOS system configuration
     ├── configuration.nix      # Main system config
     ├── flake.nix             # Nix flake configuration
@@ -108,10 +109,10 @@ chezmoi update
 chezmoi edit system_nixos/configuration.nix
 
 # Test deployment (dry-run)
-bash ~/.local/share/chezmoi/scripts/test-deploy-nixos.sh
+bash ~/.local/share/chezmoi/system_scripts/test-deploy-nixos.sh
 
 # Deploy changes with automatic backup
-bash ~/.local/share/chezmoi/scripts/deploy-nixos.sh
+bash ~/.local/share/chezmoi/system_scripts/deploy-nixos.sh
 
 # Check configuration differences
 sudo diff -r /etc/nixos/ ~/.local/share/chezmoi/system_nixos/

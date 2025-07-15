@@ -51,10 +51,10 @@ git push
 chezmoi edit system_nixos/configuration.nix
 
 # Test deployment (dry-run)
-bash ~/.local/share/chezmoi/scripts/test-deploy-nixos.sh
+bash ~/.local/share/chezmoi/system_scripts/test-deploy-nixos.sh
 
 # Deploy NixOS changes
-bash ~/.local/share/chezmoi/scripts/deploy-nixos.sh
+bash ~/.local/share/chezmoi/system_scripts/deploy-nixos.sh
 
 # Check NixOS differences
 sudo diff -r /etc/nixos/ ~/.local/share/chezmoi/system_nixos/
@@ -63,7 +63,7 @@ sudo diff -r /etc/nixos/ ~/.local/share/chezmoi/system_nixos/
 ## Testing Commands
 - `chezmoi apply --dry-run` - Preview changes before applying
 - `chezmoi diff` - Show differences between source and target
-- `bash ~/.local/share/chezmoi/scripts/test-deploy-nixos.sh` - Test NixOS deployment
+- `bash ~/.local/share/chezmoi/system_scripts/test-deploy-nixos.sh` - Test NixOS deployment
 
 ## Repository Structure
 ```
@@ -76,9 +76,10 @@ sudo diff -r /etc/nixos/ ~/.local/share/chezmoi/system_nixos/
 │   ├── flake.lock
 │   ├── hardware-configuration.nix
 │   └── gemini-cli.nix
-├── scripts/
+├── system_scripts/
 │   ├── deploy-nixos.sh      # NixOS deployment script
-│   └── test-deploy-nixos.sh # NixOS test script
+│   ├── test-deploy-nixos.sh # NixOS test script
+│   └── update-docs.sh       # Documentation maintenance
 └── NIXOS_USAGE.md          # Detailed NixOS instructions
 ```
 
@@ -86,7 +87,7 @@ sudo diff -r /etc/nixos/ ~/.local/share/chezmoi/system_nixos/
 1. **Edit configs**: `chezmoi edit <file>` or edit directly in source
 2. **Test changes**: `chezmoi apply --dry-run` for dotfiles, test script for NixOS
 3. **Apply dotfiles**: `chezmoi apply`  
-4. **Deploy NixOS**: `bash ~/.local/share/chezmoi/scripts/deploy-nixos.sh`
+4. **Deploy NixOS**: `bash ~/.local/share/chezmoi/system_scripts/deploy-nixos.sh`
 5. **Commit all**: `chezmoi cd && git add . && git commit -m "update configs"`
 
 ## Notes for Claude
@@ -100,7 +101,7 @@ sudo diff -r /etc/nixos/ ~/.local/share/chezmoi/system_nixos/
 
 ## Documentation Maintenance
 - **CRITICAL**: Always update documentation after any configuration changes
-- Run `bash ~/.local/share/chezmoi/scripts/update-docs.sh` after making changes
+- Run `bash ~/.local/share/chezmoi/system_scripts/update-docs.sh` after making changes
 - Use `--force` flag to force update all documentation
 - Validate docs with `--validate` flag before committing
 - Check for undocumented configs with `--check` flag

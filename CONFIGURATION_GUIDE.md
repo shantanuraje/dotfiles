@@ -225,7 +225,7 @@ rofi/
 
 ### Utility Scripts
 
-#### `scripts/deploy-nixos.sh`
+#### `system_scripts/deploy-nixos.sh`
 **Purpose**: Automated NixOS deployment with safety features  
 **Features**:
 - Automatic backup creation
@@ -233,7 +233,7 @@ rofi/
 - Error handling and rollback
 - Safety checks
 
-#### `scripts/test-deploy-nixos.sh`
+#### `system_scripts/test-deploy-nixos.sh`
 **Purpose**: Test NixOS deployment without applying changes  
 **Features**:
 - Dry-run deployment
