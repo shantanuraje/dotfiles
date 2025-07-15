@@ -194,6 +194,17 @@ in
     powerline
     jq
     ripgrep
+    
+    # Modern CLI tools for improved productivity
+    bat       # Cat clone with syntax highlighting
+    fd        # Better find alternative
+    eza       # Modern ls replacement
+    delta     # Git diff viewer
+    tldr      # Simplified man pages
+    dust      # Better du alternative
+    hyperfine # Command benchmarking
+    tokei     # Code statistics
+    bottom    # Better top/htop
 
     claude-desktop-linux-flake.packages.${pkgs.system}.claude-desktop
     claude-code
