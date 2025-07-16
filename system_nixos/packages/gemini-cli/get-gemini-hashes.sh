@@ -29,7 +29,7 @@ echo "✅ Source hash obtained: $SRC_HASH"
 # Update the gemini-cli.nix file with the actual source hash
 # This replaces the placeholder hash with the real one
 echo "🔄 Updating gemini-cli.nix with source hash..."
-sed -i "s/hash = \"sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=\";/hash = \"$SRC_HASH\";/" gemini-cli.nix
+sed -i "s|hash = \"sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=\";|hash = \"$SRC_HASH\";|" gemini-cli.nix
 
 echo "✅ Source hash updated in gemini-cli.nix"
 

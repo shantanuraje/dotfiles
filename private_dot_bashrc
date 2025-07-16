@@ -120,7 +120,7 @@ fi
 neofetch
 #PS1="$"
 alias dotfiles='/usr/bin/git --git-dir=/home/$USER/dotfiles --work-tree=/home/$USER'
-#. /home/shantanu/.local/lib/python3.8/site-packages/powerline/bindings/bash/powerline.sh
+#. $HOME/.local/lib/python3.8/site-packages/powerline/bindings/bash/powerline.sh
 # Powerline configuration
 if [ -f /usr/share/powerline/bindings/bash/powerline.sh ]; then
   powerline-daemon -q
@@ -131,14 +131,14 @@ fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-#__conda_setup="$('/home/shantanu/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+#__conda_setup="$('$HOME/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 #if [ $? -eq 0 ]; then
 #    eval "$__conda_setup"
 #else
-#    if [ -f "/home/shantanu/anaconda3/etc/profile.d/conda.sh" ]; then
-#        . "/home/shantanu/anaconda3/etc/profile.d/conda.sh"
+#    if [ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]; then
+#        . "$HOME/anaconda3/etc/profile.d/conda.sh"
 #    else
-#        export PATH="/home/shantanu/anaconda3/bin:$PATH"
+#        export PATH="$HOME/anaconda3/bin:$PATH"
 #    fi
 #fi
 #unset __conda_setup
