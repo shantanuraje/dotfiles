@@ -80,8 +80,11 @@ local function autostart()
         awful.spawn.with_shell(string.format("pgrep -u $USER -fx '%s' > /dev/null || (%s)", cmd, cmd))
     end
     
-    -- Start Polybar directly
-    awful.spawn.with_shell("pgrep -u $USER -x polybar > /dev/null || (pkill -f polybar; sleep 1; polybar main -c ~/.config/polybar/config.ini &)")
+    -- Start Polybar using proper launch script
+    gears.timer.start_new(2, function()
+        awful.spawn.with_shell("~/.config/polybar/launch.sh")
+        return false -- run only once
+    end)
 end
 
 autostart()
@@ -790,3 +793,11 @@ end)
 
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+
+-- Restart Polybar when AwesomeWM restarts/reloads
+awesome.connect_signal("startup", function()
+    gears.timer.start_new(2, function()
+        awful.spawn.with_shell("~/.config/polybar/launch.sh")
+        return false -- run only once
+    end)
+end)
