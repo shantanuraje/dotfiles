@@ -1,0 +1,151 @@
+# Modern CLI Tool Aliases
+# This file replaces traditional Unix tools with modern alternatives
+# All tools are available in your NixOS configuration
+
+# === File Listing & Navigation ===
+# Replace ls with eza (modern ls replacement)
+alias ls='eza --color=always --group-directories-first'
+alias ll='eza -la --color=always --group-directories-first --git'
+alias la='eza -a --color=always --group-directories-first'
+alias lt='eza -aT --color=always --group-directories-first'  # tree view
+alias l.='eza -a | grep "^\."'  # hidden files only
+
+# === File Content & Search ===
+# Replace cat with bat (syntax highlighting)
+alias cat='bat --style=plain --paging=never'
+alias ccat='bat --style=plain --paging=never --color=always'  # force color
+alias bathelp='bat --help'
+
+# Replace grep with ripgrep
+alias grep='rg --color=always'
+alias greps='rg --type-add "web:*.{html,css,js}" --type web'  # web files
+
+# Replace find with fd
+alias find='fd'
+alias fdf='fd --type f'  # files only
+alias fdd='fd --type d'  # directories only
+
+# === Git Integration ===
+# Enhanced git diff with delta
+alias gdiff='git diff'  # delta is configured globally
+alias glog='git log --oneline --graph --color=always'
+alias gshow='git show --color=always'
+
+# === System Information ===
+# Replace du with dust
+alias du='dust'
+alias dus='dust -s'  # summary only
+alias dut='dust -t'  # tree view
+
+# Replace top/htop with bottom  
+# Note: bottom not available, keeping traditional
+alias top='gotop'
+alias htop='gotop'
+
+# === Performance & Benchmarking ===
+alias benchmark='hyperfine'
+alias time='hyperfine --warmup 3'
+
+# === Code Statistics ===
+alias cloc='tokei'
+alias stats='tokei'
+
+# === Help & Documentation ===
+# Replace man with tldr for quick examples
+alias help='tldr'
+alias tldr='tldr --color=always'
+alias man='man'  # keep original man available
+
+# === Directory Navigation ===
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+
+# === Quick Directory Jumps ===
+alias docs='cd ~/Documents'
+alias dl='cd ~/Downloads'
+alias proj='cd ~/Projects'
+alias dots='cd ~/.local/share/chezmoi'
+
+# === Git Shortcuts ===
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit -m'
+alias gp='git push'
+alias gl='git pull'
+alias gco='git checkout'
+alias gb='git branch'
+
+# === System Utilities ===
+alias c='clear'
+alias h='history'
+alias j='jobs -l'
+alias path='echo -e ${PATH//:/\\n}'
+alias now='date +"%T"'
+alias nowtime=now
+alias nowdate='date +"%d-%m-%Y"'
+
+# === File Operations ===
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'
+alias mkdir='mkdir -pv'
+
+# === Network ===
+alias ping='ping -c 5'
+alias ports='netstat -tulanp'
+
+# === Archives ===
+alias untar='tar -zxvf'
+alias tardir='tar -zcvf'
+
+# === Process Management ===
+alias ps='ps auxf'
+alias psg='ps aux | grep -v grep | grep -i -e VSZ -e'
+
+# === Disk Usage ===
+alias df='df -H'
+alias free='free -mt'
+
+# === Safety Nets ===
+alias chown='chown --preserve-root'
+alias chmod='chmod --preserve-root'
+alias chgrp='chgrp --preserve-root'
+
+# === Development ===
+alias serve='python3 -m http.server 8000'
+alias json='python3 -m json.tool'
+
+# === NixOS Specific ===
+alias rebuild='sudo nixos-rebuild switch'
+alias test-rebuild='sudo nixos-rebuild test'
+alias upgrade='sudo nixos-rebuild switch --upgrade'
+alias generations='sudo nix-env --list-generations --profile /nix/var/nix/profiles/system'
+alias gc='nix-collect-garbage'
+alias gcold='sudo nix-collect-garbage -d'
+
+# === Chezmoi Integration ===
+alias dotfiles='chezmoi'
+alias dotsync='chezmoi apply'
+alias dotedit='chezmoi edit'
+alias dotdiff='chezmoi diff'
+alias dotadd='chezmoi add'
+
+# === Modern Tool Combinations ===
+# Interactive file selection with fzf + bat preview
+alias preview='fzf --preview "bat --color=always {}"'
+
+# Find and edit files with fzf + fd + nvim
+alias fe='fd --type f | fzf --preview "bat --color=always {}" | xargs nvim'
+
+# Search content with rg + fzf
+alias search='rg --line-number . | fzf --delimiter : --preview "bat --color=always --highlight-line {2} {1}"'
+
+# === Conditional Aliases (fallbacks) ===
+# If modern tools aren't available, these provide fallbacks
+command -v eza >/dev/null || alias ls='ls --color=auto'
+command -v bat >/dev/null || alias cat='cat'
+command -v rg >/dev/null || alias grep='grep --color=auto'
+command -v fd >/dev/null || alias find='find'
+command -v dust >/dev/null || alias du='du -h'

@@ -1,0 +1,38 @@
+# Ripgrep configuration file
+# This file configures ripgrep (rg) default behavior
+
+# Always use colors
+--color=always
+
+# Show line numbers
+--line-number
+
+# Case insensitive search unless uppercase letters are used
+--smart-case
+
+# Follow symbolic links
+--follow
+
+# Don't search in hidden files and directories by default
+# (can override with --hidden flag)
+
+# Ignore common directories
+--glob=!.git/
+--glob=!node_modules/
+--glob=!.venv/
+--glob=!__pycache__/
+--glob=!*.pyc
+--glob=!.nix-build-*
+--glob=!result/
+--glob=!result-*/
+
+# Include additional file types
+--type-add=web:*.{html,css,js,jsx,ts,tsx,vue,svelte}
+--type-add=config:*.{json,yaml,yml,toml,ini,conf}
+--type-add=nix:*.nix
+
+# Set maximum columns to prevent very long lines from cluttering output
+--max-columns=150
+
+# Show context around matches (2 lines before and after)
+--context=2

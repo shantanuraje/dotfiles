@@ -87,10 +87,11 @@ fi
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
+# Modern tool aliases are now in ~/.bash_aliases
+# Traditional aliases kept as fallback
+alias ll_old='ls -alF'
+alias la_old='ls -A'
+alias l_old='ls -CF'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -294,4 +295,49 @@ alias fvim='vim $(rg --line-number "" | fzf --delimiter : --nth 1,2,3)'
 #}
 
 #bind -x '"\C-r": ffc'
+
+# === Modern Shell Enhancements ===
+
+# Better default editor
+export EDITOR="nvim"
+export VISUAL="nvim"
+
+# Modern tool configurations
+export BAT_THEME="ansi"
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+
+# Improved history settings
+export HISTSIZE=10000
+export HISTFILESIZE=20000
+export HISTTIMEFORMAT="%F %T "
+export HISTCONTROL=ignoredups:erasedups
+
+# Better less defaults
+export LESS='-R -S -M -I -F'
+export LESSOPEN='|bat --color=always %s'
+
+# Ripgrep configuration
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+
+# Git configuration for delta (already configured globally)
+# Delta provides better git diff output automatically
+
+# Auto-completion enhancements
+# Enable ** globbing
+shopt -s globstar
+
+# Better tab completion for modern tools
+if command -v eza >/dev/null; then
+    complete -F _longopt eza
+fi
+
+# Load modern aliases if available
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# Display system info on shell start (already have neofetch)
+# Add a separator for clarity
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
