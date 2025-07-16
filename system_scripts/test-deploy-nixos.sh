@@ -41,13 +41,31 @@ log ""
 
 log "Available machine configurations:"
 machines=()
-for machine_file in "$MACHINES_DIR"/*.nix; do
-    if [[ -f "$machine_file" ]]; then
-        machine_name=$(basename "$machine_file" .nix)
-        machines+=("$machine_name")
-        echo "  [$((${#machines[@]})))] $machine_name"
-    fi
-done
+machine_paths=()
+
+# Scan personal machines
+if [[ -d "$MACHINES_DIR/personal" ]]; then
+    for machine_file in "$MACHINES_DIR/personal"/*.nix; do
+        if [[ -f "$machine_file" ]]; then
+            machine_name="personal/$(basename "$machine_file" .nix)"
+            machines+=("$machine_name")
+            machine_paths+=("$machine_file")
+            echo "  [$((${#machines[@]})))] $machine_name"
+        fi
+    done
+fi
+
+# Scan work machines  
+if [[ -d "$MACHINES_DIR/work" ]]; then
+    for machine_file in "$MACHINES_DIR/work"/*.nix; do
+        if [[ -f "$machine_file" ]]; then
+            machine_name="work/$(basename "$machine_file" .nix)"
+            machines+=("$machine_name")
+            machine_paths+=("$machine_file")
+            echo "  [$((${#machines[@]})))] $machine_name"
+        fi
+    done
+fi
 
 if [[ ${#machines[@]} -eq 0 ]]; then
     error "No machine configurations found in $MACHINES_DIR"
@@ -63,7 +81,7 @@ if [[ ! "$choice" =~ ^[0-9]+$ ]] || [[ $choice -lt 1 ]] || [[ $choice -gt ${#mac
 fi
 
 selected_machine="${machines[$((choice-1))]}"
-selected_config="$MACHINES_DIR/${selected_machine}.nix"
+selected_config="${machine_paths[$((choice-1))]}"
 
 log "Testing deployment of: $selected_machine"
 log "Config file: $selected_config"
