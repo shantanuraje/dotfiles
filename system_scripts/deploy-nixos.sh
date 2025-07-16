@@ -108,6 +108,24 @@ if [[ -f "$SOURCE_DIR/flake.lock" ]]; then
     fi
 fi
 
+# Check for gemini-cli hash script and offer to update hashes
+if [[ -f "$SOURCE_DIR/packages/gemini-cli/get-gemini-hashes.sh" ]]; then
+    warning "Gemini CLI package detected"
+    echo "Consider updating hashes to ensure successful build."
+    read -p "Update gemini-cli hashes? (y/N): " update_hashes
+    if [[ "$update_hashes" =~ ^[Yy]$ ]]; then
+        log "Updating gemini-cli hashes..."
+        cd "$SOURCE_DIR"
+        if bash packages/gemini-cli/get-gemini-hashes.sh; then
+            success "Gemini CLI hashes updated"
+            warning "Note: You may need to manually update npmDepsHash in gemini-cli.nix"
+        else
+            warning "Hash update failed, continuing with existing hashes..."
+        fi
+        cd - > /dev/null
+    fi
+fi
+
 # # Validate
 # log "Validating configuration..."
 # if ! sudo nixos-rebuild dry-build 2>/dev/null; then
