@@ -163,7 +163,7 @@ in
     lm_sensors
     libnotify
     noto-fonts-emoji
-    redshift
+    #redshift
     xorg.xwininfo
     xorg.xprop
     
@@ -181,7 +181,7 @@ in
     lazygit
     
     # Creative and productivity apps (personal setup)
-    gimp
+    # gimp
     shotwell
     bambu-studio
     libsForQt5.okular
@@ -195,8 +195,12 @@ in
     # AI and specialized tools (personal environment)
     claude-desktop-linux-flake.packages.${pkgs.system}.claude-desktop
     claude-code
-    gemini-cli
+    # gemini-cli  # Temporarily disabled - npm dependency hash needs fixing
     pulsemixer
+    
+    # Hash generation tools for package maintenance
+    nix-prefetch-git
+    nix-prefetch-github
     
     # Python development environment
     (python3.withPackages (ps: with ps; [

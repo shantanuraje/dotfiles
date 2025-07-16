@@ -404,28 +404,27 @@ in
   # Let GNOME handle audio configuration, just add Samsung-specific fixes
   # GNOME automatically enables PulseAudio, so we don't need to override it
   
-  # Systemd service for audio fix at boot
-  systemd.services.samsung-audio-fix = {
-    description = "Samsung Galaxy Book Audio Fix";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "sound.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${audioFixScript}";
-      RemainAfterExit = true;
-    };
-  };
+  # Systemd services temporarily disabled while testing basic system
+  # systemd.services.samsung-audio-fix = {
+  #   description = "Samsung Galaxy Book Audio Fix";
+  #   wantedBy = [ "multi-user.target" ];
+  #   after = [ "sound.target" ];
+  #   serviceConfig = {
+  #     Type = "oneshot";
+  #     ExecStart = "${audioFixScript}";
+  #     RemainAfterExit = true;
+  #   };
+  # };
   
-  # Systemd service for audio fix after suspend/resume  
-  systemd.services.samsung-audio-fix-resume = {
-    description = "Samsung Galaxy Book Audio Fix (Post-Suspend)";
-    wantedBy = [ "suspend.target" ];
-    after = [ "suspend.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${audioFixScript}";
-    };
-  };
+  # systemd.services.samsung-audio-fix-resume = {
+  #   description = "Samsung Galaxy Book Audio Fix (Post-Suspend)";
+  #   wantedBy = [ "suspend.target" ];
+  #   after = [ "suspend.target" ];
+  #   serviceConfig = {
+  #     Type = "oneshot";
+  #     ExecStart = "${audioFixScript}";
+  #   };
+  # };
   
   # ALSA configuration
   environment.etc."alsa/conf.d/99-samsung-galaxy-book.conf".text = ''

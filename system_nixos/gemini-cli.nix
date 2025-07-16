@@ -20,19 +20,23 @@ buildNpmPackage rec {
     rev = "main";  # Using main branch - can be changed to specific tag/commit
     # IMPORTANT: This hash must be updated using packages/gemini-cli/get-gemini-hashes.sh script
     # The placeholder value below will cause build to fail until updated
-    hash = "sha256-QllEB3FAhp9lVOBkAE09Sw8IqOjRpaIMXAcY8dGbgw0=";
+    hash = "sha256-GB8yKry9wdQkpgIcwYZy8vcE90e1XPtoLlw5y+XZaTs=";
   };
 
   # NPM dependencies hash
   # This hash ensures reproducible builds by validating the npm dependencies
   # IMPORTANT: This must be updated after running the initial build attempt
   # Nix will provide the correct hash in the error message when it fails
-  npmDepsHash = "sha256-qimhi2S8fnUbIq2MPU1tlvj5k9ZChY7kzxLrYqy9FXI=";
+  npmDepsHash = "sha256-3Vm6rQr71yCLSkuTqqz6XlK/2hNDI3ongSTCoV2xlNE=";
 
   # Build dependencies
   # Node.js is required as gemini-cli is a TypeScript/JavaScript application
   buildInputs = [ nodejs ];
 
+  # Fix npm dependency caching issues
+  makeCacheWritable = true;
+  npmFlags = [ "--legacy-peer-deps" ];
+  
   # Disable broken symlink check since this package has internal workspace symlinks
   dontFixup = false;
   preFixup = ''

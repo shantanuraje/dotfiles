@@ -11,7 +11,7 @@
   };
 
   outputs = { self, nixpkgs, claude-desktop-linux-flake, ... }: {
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.samsung-laptop-personal = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit claude-desktop-linux-flake; };
       modules = [
