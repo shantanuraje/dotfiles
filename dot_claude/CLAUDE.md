@@ -278,3 +278,69 @@ sudo diff -r /etc/nixos/ ~/.local/share/chezmoi/system_nixos/
 - Keep documentation comprehensive and up-to-date for future reference
 - Create backups before major documentation changes
 - Ensure all new configurations are properly documented
+
+---
+
+# Project Management & Todo List Methodology
+
+## Overview
+Following task-master-ai methodology, Claude maintains comprehensive todo lists for all complex projects to ensure proper planning, execution tracking, and documentation continuity.
+
+## Todo List Protocol
+
+### When to Use Todo Lists
+**ALWAYS** create and maintain todo lists for:
+- Multi-step complex tasks (3+ distinct actions)
+- Cross-session project work that spans multiple conversations
+- Hardware implementations, system configurations, or deployments
+- Any work involving multiple files, components, or dependencies
+- Feature development, bug fixes, or system integrations
+- Documentation and maintenance tasks
+
+### Todo List Structure
+Each todo item must include:
+- **Unique ID**: Descriptive identifier for the task
+- **Content**: Clear, actionable description of what needs to be done
+- **Status**: `pending`, `in_progress`, or `completed`
+- **Priority**: `high`, `medium`, or `low` based on criticality and dependencies
+
+### Workflow Principles
+1. **Task Discovery**: At project start, break down complex work into specific, manageable tasks
+2. **Progress Tracking**: Update task status in real-time as work progresses
+3. **Documentation**: Capture decisions, implementations, and outcomes for each task
+4. **Completion Verification**: Only mark tasks complete when fully finished and verified
+5. **Project Continuity**: Maintain todo lists across conversation sessions for complex projects
+
+### Implementation Guidelines
+- **Start Every Complex Project**: Begin with TodoWrite to outline all anticipated tasks
+- **Real-time Updates**: Mark tasks `in_progress` when starting, `completed` when finished
+- **Granular Tasks**: Break large tasks into smaller, specific subtasks when needed
+- **Dependency Tracking**: Order tasks logically based on dependencies
+- **Session Continuity**: Use TodoRead at conversation start to understand current project state
+
+### Example Task Breakdown
+For a system configuration project:
+```
+1. Research existing configuration and requirements
+2. Design implementation approach and architecture  
+3. Implement core functionality (broken into subtasks)
+4. Test implementation in safe environment
+5. Deploy to production system
+6. Verify functionality and troubleshoot issues
+7. Document implementation and update relevant guides
+8. Commit changes and update version control
+```
+
+### Documentation Integration
+- Every completed task should result in updated documentation
+- Major project milestones should include comprehensive documentation updates
+- Task completion should include verification that documentation is current
+- Use `update-docs.sh` script after significant project completions
+
+### Cross-Session Project Management
+- Always start complex work sessions with TodoRead to understand current state
+- Maintain project context through detailed task descriptions
+- Document key decisions and implementation details within tasks
+- Use todo lists as project roadmaps for multi-conversation development
+
+This methodology ensures systematic project execution, proper documentation, and seamless continuation of complex work across multiple interaction sessions.
