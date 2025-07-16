@@ -1,0 +1,35 @@
+# Documentation backups created by update-docs.sh
+.doc_backups/
+
+# Nix build artifacts and temporary files
+result
+result-*
+
+# NixOS flake.lock - TRACKED for reproducibility
+# We keep flake.lock tracked because:
+# - Ensures identical builds across home/work machines
+# - Provides rollback capability for system deployments  
+# - deploy-nixos.sh offers regeneration when needed
+# If cross-system conflicts become frequent, consider gitignoring
+
+# Temporary files
+*.tmp
+*.bak
+*~
+
+# Editor files
+.vscode/
+*.swp
+*.swo
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local environment files
+.env.local
+.env
+
+# System-specific files that shouldn't be shared
+system_nixos/hardware-configuration.nix.local
