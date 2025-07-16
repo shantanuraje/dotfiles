@@ -402,28 +402,24 @@ in
   ];
   
   # Use PulseAudio instead of PipeWire for this hardware
-  hardware.pulseaudio = {
-    enable = lib.mkForce true;
-    support32Bit = true;
-    configFile = pkgs.writeText "samsung-pulseaudio.pa" ''
-      # Samsung Galaxy Book PulseAudio configuration
-      .include ${pkgs.pulseaudio}/etc/pulse/default.pa
-      
-      # Disable suspend-on-idle to prevent audio issues
-      # (commenting out module-suspend-on-idle)
-      
-      # Force load SOF module for Samsung Galaxy Book
-      load-module module-alsa-sink device=hw:0,0
-      load-module module-alsa-source device=hw:0,0
-    '';
-  };
+  hardware.pulseaudio.enable = lib.mkForce true;
+  hardware.pulseaudio.support32Bit = true;
+  hardware.pulseaudio.configFile = pkgs.writeText "samsung-pulseaudio.pa" ''
+    # Samsung Galaxy Book PulseAudio configuration
+    .include ${pkgs.pulseaudio}/etc/pulse/default.pa
+    
+    # Disable suspend-on-idle to prevent audio issues
+    # (commenting out module-suspend-on-idle)
+    
+    # Force load SOF module for Samsung Galaxy Book
+    load-module module-alsa-sink device=hw:0,0
+    load-module module-alsa-source device=hw:0,0
+  '';
   
   # Disable PipeWire (conflicts with PulseAudio fix)
-  services.pipewire = {
-    enable = lib.mkForce false;
-    alsa.enable = lib.mkForce false;
-    pulse.enable = lib.mkForce false;
-  };
+  services.pipewire.enable = lib.mkForce false;
+  services.pipewire.alsa.enable = lib.mkForce false;
+  services.pipewire.pulse.enable = lib.mkForce false;
   
   # Systemd service for audio fix at boot
   systemd.services.samsung-audio-fix = {
