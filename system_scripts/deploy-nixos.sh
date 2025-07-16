@@ -94,14 +94,13 @@ sudo cp "$selected_config" "/etc/nixos/configuration.nix"
 sudo chown root:root "/etc/nixos/configuration.nix"
 sudo chmod 644 "/etc/nixos/configuration.nix"
 
-# Copy other essential files (excluding machine configs, configuration.nix, and hardware-configuration.nix)
+# Copy other essential files (excluding configuration.nix and hardware-configuration.nix)
 log "Copying shared configuration files..."
 for file in "$SOURCE_DIR"/*; do
     if [[ -f "$file" ]]; then
         filename=$(basename "$file")
         # Skip configuration.nix (we already copied the selected machine config)
         # Skip hardware-configuration.nix (system-specific, should not be overwritten)
-        # and machines directory
         if [[ "$filename" != "configuration.nix" && "$filename" != "hardware-configuration.nix" ]]; then
             log "  → $filename"
             sudo cp "$file" "/etc/nixos/$filename"
@@ -110,6 +109,15 @@ for file in "$SOURCE_DIR"/*; do
         fi
     fi
 done
+
+# Copy machines directory structure (for imports like shared/hardware modules)
+if [[ -d "$SOURCE_DIR/machines" ]]; then
+    log "Copying machines directory structure..."
+    sudo cp -r "$SOURCE_DIR/machines" "/etc/nixos/"
+    sudo chown -R root:root "/etc/nixos/machines"
+    sudo find "/etc/nixos/machines" -type f -exec chmod 644 {} \;
+    sudo find "/etc/nixos/machines" -type d -exec chmod 755 {} \;
+fi
 
 # Check if flake.lock exists and offer to regenerate
 if [[ -f "$SOURCE_DIR/flake.lock" ]]; then

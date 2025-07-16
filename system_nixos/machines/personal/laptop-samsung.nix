@@ -4,14 +4,14 @@
 
 { config, pkgs, claude-desktop-linux-flake, ... }:
 let
-  gemini-cli = pkgs.callPackage ../../gemini-cli.nix {};
+  gemini-cli = pkgs.callPackage ./gemini-cli.nix {};
 in
 {
   imports = [
     # Hardware-specific audio fix
-    ../shared/hardware/samsung-galaxy-book-audio.nix
+    ./machines/shared/hardware/samsung-galaxy-book-audio.nix
     # Base hardware scan
-    ../../hardware-configuration.nix
+    ./hardware-configuration.nix
   ];
 
   # Machine identification

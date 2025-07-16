@@ -101,8 +101,8 @@ log "Other files that would be deployed:"
 for file in "$SOURCE_DIR"/*; do
     if [[ -f "$file" ]]; then
         filename=$(basename "$file")
-        # Skip configuration.nix as we handle it separately
-        if [[ "$filename" != "configuration.nix" ]]; then
+        # Skip configuration.nix as we handle it separately, skip hardware-configuration.nix
+        if [[ "$filename" != "configuration.nix" && "$filename" != "hardware-configuration.nix" ]]; then
             log "  → $filename"
             
             # Show diff if file exists
@@ -116,6 +116,21 @@ for file in "$SOURCE_DIR"/*; do
         fi
     fi
 done
+
+# Show machines directory structure that would be deployed
+if [[ -d "$SOURCE_DIR/machines" ]]; then
+    log "Machines directory structure that would be deployed:"
+    if [[ -d "/etc/nixos/machines" ]]; then
+        log "  → machines/ (would be updated)"
+        echo -e "${YELLOW}    Directory structure comparison:${NC}"
+        diff -r "/etc/nixos/machines" "$SOURCE_DIR/machines" | head -10 || true
+        echo ""
+    else
+        log "  → machines/ (new directory)"
+        echo -e "${GREEN}    New directory with structure:${NC}"
+        find "$SOURCE_DIR/machines" -name "*.nix" | sed 's|.*/|    |'
+    fi
+fi
 
 log ""
 log "=== Validation Test ==="
