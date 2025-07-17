@@ -53,18 +53,19 @@ show_workspace_menu() {
 restore_window_in_workspace() {
     local workspace=$1
     local window_index=$2
-    echo "
-    local workspace_num = $workspace
-    local window_idx = $window_index
-    local s = require('awful').screen.focused()
-    local tag = s.tags[workspace_num]
     
+    # First, switch to the workspace
+    echo "require('awful').screen.focused().tags[$workspace]:view_only()" | awesome-client >/dev/null 2>&1
+    
+    # Small delay to ensure workspace switch
+    sleep 0.1
+    
+    # Then restore the window on the current (newly switched) workspace
+    echo "
+    local tag = require('awful').screen.focused().selected_tag
     if tag then
-        local client = tag:clients()[window_idx]
+        local client = tag:clients()[$window_index]
         if client then
-            -- Switch to the workspace first
-            tag:view_only()
-            -- Then restore and focus the window
             client.minimized = false
             client:raise()
             require('awful').client.focus.byidx(0, client)
