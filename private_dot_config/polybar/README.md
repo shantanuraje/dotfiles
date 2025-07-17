@@ -21,10 +21,12 @@ A feature-rich polybar setup with Catppuccin Macchiato theme, designed to replac
 ### 🖥️ **Workspace Management**
 - **AwesomeWM Integration** - Shows current workspace
 - **Click to Switch** - Click workspace numbers to switch
+- **Window Menu** - Shows minimized windows and allows restoration
 - **Visual Indicators**:
   - Current workspace: highlighted with background
   - Workspaces with windows: normal brightness  
   - Empty workspaces: dimmed
+  - Window count: shows number of minimized windows
 
 ### 🔊 **Audio & Media**
 - **Volume Control** - Shows current volume, click to open pavucontrol
@@ -60,6 +62,8 @@ A feature-rich polybar setup with Catppuccin Macchiato theme, designed to replac
 ├── launch.sh                  # Launch script (kills existing, starts new)
 └── scripts/
     ├── awesome-workspaces.sh   # AwesomeWM workspace integration
+    ├── window-switcher.sh      # Enhanced window management with Alt+Tab
+    ├── awesome-keybindings.lua # AwesomeWM keybinding examples
     ├── powermenu.sh           # Power menu with rofi
     ├── updates.sh             # System updates checker
     ├── notifications.sh       # Dunst notification control
@@ -86,6 +90,17 @@ Polybar automatically replaces the default AwesomeWM wibar:
 #### Workspace Module
 - **Left click workspace number**: Switch to that workspace
 - **Visual feedback**: Current workspace highlighted
+
+#### Window Menu Module
+- **Left click**: Open rofi menu with all windows in current workspace
+- **Right click**: Open Alt+Tab style switcher for visible windows
+- **Window selection**: Click to restore and focus minimized windows
+- **Alt+Tab Integration**: Can be bound to Alt+Tab in AwesomeWM
+- **Visual indicators**: 
+  - Shows window icon ()
+  - Displays count of minimized windows in parentheses
+  - Menu shows  for minimized,  for visible windows
+  - Alt+Tab mode shows  for focused,  for unfocused windows
 
 #### Volume Module  
 - **Right click**: Open pavucontrol for detailed audio control
