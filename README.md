@@ -1,6 +1,6 @@
 # Personal Dotfiles Configuration
 
-A comprehensive, well-organized dotfiles repository managed with [chezmoi](https://chezmoi.io/) for consistent development environment across systems.
+> A comprehensive, well-organized dotfiles repository managed with [chezmoi](https://chezmoi.io/) for consistent development environment across systems.
 
 ## 🚀 Quick Start
 
@@ -12,42 +12,85 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply https://github.com/your-use
 chezmoi init && chezmoi apply
 ```
 
-## 📁 Repository Structure
+## ✨ Key Features
 
+### 🎨 **Modern Polybar Status Bar**
+- **Catppuccin Macchiato** theme with modern aesthetics
+- **Interactive Calendar & Clock** - Left/middle/right click for different views
+- **Enhanced Window Management** - Restore minimized windows across workspaces
+- **System Monitoring** - CPU, memory, temperature, network, and more
+- **AwesomeWM Integration** - Seamless workspace management
+
+### 🖥️ **System Integration**
+- **NixOS Configuration** - Declarative system management
+- **Hardware Fixes** - Samsung Galaxy Book audio fixes
+- **Cross-Platform Planning** - Universal Linux system management
+- **Automated Deployment** - Safe, tested deployment scripts
+
+### 🛠️ **Development Tools**
+- **Chezmoi Management** - Version-controlled dotfiles
+- **AI-Assisted Development** - Claude integration for maintenance
+- **Comprehensive Documentation** - Well-organized reference system
+- **Multiple Environments** - Home, work, and mobile configurations
+
+## 📚 Documentation
+
+**Complete documentation is available in the `docs/` directory organized as an Obsidian MOC:**
+
+- **[📖 Documentation Index](docs/README.md)** - Main navigation and overview
+- **[🚀 Installation Guide](docs/Installation%20Guide.md)** - Step-by-step setup
+- **[🎨 Polybar System](docs/polybar/)** - Status bar documentation
+- **[🖥️ System Configuration](docs/system/)** - NixOS and hardware setup
+- **[📋 Project Management](docs/project/)** - Development progress and roadmap
+
+## 🎯 What Makes This Special
+
+- **Interactive Features**: Click calendar for popups, window manager for restoration
+- **Beautiful Design**: Modern icons, proper spacing, consistent theming
+- **Practical Functionality**: Real system monitoring, workspace management
+- **Seamless Integration**: Perfect AwesomeWM integration with no conflicts
+- **Safe Deployments**: Automated testing and rollback capabilities
+- **Hardware Support**: Tested on Samsung Galaxy Book with audio fixes
+- **Documentation First**: Every feature is documented and maintained
+- **AI Integration**: Claude assists with development and maintenance
+
+## 🔧 Quick Commands
+
+```bash
+# Deploy system changes
+./system_scripts/deploy-nixos.sh
+
+# Update documentation
+./system_scripts/update-docs.sh
+
+# Apply dotfiles changes
+chezmoi apply
+
+# Test polybar configuration
+polybar main -c ~/.config/polybar/config.ini
 ```
-~/.local/share/chezmoi/
-├── README.md                     # This comprehensive documentation
-├── NIXOS_USAGE.md               # NixOS-specific instructions
-├── dot_claude/                  # Claude AI assistant configuration
-│   └── CLAUDE.md               # Global Claude instructions
-├── dot_profile                  # Shell profile configuration
-├── dot_vimrc                   # Vim editor configuration
-├── private_dot_bashrc          # Bash shell configuration (private)
-├── dot_screenlayout/           # Display layout scripts
-│   ├── executable_home-desktop.sh    # Home display setup
-│   └── executable_work-desktop.sh    # Work display setup
-├── dot_termux/                 # Termux Android terminal config
-│   ├── font.ttf               # Custom font
-│   └── private_colors.properties  # Color scheme (private)
-├── private_dot_config/         # Application configurations (private)
-│   ├── awesome/               # AwesomeWM window manager
-│   ├── hypr/                  # Hyprland wayland compositor
-│   ├── kitty/                 # Kitty terminal emulator
-│   ├── neofetch/              # System information tool
-│   ├── nnn/                   # Terminal file manager
-│   ├── nvim/                  # Neovim editor
-│   ├── ranger/                # Ranger file manager
-│   ├── rofi/                  # Application launcher
-│   ├── waybar/                # Status bar for wayland
-│   └── zellij/                # Terminal multiplexer
-├── system_scripts/             # System utility scripts
-│   ├── deploy-nixos.sh        # NixOS deployment automation
-│   ├── test-deploy-nixos.sh   # NixOS deployment testing
-│   └── update-docs.sh         # Documentation maintenance automation
-└── system_nixos/              # NixOS system configuration
-    ├── configuration.nix      # Main system config
-    ├── flake.nix             # Nix flake configuration
-    ├── flake.lock            # Flake dependency lock
+
+## 🏆 Recent Achievements
+
+- ✅ **Enhanced Calendar System** - Interactive calendar popups with rofi
+- ✅ **Window Management** - Robust window restoration across workspaces  
+- ✅ **Documentation Overhaul** - Organized MOC-style documentation system
+- ✅ **AI Integration** - Claude-assisted development and maintenance
+- ✅ **Hardware Support** - Samsung Galaxy Book audio fixes
+
+## 🤝 Contributing
+
+This is a personal dotfiles repository, but the documentation and structure can serve as inspiration for your own setup. See the [contributing guide](docs/project/Contributing.md) for more information.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+**💡 Tip**: Start with the [📖 Documentation Index](docs/README.md) for comprehensive navigation and detailed information about all features.
+
+*Last Updated: July 17, 2025*
     ├── hardware-configuration.nix  # Hardware-specific settings
     └── gemini-cli.nix        # Custom Gemini CLI module
 ```

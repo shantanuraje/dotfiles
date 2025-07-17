@@ -5,6 +5,9 @@
 result
 result-*
 
+# Obsidian vault files
+.obsidian/
+
 # NixOS flake.lock - TRACKED for reproducibility
 # We keep flake.lock tracked because:
 # - Ensures identical builds across home/work machines
