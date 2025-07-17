@@ -172,5 +172,6 @@ echo 'local s = require("awful").screen.focused(); local count = 0; for tag_idx 
 - ✅ Window restoration across workspaces
 - ✅ Script permissions and deployment
 - ✅ Configuration file formatting
+- ✅ Window restoration race condition (windows staying minimized after menu selection)
 
 This implementation provides a complete, user-friendly solution for window management in Awesome WM, making it easy to access and restore any window regardless of its state or workspace location.
