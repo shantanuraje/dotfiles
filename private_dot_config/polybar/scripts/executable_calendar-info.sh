@@ -3,6 +3,9 @@
 # Enhanced Calendar and Clock popup for polybar
 # Displays a beautiful calendar with clock information using rofi
 
+# Ensure we have a display
+export DISPLAY=${DISPLAY:-:0}
+
 # Colors matching Catppuccin Macchiato theme
 COLOR_BG="#1e2030"
 COLOR_FG="#cad3f5"
@@ -106,16 +109,12 @@ $events
         -dmenu \
         -i \
         -p "📅 Calendar & Clock" \
-        -theme-str "window { width: 600px; height: 500px; }" \
-        -theme-str "listview { lines: 20; columns: 1; fixed-height: true; }" \
-        -theme-str "element { padding: 4px; border-radius: 4px; }" \
-        -theme-str "element selected { background-color: $COLOR_ACCENT; text-color: $COLOR_BG; }" \
-        -theme-str "textbox { padding: 8px; margin: 4px; }" \
-        -theme-str "inputbar { padding: 8px; margin: 4px; }" \
-        -theme-str "prompt { padding: 8px; }" \
+        -theme-str 'window {width: 600px; height: 500px;}' \
+        -theme-str 'listview {lines: 20;}' \
+        -theme-str 'element {padding: 8px; border-radius: 4px;}' \
+        -theme-str 'element selected {background-color: #8bd5ca; text-color: #1e2030;}' \
         -no-custom \
-        -format '' \
-        >/dev/null 2>&1
+        -format 'i' >/dev/null 2>/tmp/rofi-debug.log
 }
 
 # Function to show compact calendar notification
@@ -155,29 +154,36 @@ show_clock_popup() {
 
 Press Enter to close"
     
+    # Show rofi popup with clock information
     echo "$clock_content" | rofi \
         -dmenu \
         -i \
         -p "🕐 World Clock" \
-        -theme-str "window { width: 500px; height: 400px; }" \
-        -theme-str "listview { lines: 15; columns: 1; fixed-height: true; }" \
-        -theme-str "element { padding: 4px; }" \
-        -theme-str "element selected { background-color: $COLOR_SECONDARY; text-color: $COLOR_BG; }" \
+        -theme-str 'window {width: 500px; height: 400px;}' \
+        -theme-str 'listview {lines: 15;}' \
+        -theme-str 'element {padding: 8px; border-radius: 4px;}' \
+        -theme-str 'element selected {background-color: #8aadf4; text-color: #1e2030;}' \
         -no-custom \
-        -format '' \
-        >/dev/null 2>&1
+        -format 'i' >/dev/null 2>/tmp/rofi-clock-debug.log
 }
 
 # Main logic
+echo "Calendar script called with argument: $1" >> /tmp/calendar-debug.log
+date >> /tmp/calendar-debug.log
+echo "DISPLAY: $DISPLAY" >> /tmp/calendar-debug.log
+echo "USER: $USER" >> /tmp/calendar-debug.log
+echo "XDG_CURRENT_DESKTOP: $XDG_CURRENT_DESKTOP" >> /tmp/calendar-debug.log
+echo "---" >> /tmp/calendar-debug.log
+
 case "${1:-calendar}" in
     "calendar"|"popup")
-        show_calendar_popup &
+        show_calendar_popup
         ;;
     "notification"|"notify")
-        show_calendar_notification &
+        show_calendar_notification
         ;;
     "clock")
-        show_clock_popup &
+        show_clock_popup
         ;;
     "help")
         echo "Calendar & Clock Script"
@@ -190,6 +196,6 @@ case "${1:-calendar}" in
         echo "  help         - Show this help"
         ;;
     *)
-        show_calendar_popup &
+        show_calendar_popup
         ;;
 esac
