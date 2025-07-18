@@ -67,19 +67,41 @@ awful.layout.layouts = {
 
 -- Autostart applications (matches Hyprland exec-once)
 local function autostart()
+    -- Table of commands with optional workspace and minimized state
     local cmds = {
-        "picom --config ~/.config/picom/picom.conf",  -- compositor for blur/shadows
-        "feh --bg-scale ~/Pictures/wallpapers/forest_bridge.jpg",  -- wallpaper
-        "dunst",  -- notifications
-        "insync start",  -- Google Drive sync
-        "claude-desktop",  -- Claude AI desktop app
-        "obsidian",  -- Note-taking app
+        -- { cmd, tag (workspace number as string), minimized }
+        { "picom --config ~/.config/picom/picom.conf" },  -- compositor (no workspace)
+        { "feh --bg-scale ~/Pictures/wallpapers/forest_bridge.jpg" },  -- wallpaper (no workspace)
+        { "dunst" },  -- notifications (no workspace)
+        {"google-chrome-stable", "1", false},
+        { "obsidian", "2", false },  -- Obsidian, workspace 4, not minimized
+        { "claude-desktop", "2", true },
+        -- two kitty terminals in workspace 2
+        { "kitty --name dev1", "3", false },
+        { "kitty --name dev2", "3", false },
+        {"code", "4", false},  -- Claude AI desktop app, workspace 4, minimized
+        { "insync start", "5", true },  -- Google Drive sync, workspace 5, minimized
+        { "discord", "5", true },  -- Discord, workspace 5, minimized
+        { "synergy", "5", true },  -- Synergy, workspace 5, minimized
     }
-    
-    for _, cmd in ipairs(cmds) do
-        awful.spawn.with_shell(string.format("pgrep -u $USER -fx '%s' > /dev/null || (%s)", cmd, cmd))
+
+    for _, entry in ipairs(cmds) do
+        local cmd = entry[1]
+        local tag = entry[2]
+        local minimized = entry[3]
+
+        -- Only set properties if tag or minimized is specified
+        if tag or minimized then
+            awful.spawn(cmd, {
+                tag = tag and awful.screen.focused().tags[tonumber(tag)] or nil,
+                minimized = minimized or false,
+            })
+        else
+            -- Default spawn with pgrep check to avoid duplicates
+            awful.spawn.with_shell(string.format("pgrep -u $USER -fx '%s' > /dev/null || (%s)", cmd, cmd))
+        end
     end
-    
+
     -- Start Polybar using proper launch script
     gears.timer.start_new(2, function()
         awful.spawn.with_shell("~/.config/polybar/launch.sh")
