@@ -1,6 +1,16 @@
 #!/bin/bash
-# Manual NixOS deployment script
-# Run this script to deploy NixOS configurations from chezmoi
+# NixOS Deployment Script
+# Deploys modular NixOS configurations from chezmoi to /etc/nixos/
+# 
+# Structure:
+#   machines/personal/   - Personal machine configs (laptop-samsung.nix)
+#   machines/work/       - Work machine configs (desktop-hp.nix)  
+#   machines/shared/     - Common modules (system-common.nix, hardware modules)
+#
+# When deployed:
+#   - Selected machine config becomes /etc/nixos/configuration.nix
+#   - All machines/ directory copied to /etc/nixos/machines/
+#   - Imports resolve as: ./machines/shared/system-common.nix
 
 set -euo pipefail
 
@@ -62,6 +72,8 @@ if [[ -d "$MACHINES_DIR/work" ]]; then
         fi
     done
 fi
+
+# Note: shared/ directory contains modules, not deployable machines
 
 if [[ ${#machines[@]} -eq 0 ]]; then
     error "No machine configurations found in $MACHINES_DIR"
