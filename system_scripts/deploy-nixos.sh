@@ -106,6 +106,15 @@ sudo cp "$selected_config" "/etc/nixos/configuration.nix"
 sudo chown root:root "/etc/nixos/configuration.nix"
 sudo chmod 644 "/etc/nixos/configuration.nix"
 
+# Validate the copied configuration has correct syntax
+log "Validating configuration syntax..."
+if ! sudo nix-instantiate --parse "/etc/nixos/configuration.nix" > /dev/null 2>&1; then
+    error "Configuration syntax validation failed!"
+    sudo cp "$BACKUP_DIR/configuration.nix" "/etc/nixos/configuration.nix" 2>/dev/null || true
+    exit 1
+fi
+success "Configuration syntax validated successfully"
+
 # Copy other essential files (excluding configuration.nix and hardware-configuration.nix)
 log "Copying shared configuration files..."
 for file in "$SOURCE_DIR"/*; do
