@@ -726,10 +726,13 @@ awful.rules.rules = {
       callback = function(c)
           c:move_to_tag(awful.screen.focused().tags[2])
       end },
-    { rule = { class = "Claude" },
+    { rule_any = { class = { "Claude", "claude-desktop" } },
       callback = function(c)
           c:move_to_tag(awful.screen.focused().tags[2])
-          c.minimized = true
+          gears.timer.start_new(0.1, function()
+              c.minimized = true
+              return false
+          end)
       end },
     { rule = { instance = "dev1" },
       callback = function(c)
@@ -743,20 +746,29 @@ awful.rules.rules = {
       callback = function(c)
           c:move_to_tag(awful.screen.focused().tags[4])
       end },
-    { rule = { class = "Insync" },
+    { rule_any = { class = { "Insync", "insync" }, name = { "Insync" } },
       callback = function(c)
           c:move_to_tag(awful.screen.focused().tags[5])
-          c.minimized = true
+          gears.timer.start_new(0.1, function()
+              c.minimized = true
+              return false
+          end)
       end },
-    { rule = { class = "discord" },
+    { rule_any = { class = { "discord", "Discord" }, name = { "Discord" } },
       callback = function(c)
           c:move_to_tag(awful.screen.focused().tags[5])
-          c.minimized = true
+          gears.timer.start_new(0.1, function()
+              c.minimized = true
+              return false
+          end)
       end },
-    { rule = { class = "synergy" },
+    { rule_any = { class = { "synergy", "Synergy", "synergys", "synergyc" }, name = { "Synergy" } },
       callback = function(c)
           c:move_to_tag(awful.screen.focused().tags[5])
-          c.minimized = true
+          gears.timer.start_new(0.1, function()
+              c.minimized = true
+              return false
+          end)
       end },
 
     -- Floating clients (matches some Hyprland window rules)
@@ -794,8 +806,20 @@ awful.rules.rules = {
     },
 }
 
--- Signals
-client.connect_signal("manage", function (c)
+-- Debug function to identify window properties
+client.connect_signal("manage", function(c)
+    -- Debug: print window class and instance for identification
+    if c.class then
+        naughty.notify({
+            title = "New Window",
+            text = string.format("Class: %s\nInstance: %s\nName: %s", 
+                   c.class or "nil", 
+                   c.instance or "nil", 
+                   c.name or "nil"),
+            timeout = 3
+        })
+    end
+    
     if awesome.startup
       and not c.size_hints.user_position
       and not c.size_hints.program_position then
