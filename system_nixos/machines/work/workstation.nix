@@ -9,6 +9,7 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./machines/shared/system-common.nix
     ];
 
   # Bootloader.

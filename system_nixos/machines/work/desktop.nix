@@ -6,7 +6,9 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [ # Shared system configuration (autologin, swap, etc.)
+      ./machines/shared/system-common.nix
+      # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
 

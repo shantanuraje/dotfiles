@@ -8,6 +8,8 @@ let
 in
 {
   imports = [
+    # Shared system configuration (autologin, swap, etc.)
+    ./machines/shared/system-common.nix
     # Hardware-specific audio fix
     ./machines/shared/hardware/samsung-galaxy-book-audio.nix
     # Base hardware scan
