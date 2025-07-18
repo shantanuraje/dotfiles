@@ -67,39 +67,16 @@ awful.layout.layouts = {
 
 -- Autostart applications (matches Hyprland exec-once)
 local function autostart()
-    -- Table of commands with optional workspace and minimized state
-    local cmds = {
-        -- { cmd, tag (workspace number as string), minimized }
-        { "picom --config ~/.config/picom/picom.conf" },  -- compositor (no workspace)
-        { "feh --bg-scale ~/Pictures/wallpapers/forest_bridge.jpg" },  -- wallpaper (no workspace)
-        { "dunst" },  -- notifications (no workspace)
-        {"google-chrome-stable", "1", false},
-        { "obsidian", "2", false },  -- Obsidian, workspace 4, not minimized
-        { "claude-desktop", "2", true },
-        -- two kitty terminals in workspace 2
-        { "kitty --name dev1", "3", false },
-        { "kitty --name dev2", "3", false },
-        {"code", "4", false},  -- Claude AI desktop app, workspace 4, minimized
-        { "insync start", "5", true },  -- Google Drive sync, workspace 5, minimized
-        { "discord", "5", true },  -- Discord, workspace 5, minimized
-        { "synergy", "5", true },  -- Synergy, workspace 5, minimized
+    -- System services that don't need workspace assignment
+    local system_cmds = {
+        "picom --config ~/.config/picom/picom.conf",  -- compositor
+        "feh --bg-scale ~/Pictures/wallpapers/forest_bridge.jpg",  -- wallpaper
+        "dunst",  -- notifications
     }
-
-    for _, entry in ipairs(cmds) do
-        local cmd = entry[1]
-        local tag = entry[2]
-        local minimized = entry[3]
-
-        -- Only set properties if tag or minimized is specified
-        if tag or minimized then
-            awful.spawn(cmd, {
-                tag = tag and awful.screen.focused().tags[tonumber(tag)] or nil,
-                minimized = minimized or false,
-            })
-        else
-            -- Default spawn with pgrep check to avoid duplicates
-            awful.spawn.with_shell(string.format("pgrep -u $USER -fx '%s' > /dev/null || (%s)", cmd, cmd))
-        end
+    
+    -- Launch system services first
+    for _, cmd in ipairs(system_cmds) do
+        awful.spawn.with_shell(string.format("pgrep -u $USER -fx '%s' > /dev/null || (%s)", cmd, cmd))
     end
 
     -- Start Polybar using proper launch script
@@ -107,9 +84,21 @@ local function autostart()
         awful.spawn.with_shell("~/.config/polybar/launch.sh")
         return false -- run only once
     end)
+    
+    -- Workspace-specific applications (launched after screen setup)
+    gears.timer.start_new(3, function()
+        awful.spawn("google-chrome-stable")
+        awful.spawn("obsidian")
+        awful.spawn("claude-desktop")
+        awful.spawn("kitty --name dev1")
+        awful.spawn("kitty --name dev2") 
+        awful.spawn("code")
+        awful.spawn("insync start")
+        awful.spawn("discord")
+        awful.spawn("synergy")
+        return false -- run only once
+    end)
 end
-
-autostart()
 
 -- Wallpaper
 local function set_wallpaper(s)
@@ -439,6 +428,9 @@ awful.screen.connect_for_each_screen(function(s)
     --]]
 end)
 
+-- Start autostart applications after screen setup
+autostart()
+
 -- Mouse bindings
 root.buttons(gears.table.join(
     awful.button({ }, 3, function () mymainmenu:toggle() end),
@@ -724,6 +716,48 @@ awful.rules.rules = {
                      size_hints_honor = false
      }
     },
+
+    -- Workspace assignments (matches Hyprland workspace rules)
+    { rule = { class = "Google-chrome" },
+      callback = function(c)
+          c:move_to_tag(awful.screen.focused().tags[1])
+      end },
+    { rule = { class = "obsidian" },
+      callback = function(c)
+          c:move_to_tag(awful.screen.focused().tags[2])
+      end },
+    { rule = { class = "Claude" },
+      callback = function(c)
+          c:move_to_tag(awful.screen.focused().tags[2])
+          c.minimized = true
+      end },
+    { rule = { instance = "dev1" },
+      callback = function(c)
+          c:move_to_tag(awful.screen.focused().tags[3])
+      end },
+    { rule = { instance = "dev2" },
+      callback = function(c)
+          c:move_to_tag(awful.screen.focused().tags[3])
+      end },
+    { rule = { class = "Code" },
+      callback = function(c)
+          c:move_to_tag(awful.screen.focused().tags[4])
+      end },
+    { rule = { class = "Insync" },
+      callback = function(c)
+          c:move_to_tag(awful.screen.focused().tags[5])
+          c.minimized = true
+      end },
+    { rule = { class = "discord" },
+      callback = function(c)
+          c:move_to_tag(awful.screen.focused().tags[5])
+          c.minimized = true
+      end },
+    { rule = { class = "synergy" },
+      callback = function(c)
+          c:move_to_tag(awful.screen.focused().tags[5])
+          c.minimized = true
+      end },
 
     -- Floating clients (matches some Hyprland window rules)
     { rule_any = {
