@@ -134,10 +134,13 @@ done
 # Copy machines directory structure (for imports like shared/hardware modules)
 if [[ -d "$SOURCE_DIR/machines" ]]; then
     log "Copying machines directory structure..."
+    # Clean up old machines directory to avoid stale files
+    sudo rm -rf "/etc/nixos/machines"
     sudo cp -r "$SOURCE_DIR/machines" "/etc/nixos/"
     sudo chown -R root:root "/etc/nixos/machines"
     sudo find "/etc/nixos/machines" -type f -exec chmod 644 {} \;
     sudo find "/etc/nixos/machines" -type d -exec chmod 755 {} \;
+    success "Machines directory structure updated"
 fi
 
 # Check if flake.lock exists and offer to regenerate
