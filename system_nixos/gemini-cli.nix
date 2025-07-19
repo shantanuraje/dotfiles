@@ -20,7 +20,7 @@ buildNpmPackage rec {
     rev = "main";  # Using main branch - can be changed to specific tag/commit
     # IMPORTANT: This hash must be updated using packages/gemini-cli/get-gemini-hashes.sh script
     # The placeholder value below will cause build to fail until updated
-    hash = "sha256-GB8yKry9wdQkpgIcwYZy8vcE90e1XPtoLlw5y+XZaTs=";
+    hash = "sha256-Pmy6kv62ZPD9nqsH6waBe6Gu0FviWzncLced2TuDvTQ=";
   };
 
   # NPM dependencies hash

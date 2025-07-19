@@ -41,7 +41,7 @@ in
     libei
     
     # AI and specialized tools (personal environment)
-    claude-desktop-linux-flake.packages.${pkgs.system}.claude-desktop
+    # claude-desktop-linux-flake.packages.${pkgs.system}.claude-desktop  # Disabled due to persistent hash mismatch
     claude-code
     pulsemixer
     
