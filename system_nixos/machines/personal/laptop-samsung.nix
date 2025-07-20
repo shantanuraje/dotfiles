@@ -4,7 +4,7 @@
 
 { config, pkgs, claude-desktop-linux-flake, ... }:
 let
-  gemini-cli = pkgs.callPackage ./gemini-cli.nix {};
+  # gemini-cli = pkgs.callPackage ./gemini-cli.nix {};  # Commented out - using nixpkgs version instead
 in
 {
   imports = [
@@ -43,6 +43,9 @@ in
     # AI and specialized tools (personal environment)
     # claude-desktop-linux-flake.packages.${pkgs.system}.claude-desktop  # Disabled due to persistent hash mismatch
     claude-code
+    gemini-cli  # Using nixpkgs version
+
+    # PulseAudio volume control
     pulsemixer
     
     # Hash generation tools for package maintenance
