@@ -556,10 +556,10 @@ globalkeys = gears.table.join(
 
     -- Screenshot (matches Hyprland hyprshot)
     awful.key({ }, "Print",
-        function () awful.spawn("scrot") end,
+        function () awful.spawn.with_shell("scrot ~/Pictures/$(date +%Y-%m-%d-%H%M%S)-screenshot.png") end,
         {description = "screenshot", group = "hotkeys"}),
     awful.key({ modkey }, "Print",
-        function () awful.spawn("scrot -s") end,
+        function () awful.spawn.with_shell("scrot -s ~/Pictures/$(date +%Y-%m-%d-%H%M%S)-screenshot-selection.png") end,
         {description = "screenshot selection", group = "hotkeys"}),
 
     -- Lock screen (matches Hyprland)

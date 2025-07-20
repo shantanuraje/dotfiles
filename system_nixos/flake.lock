@@ -6,11 +6,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1752810292,
-        "narHash": "sha256-D7795gq1H/hpTrWPGqnACed5HJAkBIAHzBZCnPK1kG4=",
+        "lastModified": 1752950219,
+        "narHash": "sha256-MmbssxZhx4hM3biw/gkkFCNMDs349eOr4cxGtq0YEaM=",
         "owner": "k3d3",
         "repo": "claude-desktop-linux-flake",
-        "rev": "2ab576b920cfc4b4468f40282c0c67ca655468f6",
+        "rev": "49256078df4c147082dd1b75212fc45eb5345629",
         "type": "github"
       },
       "original": {

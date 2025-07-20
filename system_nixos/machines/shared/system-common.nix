@@ -186,6 +186,7 @@
     noto-fonts-emoji
     xorg.xwininfo
     xorg.xprop
+    scrot
     
     # Polybar and audio controls
     polybar
