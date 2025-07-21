@@ -1,0 +1,28 @@
+[Unit]
+Description=Battery Status Monitor
+Documentation=file:///home/%i/.config/polybar/scripts/battery-monitor.sh
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.config/polybar/scripts/battery-monitor.sh daemon
+ExecStop=%h/.config/polybar/scripts/battery-monitor.sh stop
+Restart=on-failure
+RestartSec=5
+Environment=DISPLAY=:0
+Environment=WAYLAND_DISPLAY=wayland-0
+
+# Ensure clean shutdown
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=10
+
+# Security settings
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%t /tmp
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

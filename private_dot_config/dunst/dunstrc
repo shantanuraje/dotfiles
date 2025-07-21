@@ -1,0 +1,55 @@
+[global]
+# Set the font (increased size for visibility)
+font = "JetBrains Mono Nerd Font 11"
+
+# Set the frame width (add border for better visibility)
+frame_width = 2
+
+# Set the separator height
+separator_height = 2
+
+# Set the padding
+padding = 7
+
+# Set the transparency
+transparency = 25
+
+# Set the corner radius
+corner_radius = 10
+
+# Set the notification timeout (in milliseconds)
+timeout = 5000
+
+# Set the geometry (width x height + x offset + y offset) - increased height
+width = 350
+height = 60
+offset = 10x10
+origin = top-right
+
+# Set the colors (Catppuccin Macchiato theme)
+background = "#24273a"
+foreground = "#cad3f5"
+frame_color = "#8aadf4"
+
+# Set the shadow
+horizontal_padding = 10
+vertical_padding = 10
+shrink = false
+line_height = 2
+word_wrap = true
+markup = full
+
+[urgency_low]
+background = "#24273a"
+foreground = "#a6da95"
+frame_color = "#a6da95"
+
+[urgency_normal]
+background = "#24273a"
+foreground = "#cad3f5"
+frame_color = "#8aadf4"
+
+[urgency_critical]
+background = "#24273a"
+foreground = "#ed8796"
+frame_color = "#ed8796"

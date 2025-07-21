@@ -7,17 +7,16 @@ local awful = require("awful")
 require("awful.autofocus")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local naughty = require("naughty")
+-- DON'T load naughty to prevent D-Bus notification service conflict with dunst
+-- local naughty = require("naughty")
 local lain = require("lain")
 local freedesktop = require("freedesktop")
 local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
 
--- Error handling
+-- Error handling (using print instead of naughty to avoid D-Bus conflict)
 if awesome.startup_errors then
-    naughty.notify({ preset = naughty.config.presets.critical,
-                     title = "Oops, there were errors during startup!",
-                     text = awesome.startup_errors })
+    print("AwesomeWM startup errors: " .. awesome.startup_errors)
 end
 
 do
@@ -25,10 +24,7 @@ do
     awesome.connect_signal("debug::error", function (err)
         if in_error then return end
         in_error = true
-
-        naughty.notify({ preset = naughty.config.presets.critical,
-                         title = "Oops, an error happened!",
-                         text = tostring(err) })
+        print("AwesomeWM error: " .. tostring(err))
         in_error = false
     end)
 end
@@ -74,30 +70,41 @@ local function autostart()
         "dunst",  -- notifications
     }
     
-    -- Launch system services first
+    -- Launch system services first (always run with singleton checks)
     for _, cmd in ipairs(system_cmds) do
         awful.spawn.with_shell(string.format("pgrep -u $USER -fx '%s' > /dev/null || (%s)", cmd, cmd))
     end
 
-    -- Start Polybar using proper launch script
+    -- Start Polybar using proper launch script (always run, script handles singleton)
     gears.timer.start_new(2, function()
         awful.spawn.with_shell("~/.config/polybar/launch.sh")
         return false -- run only once
     end)
+end
+
+-- Applications to launch only on startup (not on reload)
+local function startup_applications()
+    -- Application definitions with process patterns for detection
+    local apps = {
+        {cmd = "google-chrome-stable", pattern = "chrome"},
+        {cmd = "obsidian", pattern = "obsidian"},
+        {cmd = "claude-desktop", pattern = "claude-desktop"},
+        {cmd = "kitty --name dev1", pattern = "kitty.*dev1"},
+        {cmd = "kitty --name dev2", pattern = "kitty.*dev2"},
+        {cmd = "code", pattern = "code.*--no-sandbox"},  -- VSCode specific pattern
+        {cmd = "insync start", pattern = "insync"},
+        {cmd = "discord", pattern = "discord"},
+        {cmd = "synergy", pattern = "synergy"},
+    }
     
-    -- Workspace-specific applications (launched after screen setup)
-    gears.timer.start_new(3, function()
-        awful.spawn("google-chrome-stable")
-        awful.spawn("obsidian")
-        awful.spawn("claude-desktop")
-        awful.spawn("kitty --name dev1")
-        awful.spawn("kitty --name dev2") 
-        awful.spawn("code")
-        awful.spawn("insync start")
-        awful.spawn("discord")
-        awful.spawn("synergy")
-        return false -- run only once
-    end)
+    -- Launch applications using safe launcher
+    local safe_launcher = "~/.config/awesome/scripts/safe-launch.sh"
+    for _, app in ipairs(apps) do
+        local launch_cmd = string.format("%s '%s' '%s'", safe_launcher, app.pattern, app.cmd)
+        awful.spawn.with_shell(launch_cmd)
+        -- Small delay between launches to prevent startup conflicts
+        gears.timer.start_new(0.5, function() return false end)
+    end
 end
 
 -- Wallpaper
@@ -428,8 +435,34 @@ awful.screen.connect_for_each_screen(function(s)
     --]]
 end)
 
--- Start autostart applications after screen setup
+-- Start system services (always run with singleton checks)
 autostart()
+
+-- Always test notifications on AwesomeWM load/reload (after delay for dunst)
+gears.timer.start_new(4, function()
+    if awesome.startup then
+        -- Startup notification is handled above
+        return false
+    else
+        -- Reload notification
+        awful.spawn.with_shell("notify-send 'AwesomeWM Reloaded' 'Configuration reloaded - Notifications working!' -u low")
+    end
+    return false -- run only once
+end)
+
+-- Launch applications only on actual startup, not on reload
+if awesome.startup then
+    gears.timer.start_new(3, function()
+        startup_applications()
+        return false -- run only once
+    end)
+    
+    -- Test notifications on startup (after a delay to ensure dunst is ready)
+    gears.timer.start_new(5, function()
+        awful.spawn.with_shell("notify-send 'AwesomeWM Started' 'System loaded successfully - Notifications working!' -u normal")
+        return false -- run only once
+    end)
+end
 
 -- Mouse bindings
 root.buttons(gears.table.join(
@@ -497,6 +530,10 @@ globalkeys = gears.table.join(
               {description = "open a terminal", group = "launcher"}),
     awful.key({ modkey, "Control" }, "r", awesome.restart,
               {description = "reload awesome", group = "awesome"}),
+    awful.key({ modkey, "Control", "Shift" }, "r", function()
+        startup_applications()
+        naughty.notify({title = "AwesomeWM", text = "Manually launched startup applications"})
+    end, {description = "manually launch startup apps", group = "awesome"}),
     awful.key({ modkey, "Shift"   }, "m", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
     awful.key({ modkey,           }, "e", function () awful.spawn(filemanager) end,
