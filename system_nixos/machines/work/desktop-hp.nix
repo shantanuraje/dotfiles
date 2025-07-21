@@ -48,13 +48,13 @@
     pulse.enable = true;
   };
 
-  # Work-specific additional packages
-  environment.systemPackages = with pkgs; [
-    # Work-specific additions
-    discord  # For team communication
-    bottom   # Better top/htop for monitoring
-    pulseaudio  # For polybar pulseaudio module support
-  ];
+  # # Work-specific additional packages
+  # environment.systemPackages = with pkgs; [
+  #   # Work-specific additions
+  #   discord  # For team communication
+  #   bottom   # Better top/htop for monitoring
+  #   pulseaudio  # For polybar pulseaudio module support
+  # ];
 
   # RealSense camera support for work
   services.udev.extraRules = ''

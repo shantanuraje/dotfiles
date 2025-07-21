@@ -22,31 +22,31 @@ in
   # Personal laptop uses DHCP (simple networking)
   networking.networkmanager.enable = true;
   
-  # Personal-specific packages (additions to the base set from system-common.nix)
-  environment.systemPackages = with pkgs; [
-    # Personal development and creative tools
-    discord
-    obsidian
-    google-chrome
+  # # Personal-specific packages (additions to the base set from system-common.nix)
+  # environment.systemPackages = with pkgs; [
+  #   # Personal development and creative tools
+  #   discord
+  #   obsidian
+  #   google-chrome
     
-    # Creative and productivity apps (personal setup)
-    shotwell
-    bambu-studio
-    libsForQt5.okular
-    realvnc-vnc-viewer
-    iwd
-    zellij
-    libreoffice-qt
-    inkscape
-    libei
+  #   # Creative and productivity apps (personal setup)
+  #   shotwell
+  #   bambu-studio
+  #   libsForQt5.okular
+  #   realvnc-vnc-viewer
+  #   iwd
+  #   zellij
+  #   libreoffice-qt
+  #   inkscape
+  #   libei
     
 
 
-    # PulseAudio volume control
-    pulsemixer
+  #   # PulseAudio volume control
+  #   pulsemixer
     
-    # Hash generation tools for package maintenance
-    nix-prefetch-git
-    nix-prefetch-github
-  ];
+  #   # Hash generation tools for package maintenance
+  #   nix-prefetch-git
+  #   nix-prefetch-github
+  # ];
 }

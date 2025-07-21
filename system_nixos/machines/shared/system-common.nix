@@ -200,10 +200,37 @@
     testdisk
     lazygit
 
+    discord  # For team communication
+    bottom   # Better top/htop for monitoring
+    pulseaudio  # For polybar pulseaudio module support
+    # PulseAudio volume control
+    pulsemixer
+
+    # Personal development and creative tools
+    obsidian
+    google-chrome
+    
+    # Creative and productivity apps (personal setup)
+    shotwell
+    bambu-studio
+    libsForQt5.okular
+    realvnc-vnc-viewer
+    iwd
+    zellij
+    libreoffice-qt
+    inkscape
+    libei
+    
+    # Hash generation tools for package maintenance
+    nix-prefetch-git
+    nix-prefetch-github
+
+
     # AI and specialized tools (personal environment)
     # claude-desktop-linux-flake.packages.${pkgs.system}.claude-desktop  # Disabled due to persistent hash mismatch
     claude-code
     gemini-cli  # Using nixpkgs version
+
     
     # Python development environment
     (python3.withPackages (ps: with ps; [
