@@ -40,10 +40,7 @@ in
     inkscape
     libei
     
-    # AI and specialized tools (personal environment)
-    # claude-desktop-linux-flake.packages.${pkgs.system}.claude-desktop  # Disabled due to persistent hash mismatch
-    claude-code
-    gemini-cli  # Using nixpkgs version
+
 
     # PulseAudio volume control
     pulsemixer

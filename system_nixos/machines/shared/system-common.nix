@@ -199,6 +199,11 @@
     stylua
     testdisk
     lazygit
+
+    # AI and specialized tools (personal environment)
+    # claude-desktop-linux-flake.packages.${pkgs.system}.claude-desktop  # Disabled due to persistent hash mismatch
+    claude-code
+    gemini-cli  # Using nixpkgs version
     
     # Python development environment
     (python3.withPackages (ps: with ps; [
