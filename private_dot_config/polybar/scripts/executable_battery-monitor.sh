@@ -4,9 +4,25 @@
 # Provides battery status notifications and monitoring
 # Part of the unified notification system with dunst
 
-# Configuration
-BATTERY_PATH="/sys/class/power_supply/BAT0"
-ADAPTER_PATH="/sys/class/power_supply/ADP1"
+# Configuration - Auto-detect battery and adapter
+BATTERY_PATH=""
+ADAPTER_PATH=""
+
+# Auto-detect battery path
+for bat in /sys/class/power_supply/BAT*; do
+    if [[ -d "$bat" ]]; then
+        BATTERY_PATH="$bat"
+        break
+    fi
+done
+
+# Auto-detect adapter path  
+for adp in /sys/class/power_supply/{ADP*,AC*,ACAD*}; do
+    if [[ -d "$adp" ]]; then
+        ADAPTER_PATH="$adp"
+        break
+    fi
+done
 NOTIFICATION_LOCKFILE="/tmp/battery_notification_lock"
 CHECK_INTERVAL=30
 LOW_BATTERY_THRESHOLD=15
@@ -22,14 +38,14 @@ COLOR_WARNING="#eed49f" # yellow
 COLOR_CRITICAL="#ed8796" # red
 COLOR_CHARGING="#8aadf4" # blue
 
-# Icons
-ICON_CHARGING="🔌"
-ICON_DISCHARGING="🔋"
-ICON_FULL="⚡"
-ICON_LOW="⚠️"
+# Icons (using Font Awesome icons for better compatibility)
+ICON_CHARGING=""
+ICON_DISCHARGING=""
+ICON_FULL=""
+ICON_LOW=""
 
 get_battery_info() {
-    if [[ ! -d "$BATTERY_PATH" ]]; then
+    if [[ -z "$BATTERY_PATH" || ! -d "$BATTERY_PATH" ]]; then
         echo "No battery found"
         return 1
     fi
@@ -47,7 +63,7 @@ get_battery_info() {
 }
 
 get_adapter_status() {
-    if [[ -f "$ADAPTER_PATH/online" ]]; then
+    if [[ -n "$ADAPTER_PATH" && -f "$ADAPTER_PATH/online" ]]; then
         cat "$ADAPTER_PATH/online" 2>/dev/null || echo "0"
     else
         echo "0"
@@ -186,7 +202,44 @@ daemon_mode() {
     done
 }
 
-case "${1:-daemon}" in
+# Polybar display function
+show_polybar_battery() {
+    if [[ -z "$BATTERY_PATH" || ! -d "$BATTERY_PATH" ]]; then
+        echo " No Battery"
+        return 1
+    fi
+    
+    local capacity=$(cat "$BATTERY_PATH/capacity" 2>/dev/null || echo "0")
+    local status=$(cat "$BATTERY_PATH/status" 2>/dev/null || echo "Unknown")
+    local icon=""
+    
+    # Select appropriate icon based on status and capacity
+    case "$status" in
+        "Charging")
+            icon="$ICON_CHARGING"
+            ;;
+        "Discharging")
+            if [[ $capacity -le 20 ]]; then
+                icon="$ICON_LOW"
+            else
+                icon="$ICON_DISCHARGING"
+            fi
+            ;;
+        "Full"|"Not charging")
+            icon="$ICON_FULL"
+            ;;
+        *)
+            icon="$ICON_DISCHARGING"
+            ;;
+    esac
+    
+    echo "${capacity}%"
+}
+
+case "${1:-polybar}" in
+    "polybar"|"")
+        show_polybar_battery
+        ;;
     "daemon"|"monitor")
         daemon_mode
         ;;
@@ -215,7 +268,8 @@ case "${1:-daemon}" in
         echo "Usage: $0 [command]"
         echo ""
         echo "Commands:"
-        echo "  daemon, monitor  Run battery monitoring daemon (default)"
+        echo "  polybar, (none)  Show battery status for polybar (default)"
+        echo "  daemon, monitor  Run battery monitoring daemon"
         echo "  status, info     Show current battery information"
         echo "  check           Perform single battery status check"
         echo "  stop            Stop running daemon"

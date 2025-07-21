@@ -20,20 +20,24 @@ corner_radius = 10
 # Set the notification timeout (in milliseconds)
 timeout = 5000
 
-# Set the geometry (width x height + x offset + y offset) - increased height
+# Set the geometry (width x height + x offset + y offset)
 width = 350
-height = 60
-offset = 10x10
+height = (0, 60)
+# Position below polybar (assuming polybar height ~30px) with gap
+offset = (10, 40)
 origin = top-right
+
+# Notification spacing and stacking
+gap_size = 8
+notification_limit = 5
 
 # Set the colors (Catppuccin Macchiato theme)
 background = "#24273a"
 foreground = "#cad3f5"
 frame_color = "#8aadf4"
 
-# Set the shadow
+# Set the padding
 horizontal_padding = 10
-vertical_padding = 10
 shrink = false
 line_height = 2
 word_wrap = true
@@ -43,13 +47,16 @@ markup = full
 background = "#24273a"
 foreground = "#a6da95"
 frame_color = "#a6da95"
+timeout = 3000
 
 [urgency_normal]
 background = "#24273a"
 foreground = "#cad3f5"
 frame_color = "#8aadf4"
+timeout = 5000
 
 [urgency_critical]
 background = "#24273a"
 foreground = "#ed8796"
 frame_color = "#ed8796"
+timeout = 8000

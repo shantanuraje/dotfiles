@@ -80,6 +80,19 @@ local function autostart()
         awful.spawn.with_shell("~/.config/polybar/launch.sh")
         return false -- run only once
     end)
+    
+    -- Start intelligent notification services (always run with singleton checks)
+    local notification_services = {
+        "~/.config/polybar/scripts/power-notifications.sh daemon",
+        "~/.config/polybar/scripts/system-notifications.sh daemon",
+    }
+    
+    for _, service in ipairs(notification_services) do
+        gears.timer.start_new(6, function()
+            awful.spawn.with_shell(service)
+            return false -- run only once
+        end)
+    end
 end
 
 -- Applications to launch only on startup (not on reload)
@@ -532,7 +545,7 @@ globalkeys = gears.table.join(
               {description = "reload awesome", group = "awesome"}),
     awful.key({ modkey, "Control", "Shift" }, "r", function()
         startup_applications()
-        naughty.notify({title = "AwesomeWM", text = "Manually launched startup applications"})
+        print("AwesomeWM: Manually launched startup applications")
     end, {description = "manually launch startup apps", group = "awesome"}),
     awful.key({ modkey, "Shift"   }, "m", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
@@ -847,14 +860,10 @@ awful.rules.rules = {
 client.connect_signal("manage", function(c)
     -- Debug: print window class and instance for identification
     if c.class then
-        naughty.notify({
-            title = "New Window",
-            text = string.format("Class: %s\nInstance: %s\nName: %s", 
+        print(string.format("New Window - Class: %s, Instance: %s, Name: %s", 
                    c.class or "nil", 
                    c.instance or "nil", 
-                   c.name or "nil"),
-            timeout = 3
-        })
+                   c.name or "nil"))
     end
     
     if awesome.startup
