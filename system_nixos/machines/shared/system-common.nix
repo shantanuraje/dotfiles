@@ -242,6 +242,7 @@
       webdriver-manager
       curl-cffi
       playwright
+      pyyaml
     ]))
   ];
   
