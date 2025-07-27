@@ -243,6 +243,7 @@
       curl-cffi
       playwright
       pyyaml
+      networkx
     ]))
   ];
   
