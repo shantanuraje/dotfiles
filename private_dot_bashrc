@@ -122,11 +122,11 @@ neofetch
 alias dotfiles='/usr/bin/git --git-dir=/home/$USER/dotfiles --work-tree=/home/$USER'
 #. $HOME/.local/lib/python3.8/site-packages/powerline/bindings/bash/powerline.sh
 # Powerline configuration
-if [ -f /usr/share/powerline/bindings/bash/powerline.sh ]; then
+if [ -f /run/current-system/sw/share/bash/powerline.sh ]; then
   powerline-daemon -q
   POWERLINE_BASH_CONTINUATION=1
   POWERLINE_BASH_SELECT=1
-  source /usr/share/powerline/bindings/bash/powerline.sh
+  source /run/current-system/sw/share/bash/powerline.sh
 fi
 
 # >>> conda initialize >>>
