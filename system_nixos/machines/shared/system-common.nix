@@ -150,6 +150,14 @@
     jq
     ripgrep
     
+    # nnn enhancement packages
+    file          # File type detection for nnn
+    mediainfo     # Media file information for previews  
+    w3m           # Text-based web browser for previews
+    atool         # Archive handling for nnn
+    poppler_utils # PDF preview support (pdftotext)
+    ffmpegthumbnailer  # Video thumbnail generation
+    
     # Modern CLI tools
     bat       # Cat with syntax highlighting
     fd        # Better find

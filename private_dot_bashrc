@@ -337,6 +337,12 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
+# === nnn File Manager Configuration ===
+# Load comprehensive nnn setup for GUI-free workflow
+if [ -f ~/.config/nnn/nnn-config.sh ]; then
+    source ~/.config/nnn/nnn-config.sh
+fi
+
 # Display system info on shell start (already have neofetch)
 # Add a separator for clarity
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
