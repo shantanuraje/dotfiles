@@ -196,6 +196,11 @@
     android-tools
     android-studio
     nodejs
+    yarn           # Package manager for React Native
+    watchman       # File watching service for React Native
+    openjdk17      # Java 17 for Android builds
+    unzip          # For extracting packages
+    curl           # HTTP client for API calls
     stylua
     testdisk
     lazygit
