@@ -37,7 +37,7 @@
   programs.hyprland.enable = true;
   services.xserver.enable = true;
   services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
+  # services.desktopManager.gnome.enable = true;  # Disabled due to libsoup security issues
   
   # AwesomeWM configuration (common to all machines)
   services.xserver.windowManager.awesome = {
@@ -85,7 +85,7 @@
     user = "shantanu";
   };
   
-  # Workaround for GNOME autologin bug
+  # Workaround for GNOME autologin bug (keeping disabled for consistency)
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
   
@@ -93,7 +93,7 @@
   swapDevices = [
     {
       device = "/swapfile";
-      size = 8192; # 8GB swap file
+      size = 16384; # 16GB swap file
     }
   ];
   
@@ -107,7 +107,7 @@
       ExecStart = pkgs.writeShellScript "create-swapfile" ''
         if [ ! -f /swapfile ]; then
           echo "Creating swap file..."
-          ${pkgs.util-linux}/bin/fallocate -l 8G /swapfile
+          ${pkgs.util-linux}/bin/fallocate -l 16G /swapfile
           chmod 600 /swapfile
           ${pkgs.util-linux}/bin/mkswap /swapfile
           echo "Swap file created successfully"
@@ -201,6 +201,7 @@
     openjdk17      # Java 17 for Android builds
     unzip          # For extracting packages
     curl           # HTTP client for API calls
+    # Use 'npx expo' instead of deprecated expo-cli package
     stylua
     testdisk
     lazygit
@@ -216,8 +217,8 @@
     google-chrome
     
     # Creative and productivity apps (personal setup)
-    shotwell
-    bambu-studio
+    # shotwell  # Removed due to insecure libsoup-2.74.3 dependency
+    # bambu-studio  # Temporarily disabled to test libsoup issue
     libsForQt5.okular
     realvnc-vnc-viewer
     iwd
