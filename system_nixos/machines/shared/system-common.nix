@@ -150,13 +150,27 @@
     jq
     ripgrep
     
-    # nnn enhancement packages
-    file          # File type detection for nnn
+    # File Manager Trinity: nnn, lf, ranger
+    lf            # Fast terminal file manager with Miller columns
+    ranger        # Python-based file manager with rich features
+    
+    # File manager enhancement packages
+    file          # File type detection and MIME support
     mediainfo     # Media file information for previews  
-    w3m           # Text-based web browser for previews
-    atool         # Archive handling for nnn
+    w3m           # Text-based web browser for HTML previews
+    atool         # Archive handling and extraction
     poppler_utils # PDF preview support (pdftotext)
     ffmpegthumbnailer  # Video thumbnail generation
+    highlight     # Syntax highlighting for code files
+    tree          # Directory tree visualization
+    imagemagick   # Image manipulation and thumbnails
+    exiftool      # Image metadata extraction
+    
+    # Additional preview tools
+    odt2txt       # OpenDocument text extraction
+    catdoc        # MS Word document conversion
+    xlsx2csv      # Excel file conversion
+    djvulibre     # DjVu document support
     
     # Modern CLI tools
     bat       # Cat with syntax highlighting

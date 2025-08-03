@@ -337,11 +337,60 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-# === nnn File Manager Configuration ===
-# Load comprehensive nnn setup for GUI-free workflow
+# === File Manager Trinity Configuration ===
+
+# Load nnn configuration
 if [ -f ~/.config/nnn/nnn-config.sh ]; then
     source ~/.config/nnn/nnn-config.sh
 fi
+
+# File Manager Aliases and Functions
+alias fm-help='echo "File Manager Trinity:"; echo "n/nnn    - Fast single-pane (contexts)"; echo "lf       - Miller columns (3-pane)"; echo "ranger   - Rich Python-based"; echo ""; echo "Quick start: nh/lh/rh for home directory"'
+
+# nnn (already configured above)
+# Enhanced aliases for lf
+alias lf='lf'
+alias lh='cd ~ && lf'
+alias ld='cd ~/Downloads && lf'
+alias lp='cd ~/Projects && lf'
+alias lc='cd ~/.config && lf'
+alias ls-nix='cd ~/system_nixos && lf'
+
+# ranger aliases
+alias ranger='ranger'
+alias rh='cd ~ && ranger'
+alias rd='cd ~/Downloads && ranger'
+alias rp='cd ~/Projects && ranger'
+alias rc='cd ~/.config && ranger'
+alias rs='cd ~/.local/share/chezmoi && ranger'
+alias rn='cd ~/system_nixos && ranger'
+
+# Quick comparison function
+compare_fm() {
+    echo "🗂️  File Manager Trinity Comparison"
+    echo ""
+    echo "📁 nnn (n):"
+    echo "   • Fastest startup (~20ms)"
+    echo "   • Single-pane + contexts (1,2,3,4 keys)"
+    echo "   • Minimal resource usage"
+    echo "   • Extensive plugin system"
+    echo ""
+    echo "📂 lf (lf):"
+    echo "   • Miller columns (3-pane view)"
+    echo "   • Go-based, very fast (~50ms)"
+    echo "   • Vi-like keybindings"
+    echo "   • Server mode for sync"
+    echo ""
+    echo "📋 ranger (ranger):"
+    echo "   • Rich preview system"
+    echo "   • Python-based customization"
+    echo "   • Extensive integrations"
+    echo "   • Full-featured (~200ms startup)"
+    echo ""
+    echo "💡 Quick start: nh/lh/rh (home), nd/ld/rd (downloads)"
+}
+
+alias fm-compare='compare_fm'
 
 # Display system info on shell start (already have neofetch)
 # Add a separator for clarity

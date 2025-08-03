@@ -1,0 +1,253 @@
+# lf Configuration - Optimized for Performance and Usability
+# Fast file manager with Miller columns and vi-like keybindings
+
+# === Basic Settings ===
+set preview true
+set hidden false
+set drawbox true
+set icons true
+set ignorecase true
+set incsearch true
+set scrolloff 10
+set tabstop 4
+set smartcase true
+set wrapscan true
+set number true
+set relativenumber true
+
+# Performance optimizations
+set period 1
+set findlen 1
+set promptfmt "\033[32;1m%u@%h\033[0m:\033[34;1m%w/\033[0m\033[1m%f\033[0m"
+
+# === Preview Settings ===
+set previewer ~/.config/lf/preview.sh
+set cleaner ~/.config/lf/cleaner.sh
+
+# === Custom Commands ===
+
+# Archive extraction
+cmd extract ${{
+    set -f
+    case $f in
+        *.tar.bz|*.tar.bz2|*.tbz|*.tbz2) tar xjvf "$f";;
+        *.tar.gz|*.tgz) tar xzvf "$f";;
+        *.tar.xz|*.txz) tar xJvf "$f";;
+        *.zip) unzip "$f";;
+        *.rar) unrar x "$f";;
+        *.7z) 7z x "$f";;
+        *) echo "Unsupported format";;
+    esac
+}}
+
+# Archive creation
+cmd zip %zip -r "$f" "$f"
+cmd tar %tar czf "$f.tar.gz" "$f"
+
+# Open with default application
+cmd open ${{
+    case $(file --mime-type -Lb $f) in
+        text/*) lf -remote "send select" && $EDITOR "$f";;
+        *) xdg-open "$f" >/dev/null 2>&1 &;;
+    esac
+}}
+
+# Edit with nvim
+cmd edit $$EDITOR "$f"
+
+# Create new file/directory
+cmd mkdir %mkdir -p "$@"
+cmd mkfile %touch "$@"
+
+# Bulk rename
+cmd bulk-rename ${{
+    old="$(mktemp)"
+    new="$(mktemp)"
+    if [ -n "$fs" ]; then
+        fs="$(basename -a $fs)"
+    else
+        fs="$(ls)"
+    fi
+    printf '%s\n' "$fs" >"$old"
+    printf '%s\n' "$fs" >"$new"
+    $EDITOR "$new"
+    [ "$(wc -l < "$new")" -ne "$(wc -l < "$old")" ] && exit
+    paste "$old" "$new" | while IFS="$(printf '\t')" read -r src dst
+    do
+        [ "$src" = "$dst" ] || [ -e "$dst" ] || mv -- "$src" "$dst"
+    done
+    rm -- "$old" "$new"
+    lf -remote "send $id reload"
+}}
+
+# Fuzzy find with fzf
+cmd fzf_jump ${{
+    res="$(find . -maxdepth 1 | fzf --reverse --header='Jump to location' | sed 's|^\./||')"
+    if [ -n "$res" ]; then
+        if [ -d "$res" ]; then
+            cmd="cd"
+        else
+            cmd="select"
+        fi
+        lf -remote "send $id $cmd \"$res\""
+    fi
+}}
+
+# Fuzzy search files
+cmd fzf_search ${{
+    RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
+    res="$(
+        FZF_DEFAULT_COMMAND="$RG_PREFIX ''" \
+            fzf --bind "change:reload:$RG_PREFIX {q} || true" \
+                --ansi --disabled --query "$1" \
+                --height=50% --layout=reverse
+    )"
+    [ -n "$res" ] && lf -remote "send $id select \"$(echo "$res" | cut -d':' -f1)\""
+}}
+
+# Git operations
+cmd git_branch ${{
+    git branch | fzf | xargs git checkout
+    pwd_shell=$(pwd)
+    lf -remote "send $id updir"
+    lf -remote "send $id cd \"$pwd_shell\""
+}}
+
+cmd git_log ${{
+    git log --oneline --color=always | fzf --ansi +s | awk '{print $1}' | xargs git show
+}}
+
+# Trash functionality (safer than rm)
+cmd trash %{{
+    files=$(printf "$fx" | tr '\n' ';')
+    while [ "$files" ]; do
+        file=${files%%;*}
+        trash-put "$(basename "$file")"
+        if [ "$files" = "$file" ]; then
+            files=''
+        else
+            files="${files#*;}"
+        fi
+    done
+}}
+
+# Advanced selection
+cmd select-files ${{
+    { echo "$fs"; find -L "$(pwd)" -mindepth 1 -maxdepth 1 -type f; } |
+        if [ "$lf_hidden" = "false" ]; then
+          grep -v '/\.[^/]*$'
+        else
+          cat
+        fi |
+        sed '/^$/d' | sort | uniq -u |
+        xargs -I{} lf -remote "send $id toggle {}"
+}}
+
+cmd select-dirs ${{
+    { echo "$fs"; find -L "$(pwd)" -mindepth 1 -maxdepth 1 -type d; } |
+        if [ "$lf_hidden" = "false" ]; then
+          grep -v '/\.[^/]*$'
+        else
+          cat
+        fi |
+        sed '/^$/d' | sort | uniq -u |
+        xargs -I{} lf -remote "send $id toggle {}"
+}}
+
+# === Key Bindings ===
+
+# Navigation
+map h updir
+map l open
+map j down
+map k up
+map gg top
+map G bottom
+
+# File operations
+map a mkfile
+map A mkdir
+map d trash
+map D delete
+map r rename
+map R bulk-rename
+map c copy
+map x cut
+map v paste
+map u unselect
+
+# Archive operations
+map ex extract
+map zz zip
+map zt tar
+
+# Application shortcuts
+map e edit
+map E $$EDITOR "$f"
+map o open
+map O $mimeopen --ask "$f"
+
+# Search and navigation
+map f fzf_jump
+map F fzf_search
+map / search
+map n search-next
+map N search-prev
+
+# Selection
+map sf select-files
+map sd select-dirs
+map sa invert
+map <space> toggle
+
+# Git integration
+map gb git_branch
+map gl git_log
+
+# Quick directories (bookmarks)
+map gh cd ~
+map gd cd ~/Downloads
+map gp cd ~/Projects
+map gc cd ~/.config
+map gs cd ~/.local/share/chezmoi
+map gn cd ~/system_nixos
+map gw cd /etc/nixos
+
+# Toggle settings
+map zh set hidden!
+map zp set preview!
+map zi set icons!
+map zr set reverse!
+
+# Shell
+map w $$SHELL
+
+# Reload
+map <c-r> reload
+
+# === Icon Configuration ===
+# File type icons for better visual identification
+set icons true
+
+# === Integration with External Tools ===
+
+# Use bat for text preview
+map <enter> ${{
+    case $(file --mime-type -Lb $f) in
+        text/*|application/json) bat --color=always --style=numbers --paging=never "$f" | head -50;;
+        *) file "$f";;
+    esac
+}}
+
+# Quick edit with nvim
+map ee $$EDITOR "$f"
+
+# View with less
+map vv $less "$f"
+
+# Quick image view
+map ii $feh "$f" 2>/dev/null &
+
+# === Terminal Integration ===
+# Better integration with kitty/alacritty
+map <c-z> $ kill -STOP $PPID
