@@ -1,0 +1,50 @@
+[Default Applications]
+# Text files - GUI first, CLI options available
+text/plain=org.gnome.TextEditor.desktop;org.gnome.gedit.desktop;code.desktop;vim.desktop
+text/x-python=code.desktop;org.gnome.TextEditor.desktop;org.gnome.gedit.desktop
+text/x-shellscript=code.desktop;org.gnome.TextEditor.desktop;org.gnome.gedit.desktop
+application/json=code.desktop;org.gnome.TextEditor.desktop;org.gnome.gedit.desktop
+text/xml=code.desktop;org.gnome.TextEditor.desktop;org.gnome.gedit.desktop
+text/html=firefox.desktop;google-chrome.desktop
+
+# Images - GUI first, with options
+image/jpeg=org.gnome.eog.desktop;feh.desktop
+image/png=org.gnome.eog.desktop;feh.desktop
+image/gif=org.gnome.eog.desktop;feh.desktop
+image/webp=org.gnome.eog.desktop;feh.desktop
+image/svg+xml=inkscape.desktop;org.gnome.eog.desktop
+
+# Videos - mpv first, vlc as alternative
+video/mp4=mpv.desktop;vlc.desktop
+video/avi=mpv.desktop;vlc.desktop
+video/mkv=mpv.desktop;vlc.desktop
+video/webm=mpv.desktop;vlc.desktop
+video/x-msvideo=mpv.desktop;vlc.desktop
+
+# Audio - mpv first, vlc as alternative
+audio/mpeg=mpv.desktop;vlc.desktop
+audio/ogg=mpv.desktop;vlc.desktop
+audio/flac=mpv.desktop;vlc.desktop
+audio/wav=mpv.desktop;vlc.desktop
+
+# Documents - multiple good options
+application/pdf=org.pwmt.zathura.desktop;evince.desktop;okular.desktop
+application/vnd.oasis.opendocument.text=libreoffice-writer.desktop
+application/vnd.openxmlformats-officedocument.wordprocessingml.document=libreoffice-writer.desktop
+application/vnd.ms-excel=libreoffice-calc.desktop
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet=libreoffice-calc.desktop
+
+# Archives - GUI file manager
+application/zip=org.gnome.FileRoller.desktop
+application/x-tar=org.gnome.FileRoller.desktop
+application/x-7z-compressed=org.gnome.FileRoller.desktop
+application/x-rar=org.gnome.FileRoller.desktop
+
+[Added Associations]
+# CLI-focused associations
+text/plain=vim.desktop;nvim.desktop;code.desktop;
+image/jpeg=feh.desktop;
+image/png=feh.desktop;
+video/mp4=mpv.desktop;
+audio/mpeg=mpv.desktop;
+application/pdf=org.pwmt.zathura.desktop;mupdf.desktop;

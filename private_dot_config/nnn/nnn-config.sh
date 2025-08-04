@@ -10,8 +10,8 @@ export NNN_PLUG='f:finder;p:preview-tui;d:diffs;t:nmount;v:imgview;r:renamer;c:f
 # FIFO for live preview
 export NNN_FIFO=/tmp/nnn.fifo
 
-# Default opener - use xdg-open for smart file handling
-export NNN_OPENER='xdg-open'
+# Default opener - CLI-first with fallback
+export NNN_OPENER="$HOME/.config/nnn/nnn-opener.sh"
 
 # Bookmarks for quick navigation (press 'g' + key)
 export NNN_BMS='h:~;d:~/Downloads;p:~/Projects;D:~/Documents;P:~/Pictures;V:~/Videos;c:~/.config;s:~/.local/share/chezmoi;n:~/system_nixos;w:/etc/nixos;A:~/AndroidStudioProjects'

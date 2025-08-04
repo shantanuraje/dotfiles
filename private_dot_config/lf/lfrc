@@ -44,10 +44,72 @@ cmd extract ${{
 cmd zip %zip -r "$f" "$f"
 cmd tar %tar czf "$f.tar.gz" "$f"
 
-# Open with default application
+# Open with CLI tools first, fallback to GUI programs
 cmd open ${{
     case $(file --mime-type -Lb $f) in
-        text/*) lf -remote "send select" && $EDITOR "$f";;
+        text/*|application/json|application/xml) $EDITOR "$f";;
+        image/*) 
+            # CLI image viewers first, fallback to GUI
+            if command -v chafa >/dev/null 2>&1; then
+                chafa "$f" | less -R
+            elif command -v viu >/dev/null 2>&1; then
+                viu "$f"
+            elif command -v feh >/dev/null 2>&1; then
+                feh "$f" >/dev/null 2>&1 &
+            elif command -v eog >/dev/null 2>&1; then
+                eog "$f" >/dev/null 2>&1 &
+            else
+                xdg-open "$f" >/dev/null 2>&1 &
+            fi;;
+        video/*|audio/*)
+            # mpv first (works in terminal), fallback to vlc
+            if command -v mpv >/dev/null 2>&1; then
+                mpv "$f"
+            elif command -v vlc >/dev/null 2>&1; then
+                vlc "$f" >/dev/null 2>&1 &
+            else
+                xdg-open "$f" >/dev/null 2>&1 &
+            fi;;
+        application/pdf)
+            # CLI PDF viewers first, fallback to GUI
+            if command -v termpdf >/dev/null 2>&1; then
+                termpdf "$f"
+            elif command -v zathura >/dev/null 2>&1; then
+                zathura "$f" >/dev/null 2>&1 &
+            elif command -v mupdf >/dev/null 2>&1; then
+                mupdf "$f" >/dev/null 2>&1 &
+            elif command -v evince >/dev/null 2>&1; then
+                evince "$f" >/dev/null 2>&1 &
+            else
+                pdftotext "$f" - | less 2>/dev/null || xdg-open "$f" >/dev/null 2>&1 &
+            fi;;
+        application/zip|application/x-tar|application/x-7z-compressed|application/x-rar)
+            # CLI archive listing first, fallback to GUI archive manager
+            case "$f" in
+                *.zip) 
+                    if command -v unzip >/dev/null 2>&1; then
+                        unzip -l "$f" | less
+                    else
+                        xdg-open "$f" >/dev/null 2>&1 &
+                    fi;;
+                *.tar.gz|*.tgz) tar -tzf "$f" | less;;
+                *.tar.bz2|*.tbz2) tar -tjf "$f" | less;;
+                *.tar.xz|*.txz) tar -tJf "$f" | less;;
+                *.tar) tar -tf "$f" | less;;
+                *.7z) 
+                    if command -v 7z >/dev/null 2>&1; then
+                        7z l "$f" | less
+                    else
+                        xdg-open "$f" >/dev/null 2>&1 &
+                    fi;;
+                *.rar) 
+                    if command -v unrar >/dev/null 2>&1; then
+                        unrar l "$f" | less
+                    else
+                        xdg-open "$f" >/dev/null 2>&1 &
+                    fi;;
+                *) xdg-open "$f" >/dev/null 2>&1 &;;
+            esac;;
         *) xdg-open "$f" >/dev/null 2>&1 &;;
     esac
 }}

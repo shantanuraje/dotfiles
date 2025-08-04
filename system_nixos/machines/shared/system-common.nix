@@ -37,7 +37,7 @@
   programs.hyprland.enable = true;
   services.xserver.enable = true;
   services.displayManager.gdm.enable = true;
-  # services.desktopManager.gnome.enable = true;  # Disabled due to libsoup security issues
+  services.desktopManager.gnome.enable = true;  # Keep GNOME enabled
   
   # AwesomeWM configuration (common to all machines)
   services.xserver.windowManager.awesome = {
@@ -150,9 +150,10 @@
     jq
     ripgrep
     
-    # File Manager Trinity: nnn, lf, ranger
+    # File Manager Trinity: nnn, lf, ranger + GUI file manager
     lf            # Fast terminal file manager with Miller columns
     ranger        # Python-based file manager with rich features
+    nautilus      # GNOME file manager (full-featured GUI)
     
     # File manager enhancement packages
     file          # File type detection and MIME support
@@ -171,6 +172,29 @@
     catdoc        # MS Word document conversion
     xlsx2csv      # Excel file conversion
     djvulibre     # DjVu document support
+    
+    # Essential GUI applications for file opening
+    mpv           # Lightweight video player
+    vlc           # Full-featured media player
+    eog           # GNOME image viewer
+    gedit         # Simple text editor
+    gnome-text-editor  # Modern GNOME text editor
+    zathura       # Lightweight PDF viewer
+    p7zip         # 7zip archive support
+    
+    # Additional CLI tools for enhanced terminal file managers
+    mupdf         # Minimal PDF viewer
+    lynx          # Text-based web browser
+    w3m           # Text-based web browser with image support
+    viu           # Terminal image viewer
+    chafa         # Terminal image viewer with better color
+    termpdfpy       # Terminal PDF viewer
+    unrar         # RAR archive support
+    zip           # ZIP creation/extraction
+    
+    # MIME type support and file associations
+    shared-mime-info  # MIME database
+    desktop-file-utils  # Desktop file utilities
     
     # Modern CLI tools
     bat       # Cat with syntax highlighting

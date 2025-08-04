@@ -31,6 +31,34 @@ alias gdiff='git diff'  # delta is configured globally
 alias glog='git log --oneline --graph --color=always'
 alias gshow='git show --color=always'
 
+# === File Manager ===
+# File manager options - GUI and CLI
+alias fm='nnn'           # CLI file manager (primary)
+alias fmr='ranger'       # CLI file manager (ranger)
+alias fml='lf'           # CLI file manager (lf)
+alias fmg='nautilus'     # GUI file manager
+
+# === CLI File Viewers ===
+# Image viewing in terminal
+alias img='chafa'
+alias imgv='viu'
+alias imgf='feh'
+
+# PDF viewing
+alias pdf='zathura'
+alias pdfterm='termpdf'
+alias pdftxt='pdftotext'
+
+# Archive listing
+alias zipls='unzip -l'
+alias tarls='tar -tf'
+alias 7zls='7z l'
+
+# Media info
+alias video='mpv'
+alias audio='mpv'
+alias mediainfo='mediainfo'
+
 # === System Information ===
 # Replace du with dust
 alias du='dust'
