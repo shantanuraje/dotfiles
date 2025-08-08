@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+
+# Description: Enhanced text file preview for nnn
+# Dependencies: bat, glow, column
+#
+# Usage: Launch from nnn (;p) for preview-text
+
+if [ -z "$1" ]; then
+    echo "Usage: $0 <file>"
+    exit 1
+fi
+
+file="$1"
+filename="$(basename "$file")"
+fileext="${filename##*.}"
+
+# Check if file exists
+if [ ! -f "$file" ]; then
+    echo "File not found: $file"
+    exit 1
+fi
+
+# Get terminal dimensions
+rows=$(tput lines)
+cols=$(tput cols)
+preview_height=$((rows - 5))
+
+case "$fileext" in
+    csv)
+        echo "📊 CSV File: $filename"
+        echo "Columns: $(head -1 "$file" | tr ',' '\n' | wc -l)"
+        echo "Rows: $(wc -l < "$file")"
+        echo "$(printf '─%.0s' $(seq 1 $cols))"
+        
+        if command -v bat >/dev/null 2>&1; then
+            bat --color=always --style=numbers,grid --line-range=":$preview_height" --paging=never "$file"
+        else
+            head -"$((preview_height-5))" "$file" | column -t -s ','
+        fi
+        ;;
+    tsv)
+        echo "📋 TSV File: $filename"  
+        echo "$(printf '─%.0s' $(seq 1 $cols))"
+        
+        if command -v bat >/dev/null 2>&1; then
+            bat --color=always --style=numbers,grid --line-range=":$preview_height" --paging=never "$file"
+        else
+            head -"$preview_height" "$file" | column -t -s $'\t'
+        fi
+        ;;
+    md|markdown)
+        echo "📝 Markdown File: $filename"
+        echo "$(printf '─%.0s' $(seq 1 $cols))"
+        
+        if command -v glow >/dev/null 2>&1; then
+            glow --style dark --width="$((cols-4))" "$file"
+        elif command -v bat >/dev/null 2>&1; then
+            bat --color=always --style=numbers --line-range=":$preview_height" --paging=never --language=markdown "$file"
+        else
+            head -"$preview_height" "$file"
+        fi
+        ;;
+    log)
+        echo "📄 Log File: $filename"
+        echo "Lines: $(wc -l < "$file")"
+        echo "$(printf '─%.0s' $(seq 1 $cols))"
+        echo "📍 Showing last $preview_height lines:"
+        
+        if command -v bat >/dev/null 2>&1; then
+            tail -"$preview_height" "$file" | bat --color=always --style=numbers --paging=never --language=log
+        else
+            tail -"$preview_height" "$file" | nl
+        fi
+        ;;
+    txt|text)
+        echo "📄 Text File: $filename"
+        echo "Lines: $(wc -l < "$file")"
+        echo "Characters: $(wc -c < "$file")"
+        echo "$(printf '─%.0s' $(seq 1 $cols))"
+        
+        if command -v bat >/dev/null 2>&1; then
+            bat --color=always --style=numbers --line-range=":$preview_height" --paging=never "$file"
+        else
+            head -"$preview_height" "$file" | nl
+        fi
+        ;;
+    json)
+        echo "🔧 JSON File: $filename"
+        echo "$(printf '─%.0s' $(seq 1 $cols))"
+        
+        if command -v bat >/dev/null 2>&1; then
+            bat --color=always --style=numbers --line-range=":$preview_height" --paging=never --language=json "$file"
+        elif command -v jq >/dev/null 2>&1; then
+            jq -C '.' "$file" | head -"$preview_height"
+        else
+            head -"$preview_height" "$file"
+        fi
+        ;;
+    *)
+        # Default text preview with bat if available
+        echo "📄 File: $filename"
+        echo "Type: $(file --brief "$file")"
+        echo "$(printf '─%.0s' $(seq 1 $cols))"
+        
+        if command -v bat >/dev/null 2>&1; then
+            bat --color=always --style=numbers --line-range=":$preview_height" --paging=never "$file"
+        else
+            head -"$preview_height" "$file"
+        fi
+        ;;
+esac
+
+echo ""
+echo "$(printf '─%.0s' $(seq 1 $cols))"
+echo "📊 File info: $(ls -lah "$file" | awk '{print $5, $6, $7, $8}')"
+
+# Wait for user input to close preview
+read -r

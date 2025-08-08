@@ -17,15 +17,55 @@ filename="$(basename "$file")"
 fileext="${filename##*.}"
 
 case "$filetype" in
-    # Text files with syntax highlighting
+    # Text files with enhanced previews
     text/*)
-        if command -v bat >/dev/null 2>&1; then
-            bat --color=always --style=numbers --line-range=":$h" --paging=never "$file"
-        elif command -v highlight >/dev/null 2>&1; then
-            highlight --out-format=ansi --style=base16/monokai "$file" | head -"$h"
-        else
-            head -"$h" "$file"
-        fi
+        case "$fileext" in
+            csv)
+                if command -v bat >/dev/null 2>&1; then
+                    bat --color=always --style=numbers,grid --line-range=":$h" --paging=never "$file"
+                else
+                    echo "CSV file: $filename"
+                    echo "Columns: $(head -1 "$file")"
+                    echo "Rows: $(wc -l < "$file")"
+                    echo ""
+                    head -"$((h-5))" "$file" | column -t -s ','
+                fi
+                ;;
+            tsv)
+                if command -v bat >/dev/null 2>&1; then
+                    bat --color=always --style=numbers,grid --line-range=":$h" --paging=never "$file"
+                else
+                    echo "TSV file: $filename"
+                    head -"$h" "$file" | column -t -s $'\t'
+                fi
+                ;;
+            log)
+                if command -v bat >/dev/null 2>&1; then
+                    bat --color=always --style=numbers --line-range=":$h" --paging=never --language=log "$file"
+                else
+                    echo "Log file: $filename (showing last $h lines)"
+                    tail -"$h" "$file"
+                fi
+                ;;
+            md|markdown)
+                if command -v glow >/dev/null 2>&1; then
+                    glow --style dark --width="$w" "$file"
+                elif command -v bat >/dev/null 2>&1; then
+                    bat --color=always --style=numbers --line-range=":$h" --paging=never --language=markdown "$file"
+                else
+                    head -"$h" "$file"
+                fi
+                ;;
+            *)
+                if command -v bat >/dev/null 2>&1; then
+                    bat --color=always --style=numbers --line-range=":$h" --paging=never "$file"
+                elif command -v highlight >/dev/null 2>&1; then
+                    highlight --out-format=ansi --style=base16/monokai "$file" | head -"$h"
+                else
+                    head -"$h" "$file"
+                fi
+                ;;
+        esac
         ;;
     
     # Source code (additional patterns)

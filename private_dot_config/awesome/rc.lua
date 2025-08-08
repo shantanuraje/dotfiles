@@ -551,6 +551,11 @@ globalkeys = gears.table.join(
               {description = "quit awesome", group = "awesome"}),
     awful.key({ modkey,           }, "e", function () awful.spawn(filemanager) end,
               {description = "file manager", group = "launcher"}),
+    
+    -- Custom file type launchers
+    awful.key({ modkey, "Shift"   }, "m", function () 
+        awful.spawn.with_shell("rofi -dmenu -p 'Open markdown file:' | xargs -I {} kitty -e glow '{}'") 
+    end, {description = "open markdown with glow", group = "launcher"}),
 
     -- Layout controls
     awful.key({ modkey,           }, "space", function () awful.layout.inc( 1)                end,

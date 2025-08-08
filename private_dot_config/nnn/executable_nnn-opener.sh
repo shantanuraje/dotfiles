@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # nnn file opener with CLI tools first, GUI programs as fallback
 # Prioritizes CLI/terminal applications when available
 

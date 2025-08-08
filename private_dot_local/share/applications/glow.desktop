@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=Glow
+Comment=Terminal markdown renderer
+Exec=kitty -e glow %F
+Icon=text-x-markdown
+Terminal=false
+Type=Application
+Categories=Office;Viewer;
+MimeType=text/markdown;text/x-markdown;
+StartupNotify=true

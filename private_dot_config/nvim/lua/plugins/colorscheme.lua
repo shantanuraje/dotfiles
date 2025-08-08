@@ -5,7 +5,8 @@ return {
     priority = 1000,
     config = function()
       require("catppuccin").setup({
-        flavour = "mocha",
+        flavour = "macchiato", -- Match kitty's catppuccin macchiato theme
+        transparent_background = true, -- Enable transparency to match kitty
         integrations = {
           treesitter = true,
           native_lsp = {
@@ -32,6 +33,12 @@ return {
       
       -- Set the colorscheme
       vim.cmd.colorscheme("catppuccin")
+      
+      -- Additional transparency settings to match kitty
+      vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "SignColumn", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "NONE" })
     end,
   },
 } 

@@ -142,29 +142,69 @@ cmd bulk-rename ${{
     lf -remote "send $id reload"
 }}
 
-# Fuzzy find with fzf
-cmd fzf_jump ${{
-    res="$(find . -maxdepth 1 | fzf --reverse --header='Jump to location' | sed 's|^\./||')"
-    if [ -n "$res" ]; then
-        if [ -d "$res" ]; then
-            cmd="cd"
-        else
-            cmd="select"
-        fi
-        lf -remote "send $id $cmd \"$res\""
+# Direct fzf file finder (like nff bash function)
+cmd fzf_files ${{
+    if command -v fd >/dev/null 2>&1; then
+        cmd="fd --type f --hidden --follow --exclude .git"
+    else
+        cmd="find . -type f -not -path '*/.*'"
+    fi
+    
+    if command -v bat >/dev/null 2>&1; then
+        preview="bat --color=always --style=numbers --line-range=:500 {}"
+    else
+        preview="head -50 {}"
+    fi
+    
+    res="$($cmd | fzf --height=50% --layout=reverse --border \
+        --preview="$preview" --preview-window=right:50%:wrap \
+        --header='Select file to navigate to')"
+    
+    if [ -n "$res" ] && [ -f "$res" ]; then
+        lf -remote "send $id select \"$res\""
     fi
 }}
 
-# Fuzzy search files
-cmd fzf_search ${{
+# Direct fzf directory finder (like nf bash function)
+cmd fzf_dirs ${{
+    if command -v fd >/dev/null 2>&1; then
+        cmd="fd --type d --hidden --follow --exclude .git"
+    else
+        cmd="find . -type d -not -path '*/.*'"
+    fi
+    
+    res="$($cmd | fzf --height=50% --layout=reverse --border \
+        --preview='ls -la {} | head -20' --preview-window=right:50%:wrap \
+        --header='Select directory to navigate to')"
+    
+    if [ -n "$res" ] && [ -d "$res" ]; then
+        lf -remote "send $id cd \"$res\""
+    fi
+}}
+
+# Content search with ripgrep (like nrg bash function)
+cmd fzf_rg ${{
+    if ! command -v rg >/dev/null 2>&1; then
+        echo "ripgrep not found"
+        return
+    fi
+    
     RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
-    res="$(
-        FZF_DEFAULT_COMMAND="$RG_PREFIX ''" \
-            fzf --bind "change:reload:$RG_PREFIX {q} || true" \
-                --ansi --disabled --query "$1" \
-                --height=50% --layout=reverse
-    )"
-    [ -n "$res" ] && lf -remote "send $id select \"$(echo "$res" | cut -d':' -f1)\""
+    res="$(FZF_DEFAULT_COMMAND="$RG_PREFIX ''" \
+        fzf --bind "change:reload:$RG_PREFIX {q} || true" \
+            --ansi --disabled \
+            --height=50% --layout=reverse --border \
+            --delimiter ':' \
+            --preview 'bat --color=always --highlight-line {2} {1}' \
+            --preview-window '+{2}/2' \
+            --header='Search file contents')"
+    
+    if [ -n "$res" ]; then
+        filename="$(echo "$res" | cut -d':' -f1)"
+        if [ -f "$filename" ]; then
+            lf -remote "send $id select \"$filename\""
+        fi
+    fi
 }}
 
 # Git operations
@@ -249,9 +289,10 @@ map E $$EDITOR "$f"
 map o open
 map O $mimeopen --ask "$f"
 
-# Search and navigation
-map f fzf_jump
-map F fzf_search
+# Search and navigation  
+map f fzf_files
+map d fzf_dirs
+map r fzf_rg
 map / search
 map n search-next
 map N search-prev

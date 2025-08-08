@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# Description: Direct fzf file finder with preview (like our bash nff function)
+# Dependencies: fzf, fd/find, bat
+#
+# Usage: Launch from nnn (;z) - using 'z' key for direct fzf access
+
+if ! command -v fzf >/dev/null 2>&1; then
+    printf "fzf not found"
+    read -r _
+    exit 1
+fi
+
+# Use fd if available, otherwise fall back to find
+if command -v fd >/dev/null 2>&1; then
+    cmd="fd --type f --hidden --follow --exclude .git"
+else
+    cmd="find . -type f -not -path '*/.*'"
+fi
+
+# Use bat for preview if available
+if command -v bat >/dev/null 2>&1; then
+    preview_cmd="bat --color=always --style=numbers --line-range=:500 {}"
+else
+    preview_cmd="head -50 {}"
+fi
+
+# Run fzf with preview and get selection
+selected=$($cmd | fzf \
+    --height=50% \
+    --layout=reverse \
+    --border \
+    --preview="$preview_cmd" \
+    --preview-window=right:50%:wrap \
+    --header='Select file to navigate to')
+
+# If a file was selected, navigate to it
+if [ -n "$selected" ] && [ -f "$selected" ]; then
+    # Get the directory containing the file
+    dir=$(dirname "$selected")
+    
+    # Navigate to the directory
+    printf "%s" "0c$dir" > "$NNN_PIPE"
+    
+    # Select the file
+    printf "%s" "$(basename "$selected")" > "$NNN_PIPE"
+fi

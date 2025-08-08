@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# Description: Direct fzf directory finder (like our bash nf function)  
+# Dependencies: fzf, fd/find
+#
+# Usage: Launch from nnn (;d) - using 'd' key for directory navigation
+
+if ! command -v fzf >/dev/null 2>&1; then
+    printf "fzf not found"
+    read -r _
+    exit 1
+fi
+
+# Use fd if available, otherwise fall back to find
+if command -v fd >/dev/null 2>&1; then
+    cmd="fd --type d --hidden --follow --exclude .git"
+else
+    cmd="find . -type d -not -path '*/.*'"
+fi
+
+# Run fzf with directory preview
+selected=$($cmd | fzf \
+    --height=50% \
+    --layout=reverse \
+    --border \
+    --preview="ls -la {} | head -20" \
+    --preview-window=right:50%:wrap \
+    --header='Select directory to navigate to')
+
+# If a directory was selected, navigate to it
+if [ -n "$selected" ] && [ -d "$selected" ]; then
+    printf "%s" "0c$selected" > "$NNN_PIPE"
+fi

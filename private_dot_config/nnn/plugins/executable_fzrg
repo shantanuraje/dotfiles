@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+# Description: Content search with ripgrep + fzf (like our bash nrg function)
+# Dependencies: fzf, ripgrep, bat
+#
+# Usage: Launch from nnn (;r) - using 'r' key for ripgrep search
+
+if ! command -v fzf >/dev/null 2>&1; then
+    printf "fzf not found"
+    read -r _
+    exit 1
+fi
+
+if ! command -v rg >/dev/null 2>&1; then
+    printf "ripgrep not found"
+    read -r _
+    exit 1
+fi
+
+# Interactive ripgrep with fzf
+RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
+
+selected=$(FZF_DEFAULT_COMMAND="$RG_PREFIX ''" \
+    fzf --bind "change:reload:$RG_PREFIX {q} || true" \
+        --ansi --disabled \
+        --height=50% --layout=reverse --border \
+        --delimiter ':' \
+        --preview 'bat --color=always --highlight-line {2} {1}' \
+        --preview-window '+{2}/2' \
+        --header='Search file contents')
+
+# If a result was selected, navigate to the file
+if [ -n "$selected" ]; then
+    filename=$(echo "$selected" | cut -d':' -f1)
+    if [ -f "$filename" ]; then
+        # Navigate to the directory
+        dir=$(dirname "$filename")
+        printf "%s" "0c$dir" > "$NNN_PIPE"
+        
+        # Select the file
+        printf "%s" "$(basename "$filename")" > "$NNN_PIPE"
+    fi
+fi

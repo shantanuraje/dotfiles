@@ -205,6 +205,7 @@
     dust      # Better du
     hyperfine # Benchmarking
     tokei     # Code statistics
+    glow      # Terminal markdown renderer
     
     # Clipboard utilities
     wl-clipboard
@@ -263,7 +264,7 @@
     google-chrome
     
     # Creative and productivity apps (personal setup)
-    # shotwell  # Removed due to insecure libsoup-2.74.3 dependency
+    shotwell
     # bambu-studio  # Temporarily disabled to test libsoup issue
     libsForQt5.okular
     realvnc-vnc-viewer
@@ -276,6 +277,13 @@
     # Hash generation tools for package maintenance
     nix-prefetch-git
     nix-prefetch-github
+    
+    # OCR and text recognition
+    tesseract
+    
+    # Qt platform plugins for PyQt5 applications
+    qt5.qtbase
+    qt5.qtx11extras
 
 
     # AI and specialized tools (personal environment)
@@ -296,6 +304,15 @@
       playwright
       pyyaml
       networkx
+      # Computer vision and image processing packages
+      opencv4
+      numpy
+      pytesseract
+      scikit-image
+      matplotlib
+      # GUI toolkit with platform support
+      pyqt5
+      pyqt5-sip
     ]))
   ];
   

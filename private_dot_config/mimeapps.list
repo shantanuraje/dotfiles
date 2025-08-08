@@ -7,6 +7,10 @@ application/json=code.desktop;org.gnome.TextEditor.desktop;org.gnome.gedit.deskt
 text/xml=code.desktop;org.gnome.TextEditor.desktop;org.gnome.gedit.desktop
 text/html=firefox.desktop;google-chrome.desktop
 
+# Markdown files - glow first, then editors
+text/markdown=glow.desktop;code.desktop;org.gnome.TextEditor.desktop;org.gnome.gedit.desktop
+text/x-markdown=glow.desktop;code.desktop;org.gnome.TextEditor.desktop;org.gnome.gedit.desktop
+
 # Images - GUI first, with options
 image/jpeg=org.gnome.eog.desktop;feh.desktop
 image/png=org.gnome.eog.desktop;feh.desktop

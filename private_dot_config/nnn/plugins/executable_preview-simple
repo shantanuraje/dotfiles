@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+
+# Description: Simple file preview that works without kitty remote control
+# Dependencies: bat, file, mediainfo, exiftool
+#
+# Usage: Launch from nnn (;w) for simple preview
+
+if [ -z "$1" ]; then
+    selected="${NNNLVL:+$NNN_SEL}"
+    [ -z "$selected" ] && { echo "No selection" && read -r && exit 1; }
+    file="$selected"
+else
+    file="$1"
+fi
+
+# Check if file exists
+if [ ! -f "$file" ]; then
+    echo "File not found: $file"
+    read -r
+    exit 1
+fi
+
+# Clear screen and show file info
+clear
+filename="$(basename "$file")"
+filesize="$(du -h "$file" | cut -f1)"
+filetype="$(file --brief "$file")"
+
+echo "📄 File: $filename"
+echo "📊 Size: $filesize"
+echo "🔍 Type: $filetype"
+echo "$(printf '═%.0s' $(seq 1 $(tput cols)))"
+
+# Get file extension for special handling
+fileext="${filename##*.}"
+fileext_lower="$(echo "$fileext" | tr '[:upper:]' '[:lower:]')"
+
+# Preview content based on file type
+case "$fileext_lower" in
+    txt|md|markdown|log|csv|tsv|json|yaml|yml|xml|html|css|js|py|sh|conf|config|ini)
+        if command -v bat >/dev/null 2>&1; then
+            bat --color=always --style=numbers --paging=never "$file"
+        else
+            cat "$file"
+        fi
+        ;;
+    jpg|jpeg|png|gif|bmp|svg)
+        if command -v exiftool >/dev/null 2>&1; then
+            exiftool "$file"
+        else
+            echo "Image file - no preview available"
+            echo "Install exiftool for image metadata preview"
+        fi
+        ;;
+    mp4|avi|mkv|mov|wmv|flv|mp3|wav|flac|ogg)
+        if command -v mediainfo >/dev/null 2>&1; then
+            mediainfo "$file"
+        else
+            echo "Media file - no preview available"
+            echo "Install mediainfo for media file preview"
+        fi
+        ;;
+    pdf)
+        if command -v pdftotext >/dev/null 2>&1; then
+            echo "📖 PDF Content (first 50 lines):"
+            pdftotext -l 3 "$file" - | head -50
+        else
+            echo "PDF file - no preview available"
+            echo "Install poppler-utils for PDF text extraction"
+        fi
+        ;;
+    zip|tar|gz|bz2|xz|7z|rar)
+        echo "📦 Archive contents:"
+        case "$fileext_lower" in
+            zip) unzip -l "$file" 2>/dev/null || echo "Cannot read archive" ;;
+            tar|gz|bz2|xz) tar -tf "$file" 2>/dev/null || echo "Cannot read archive" ;;
+            7z) 7z l "$file" 2>/dev/null || echo "Cannot read archive" ;;
+            rar) unrar l "$file" 2>/dev/null || echo "Cannot read archive" ;;
+        esac
+        ;;
+    *)
+        # Try to detect if it's text
+        if file "$file" | grep -q text; then
+            if command -v bat >/dev/null 2>&1; then
+                bat --color=always --style=numbers --paging=never "$file"
+            else
+                head -50 "$file"
+            fi
+        else
+            echo "🔧 Binary file - no text preview available"
+            if command -v hexdump >/dev/null 2>&1; then
+                echo ""
+                echo "📊 Hex dump (first 256 bytes):"
+                hexdump -C "$file" | head -16
+            fi
+        fi
+        ;;
+esac
+
+echo ""
+echo "$(printf '═%.0s' $(seq 1 $(tput cols)))"
+echo "Press any key to continue..."
+read -r

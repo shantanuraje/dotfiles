@@ -47,12 +47,21 @@ Press `g` + key in nnn for instant navigation:
 - `gn` - NixOS configuration
 - `gA` - Android Studio projects
 
-### 🔍 Fuzzy Search Integration
+### 🔍 Fuzzy Search Integration (fzf-powered)
+
+**Command-line functions** (use before starting nnn):
 ```bash
-nf             # Fuzzy directory selection + nnn
-nff            # Fuzzy file search + nnn
-nrg            # Search files with ripgrep + nnn
-ngit           # Git file search + nnn
+nf             # Fuzzy directory selection with preview → open nnn there
+nff            # Fuzzy file search with bat preview → navigate to file location
+nrg            # Content search with ripgrep → open nnn at matching file
+ngit           # Git file search → navigate to selected git file
+```
+
+**In-app search** (inside nnn):
+```bash
+/              # Search filenames in current directory
+;f             # Plugin: fuzzy finder for current directory
+;c             # Plugin: fzf directory navigation
 ```
 
 ### 💾 Session Management

@@ -4,11 +4,35 @@
 
 # === Core nnn Environment Variables ===
 
-# Plugin configuration - comprehensive set for GUI-free workflow
-export NNN_PLUG='f:finder;p:preview-tui;d:diffs;t:nmount;v:imgview;r:renamer;c:fzcd;z:autojump;o:fzopen;e:suedit;b:nbak;x:xdgdefault;m:mimelist;s:pass;k:kdeconnect;i:imgur;w:wall;l:launch;n:nuke'
+# Plugin configuration - comprehensive set for GUI-free workflow with custom fzf plugins  
+export NNN_PLUG='f:finder;p:preview-tui;d:fzdir;t:nmount;v:imgview;r:fzrg;c:fzcd;z:fzf;o:fzopen;w:preview-text;e:suedit;b:nbak;x:xdgdefault;m:mimelist;s:pass;k:kdeconnect;i:imgur;l:launch;n:nuke'
 
 # FIFO for live preview
 export NNN_FIFO=/tmp/nnn.fifo
+
+# Kitty remote control for preview-tui plugin
+export KITTY_LISTEN_ON=unix:@mykitty
+
+# === Plugin Environment Configuration ===
+
+# Configure finder plugin to use fzf
+export NNN_FZFIND='fzf --height=50% --layout=reverse --border'
+
+# Configure fzcd plugin for directory navigation with fzf
+export NNN_FZCD='fzf --height=40% --layout=reverse --preview="ls -la {}" --bind="ctrl-o:execute(echo {} >/dev/tty)"'
+
+# Configure fzopen plugin for file opening with fzf
+export NNN_FZOPEN='fzf --height=50% --layout=reverse --preview="bat --color=always --style=numbers {}" --bind="ctrl-o:execute(echo {} >/dev/tty)"'
+
+# Set fzf as the default finder for plugins
+export FZF_DEFAULT_OPTS='--height=50% --layout=reverse --border --inline-info --color=16'
+
+# Use fd for faster file finding if available
+if command -v fd >/dev/null 2>&1; then
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+    export FZF_CTRL_T_COMMAND='fd --type f --hidden --follow --exclude .git'
+    export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+fi
 
 # Default opener - CLI-first with fallback
 export NNN_OPENER="$HOME/.config/nnn/nnn-opener.sh"
@@ -203,10 +227,8 @@ setup_nnn() {
 
 # === Auto-initialization ===
 
-# Install plugins on first run (silent)
-if [ ! -d ~/.config/nnn/plugins ]; then
-    install_nnn_plugins >/dev/null 2>&1
-fi
+# Plugins are managed by chezmoi run_onchange script
+# Use 'chezmoi apply' to install/update plugins
 
 # === Integration with Existing Tools ===
 
@@ -262,10 +284,15 @@ SESSION MANAGEMENT:
   nlist          List all saved sessions
 
 PLUGINS (press ; in nnn):
-  f - finder     Fuzzy file finder
-  p - preview    Preview files
-  d - diffs      File differences
-  r - renamer    Batch rename
+  z - fzf        Direct fzf file finder (like nff)
+  d - fzdir      Direct fzf directory navigation (like nf)  
+  r - fzrg       Content search with ripgrep (like nrg)
+  w - preview-text  Enhanced text file preview (CSV, MD, logs)
+  t - nmount     Mount/unmount devices
+  f - finder     Advanced finder with options
+  c - fzcd       Directory navigation with fzf
+  o - fzopen     File opening with fzf + preview
+  p - preview    Live preview pane
   v - imgview    Image viewer
   n - nuke       Batch operations
 

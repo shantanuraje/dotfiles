@@ -1,7 +1,7 @@
 # Enhanced File Manager Configuration
 
-**Last Updated**: August 3, 2025  
-**Status**: ✅ Active Configuration
+**Last Updated**: August 8, 2025  
+**Status**: ✅ Complete Configuration with Enhanced Previews & Direct fzf Integration
 
 ## Overview
 
@@ -10,9 +10,9 @@ This configuration provides a hybrid file management approach that combines the 
 ## File Managers Available
 
 ### CLI File Managers
-- **nnn** (`fm`) - Fastest, with plugins and bookmarks
-- **lf** (`fml`) - Miller columns layout, fast navigation  
-- **ranger** (`fmr`) - Rich preview system, vi-like keybindings
+- **nnn** (`fm`) - Fastest, with plugins and bookmarks, comprehensive fzf integration
+- **lf** (`fml`) - Miller columns layout, fzf search commands  
+- **ranger** (`fmr`) - Rich preview system, vi-like keybindings, enhanced fzf features
 
 ### GUI File Manager
 - **nautilus** (`fmg`) - Full-featured GNOME file manager
@@ -55,6 +55,12 @@ fm          # nnn (CLI)
 fmr         # ranger (CLI)  
 fml         # lf (CLI)
 fmg         # nautilus (GUI)
+
+# nnn fuzzy search functions (use before starting nnn)
+nf          # Fuzzy directory selection → open nnn there
+nff         # Fuzzy file search with preview → navigate to file
+nrg         # Content search with ripgrep → open nnn at result
+ngit        # Git file search → navigate to selected git file
 
 # File viewers
 img file.jpg       # View image in terminal with chafa
@@ -106,6 +112,17 @@ fm
 # In nnn: Press Enter on image → chafa displays in terminal
 # In nnn: Press Enter on PDF → termpdf opens in terminal
 # In nnn: Press Enter on video → mpv plays in terminal
+# In nnn: Press ; for plugins, f for fuzzy finder
+
+# Browse with lf
+fml
+# In lf: Press f for fuzzy jump, F for content search
+
+# Browse with ranger  
+fmr
+# In ranger: Ctrl+f (fuzzy select), Ctrl+s (content search)
+# In ranger: Ctrl+g (directory nav), Ctrl+b (bookmarks)
+# In ranger: gb (git branches), gl (git log), gs (git status)
 ```
 
 ### Full Desktop Integration
@@ -120,12 +137,52 @@ fmg
 ### Hybrid Workflow
 ```bash
 # Quick file operations in terminal
-fm                    # Browse with nnn
+nf                    # Fuzzy find directory → start nnn there
+nrg "search term"     # Find files containing text → navigate to result
 img photo.jpg         # Quick image preview
 pdf document.pdf      # Quick PDF view
 
 # Complex operations in GUI
 fmg                   # Switch to nautilus for drag-drop, etc.
+```
+
+## Search and Navigation Features
+
+### nnn Search Capabilities
+```bash
+# Before starting nnn:
+nf          # Fuzzy directory picker with preview
+nff         # Fuzzy file finder with bat preview  
+nrg         # Content search with ripgrep
+ngit        # Git file search
+
+# Inside nnn:
+/           # Search filenames
+;f          # Fuzzy finder plugin
+;c          # fzf directory navigation
+```
+
+### lf Search Features
+```bash
+# Inside lf:
+/           # Search filenames
+n/N         # Next/previous search result
+f           # Fuzzy jump to files/directories
+F           # Content search with ripgrep + fzf
+```
+
+### ranger Search Powers
+```bash
+# Inside ranger:
+/           # Search filenames
+n/N         # Next/previous search result
+Ctrl+f      # Fuzzy file selection with preview
+Ctrl+s      # Live content search with ripgrep
+Ctrl+g      # Fuzzy directory navigation
+Ctrl+b      # Bookmark navigation with fzf
+gb          # Git branch switching with fzf
+gl          # Git log browser with fzf
+gs          # Git status file navigation
 ```
 
 ## Installation Status
@@ -143,13 +200,33 @@ fmg                   # Switch to nautilus for drag-drop, etc.
 - ✅ **MIME**: System defaults set for GUI integration
 - ✅ **Aliases**: CLI shortcuts configured
 
+## Enhanced Features Added
+
+### **Direct fzf Integration**
+- **Consistent keybindings** across all file managers
+- **Same experience** as bash functions (`nf`, `nff`, `nrg`)
+- **No menu navigation** - direct fzf launch
+
+### **Enhanced Text Previews**
+- **CSV files**: Column info, formatted tables, statistics
+- **Markdown**: Rendered with `glow` or syntax highlighted
+- **Log files**: Tail view with file statistics
+- **JSON**: Pretty formatting with `jq` or syntax highlighting
+- **General text**: Line numbers, syntax highlighting, file info
+
+### **System-wide Markdown Support**
+- **glow as default** for `.md` files system-wide
+- **Works in all desktop environments** (GNOME, AwesomeWM, Hyprland)
+- **Terminal rendering** with proper formatting
+
 ## Benefits
 
 1. **Terminal Efficiency**: CLI file managers with enhanced tool integration
 2. **GUI Compatibility**: Full GNOME desktop integration when needed
 3. **Smart Fallbacks**: No broken file associations - always works
 4. **Best of Both**: Enhanced CLI experience + full GUI functionality
-5. **No Dependencies**: CLI tools complement rather than replace GUI programs
+5. **Direct Access**: No menu navigation needed for common operations
+6. **Enhanced Previews**: Rich text file previews with proper formatting
 
 ## Usage Notes
 

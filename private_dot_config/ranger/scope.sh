@@ -289,9 +289,51 @@ handle_mime() {
             xls2csv -- "${FILE_PATH}" && exit 5
             exit 1;;
 
-        ## Text
+        ## Text with enhanced previews
         text/* | */xml)
-            ## Syntax highlight
+            ## Special handling for specific text file types
+            case "${FILE_EXTENSION_LOWER}" in
+                csv)
+                    ## CSV files with column formatting
+                    if command -v bat >/dev/null 2>&1; then
+                        bat --color=always --style=numbers,grid --line-range=":${PV_HEIGHT}" --paging=never -- "${FILE_PATH}" && exit 5
+                    else
+                        echo "CSV file: $(basename "${FILE_PATH}")"
+                        echo "Columns: $(head -1 "${FILE_PATH}")"
+                        echo "Rows: $(wc -l < "${FILE_PATH}")"
+                        echo ""
+                        head -"$((PV_HEIGHT-5))" "${FILE_PATH}" | column -t -s ',' && exit 5
+                    fi
+                    ;;
+                tsv)
+                    ## TSV files with tab formatting
+                    if command -v bat >/dev/null 2>&1; then
+                        bat --color=always --style=numbers,grid --line-range=":${PV_HEIGHT}" --paging=never -- "${FILE_PATH}" && exit 5
+                    else
+                        echo "TSV file: $(basename "${FILE_PATH}")"
+                        head -"${PV_HEIGHT}" "${FILE_PATH}" | column -t -s $'\t' && exit 5
+                    fi
+                    ;;
+                md|markdown)
+                    ## Markdown with glow rendering
+                    if command -v glow >/dev/null 2>&1; then
+                        glow --style dark --width="${PV_WIDTH}" "${FILE_PATH}" && exit 5
+                    elif command -v bat >/dev/null 2>&1; then
+                        bat --color=always --style=numbers --line-range=":${PV_HEIGHT}" --paging=never --language=markdown -- "${FILE_PATH}" && exit 5
+                    fi
+                    ;;
+                log)
+                    ## Log files (show tail by default)
+                    if command -v bat >/dev/null 2>&1; then
+                        bat --color=always --style=numbers --line-range=":${PV_HEIGHT}" --paging=never --language=log -- "${FILE_PATH}" && exit 5
+                    else
+                        echo "Log file: $(basename "${FILE_PATH}") (last ${PV_HEIGHT} lines)"
+                        tail -"${PV_HEIGHT}" "${FILE_PATH}" && exit 5
+                    fi
+                    ;;
+            esac
+            
+            ## General syntax highlighting for other text files
             if [[ "$( stat --printf='%s' -- "${FILE_PATH}" )" -gt "${HIGHLIGHT_SIZE_MAX}" ]]; then
                 exit 2
             fi
@@ -302,11 +344,12 @@ handle_mime() {
                 local pygmentize_format='terminal'
                 local highlight_format='ansi'
             fi
+            ## Try bat first with better styling
+            env COLORTERM=8bit bat --color=always --style="numbers" \
+                --line-range=":${PV_HEIGHT}" --paging=never -- "${FILE_PATH}" && exit 5
             env HIGHLIGHT_OPTIONS="${HIGHLIGHT_OPTIONS}" highlight \
                 --out-format="${highlight_format}" \
                 --force -- "${FILE_PATH}" && exit 5
-            env COLORTERM=8bit bat --color=always --style="plain" \
-                -- "${FILE_PATH}" && exit 5
             pygmentize -f "${pygmentize_format}" -O "style=${PYGMENTIZE_STYLE}"\
                 -- "${FILE_PATH}" && exit 5
             exit 2;;
