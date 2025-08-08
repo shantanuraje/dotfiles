@@ -313,6 +313,8 @@
       # GUI toolkit with platform support
       pyqt5
       pyqt5-sip
+      # Document processing
+      python-docx
     ]))
   ];
   
