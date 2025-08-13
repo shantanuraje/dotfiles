@@ -211,6 +211,9 @@
     tokei     # Code statistics
     glow      # Terminal markdown renderer
     
+    # Automation and scripting tools
+    expect    # Automate interactive applications
+    
     # Clipboard utilities
     wl-clipboard
     xclip
@@ -319,6 +322,10 @@
       pyqt5-sip
       # Document processing
       python-docx
+      # Data visualization and web applications
+      plotly
+      dash
+      dash-bootstrap-components
     ]))
   ];
   
