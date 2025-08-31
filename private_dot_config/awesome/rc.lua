@@ -559,18 +559,43 @@ globalkeys = gears.table.join(
         awful.spawn.with_shell("rofi -dmenu -p 'Open markdown file:' | xargs -I {} kitty -e glow '{}'") 
     end, {description = "open markdown with glow", group = "launcher"}),
 
-    -- Layout controls
-    awful.key({ modkey,           }, "space", function () awful.layout.inc( 1)                end,
+    -- Layout controls (using period/comma to avoid conflict with window focus)
+    awful.key({ modkey,           }, "period", function () awful.layout.inc( 1)                end,
               {description = "select next", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1)                end,
+    awful.key({ modkey,           }, "comma", function () awful.layout.inc(-1)                end,
               {description = "select previous", group = "layout"}),
 
     -- Application launcher (rofi - matches Hyprland)
     awful.key({ modkey }, "space",
         function()
-            awful.spawn("rofi -show drun")
+            awful.spawn("rofi -show drun -theme ~/.config/rofi/config/app-launcher.rasi")
         end,
         {description = "show rofi launcher", group = "launcher"}),
+    
+    -- Window switcher keybindings
+    awful.key({ "Mod1" }, "Tab",
+        function()
+            awful.spawn.with_shell("bash ~/.config/rofi/bin/window-switcher-advanced.sh all")
+        end,
+        {description = "show all windows", group = "window switcher"}),
+    
+    awful.key({ modkey }, "Tab",
+        function()
+            awful.spawn.with_shell("bash ~/.config/rofi/bin/window-switcher-advanced.sh current")
+        end,
+        {description = "show current workspace windows", group = "window switcher"}),
+    
+    awful.key({ modkey, "Shift" }, "Tab",
+        function()
+            awful.spawn.with_shell("bash ~/.config/rofi/bin/window-switcher-advanced.sh minimized")
+        end,
+        {description = "show minimized windows", group = "window switcher"}),
+    
+    awful.key({ modkey }, "w",
+        function()
+            awful.spawn.with_shell("bash ~/.config/rofi/bin/window-switcher.sh")
+        end,
+        {description = "quick window switcher", group = "window switcher"}),
 
     -- Volume controls (matches Hyprland)
     awful.key({ }, "XF86AudioRaiseVolume",

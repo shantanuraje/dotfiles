@@ -1,0 +1,199 @@
+/**
+ * Catppuccin Macchiato App Launcher Theme
+ * Matches AwesomeWM, Polybar, and Kitty configuration
+ */
+
+@import "font.rasi"
+
+* {
+    /* Catppuccin Macchiato colors */
+    bg0:     #24273aff;  /* base */
+    bg1:     #1e2030ff;  /* mantle */
+    bg2:     #363a4fff;  /* surface0 */
+    bg3:     #494d64ff;  /* surface1 */
+    
+    fg0:     #cad3f5ff;  /* text */
+    fg1:     #b8c0e0ff;  /* subtext1 */
+    fg2:     #a5adcbff;  /* subtext0 */
+    
+    accent:  #8bd5caff;  /* teal - matches Awesome border_focus */
+    urgent:  #ed8796ff;  /* red */
+    active:  #a6da95ff;  /* green */
+    selected: #c6a0f6ff; /* mauve */
+    
+    transparent: #00000000;
+    
+    /* Theme variables */
+    background-color: @bg0;
+    text-color: @fg0;
+    
+    margin: 0px;
+    padding: 0px;
+    spacing: 0px;
+}
+
+configuration {
+    show-icons: true;
+    icon-theme: "Papirus";
+    drun-display-format: "{icon} {name}";
+    disable-history: false;
+    sidebar-mode: false;
+}
+
+window {
+    location: center;
+    anchor: center;
+    fullscreen: false;
+    width: 700px;
+    
+    enabled: true;
+    border-radius: 10px;
+    cursor: "default";
+    
+    background-color: @bg0;
+    border: 2px;
+    border-color: @accent;
+}
+
+mainbox {
+    enabled: true;
+    spacing: 0px;
+    background-color: transparent;
+    orientation: vertical;
+    children: [ "inputbar", "listbox" ];
+}
+
+listbox {
+    spacing: 10px;
+    padding: 10px;
+    background-color: transparent;
+    orientation: vertical;
+    children: [ "message", "listview" ];
+}
+
+inputbar {
+    enabled: true;
+    spacing: 10px;
+    padding: 20px;
+    background-color: @bg1;
+    text-color: @fg0;
+    orientation: horizontal;
+    children: [ "textbox-prompt-colon", "entry" ];
+}
+
+textbox-prompt-colon {
+    enabled: true;
+    expand: false;
+    str: " ";
+    padding: 10px 15px;
+    border-radius: 8px;
+    background-color: @accent;
+    text-color: @bg0;
+    font: "JetBrains Mono Nerd Font 12";
+}
+
+entry {
+    enabled: true;
+    expand: true;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background-color: @bg2;
+    text-color: @fg0;
+    cursor: text;
+    placeholder: "Search applications...";
+    placeholder-color: @fg2;
+}
+
+listview {
+    enabled: true;
+    columns: 2;
+    lines: 8;
+    cycle: true;
+    dynamic: true;
+    scrollbar: false;
+    layout: vertical;
+    reverse: false;
+    fixed-height: false;
+    fixed-columns: true;
+    
+    spacing: 10px;
+    background-color: transparent;
+    text-color: @fg0;
+    cursor: "default";
+}
+
+element {
+    enabled: true;
+    spacing: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: transparent;
+    text-color: @fg0;
+    cursor: pointer;
+    orientation: horizontal;
+}
+
+element normal.normal {
+    background-color: @bg1;
+    text-color: @fg0;
+}
+
+element normal.urgent {
+    background-color: @bg1;
+    text-color: @urgent;
+}
+
+element normal.active {
+    background-color: @bg2;
+    text-color: @active;
+}
+
+element selected.normal {
+    background-color: @accent;
+    text-color: @bg0;
+}
+
+element selected.urgent {
+    background-color: @urgent;
+    text-color: @bg0;
+}
+
+element selected.active {
+    background-color: @active;
+    text-color: @bg0;
+}
+
+element-icon {
+    size: 32px;
+    cursor: inherit;
+    background-color: transparent;
+    text-color: inherit;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    cursor: inherit;
+    vertical-align: 0.5;
+    horizontal-align: 0.0;
+}
+
+message {
+    background-color: @bg2;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+textbox {
+    padding: 10px;
+    background-color: transparent;
+    text-color: @fg0;
+    vertical-align: 0.5;
+    horizontal-align: 0.0;
+}
+
+error-message {
+    padding: 10px;
+    background-color: @bg0;
+    text-color: @fg0;
+}

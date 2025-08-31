@@ -21,14 +21,14 @@
         ];
       };
       
-      # Add other hosts here as needed
-      # work-machine = nixpkgs.lib.nixosSystem {
-      #   system = "x86_64-linux";
-      #   specialArgs = { inherit claude-desktop-linux-flake; };
-      #   modules = [
-      #     ./configuration.nix
-      #   ];
-      # };
+      # Beelink desktop configuration
+      beelink-ser8-desktop = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit claude-desktop-linux-flake; };
+        modules = [
+          ./configuration.nix
+        ];
+      };
       
       # Default fallback configuration
       nixos = nixpkgs.lib.nixosSystem {

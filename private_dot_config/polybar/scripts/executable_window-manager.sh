@@ -159,16 +159,13 @@ show_main_menu() {
         fi
     done <<< "$windows_info"
     
-    # Show rofi menu with enhanced styling
+    # Show rofi menu with our custom window theme
     local choice
     choice=$(echo -e "$menu_entries" | rofi \
         -dmenu \
         -i \
         -p "󰕰 Window Manager" \
-        -theme-str 'window {width: 85%; height: 65%;}' \
-        -theme-str 'listview {lines: 15;}' \
-        -theme-str 'element {padding: 12px; border-radius: 8px;}' \
-        -theme-str 'element selected {background-color: #8bd5ca; text-color: #1e2030;}' \
+        -theme ~/.config/rofi/config/window.rasi \
         -no-custom \
         -format 'i')
     
@@ -246,10 +243,7 @@ show_minimized_menu() {
         -dmenu \
         -i \
         -p "󰖲 Minimized Windows" \
-        -theme-str 'window {width: 70%; height: 50%;}' \
-        -theme-str 'listview {lines: 10;}' \
-        -theme-str 'element {padding: 10px;}' \
-        -theme-str 'element selected {background-color: #eed49f; text-color: #1e2030;}' \
+        -theme ~/.config/rofi/config/window.rasi \
         -no-custom \
         -format 'i')
     
@@ -344,10 +338,7 @@ show_current_workspace_menu() {
         -dmenu \
         -i \
         -p "󰧨 Workspace $current_workspace" \
-        -theme-str 'window {width: 60%; height: 45%;}' \
-        -theme-str 'listview {lines: 8;}' \
-        -theme-str 'element {padding: 8px;}' \
-        -theme-str 'element selected {background-color: #8aadf4; text-color: #1e2030;}' \
+        -theme ~/.config/rofi/config/window.rasi \
         -no-custom \
         -format 'i')
     
