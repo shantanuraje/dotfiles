@@ -51,29 +51,51 @@ get_minimized_count() {
     ' | awesome-client 2>/dev/null | sed 's/.*string "\(.*\)"/\1/'
 }
 
-# Function to restore window
+# Function to restore window by window ID
 restore_window() {
     local workspace=$1
-    local window_index=$2
+    local window_id=$2
     
-    # First, switch to the workspace
-    echo "require('awful').screen.focused().tags[$workspace]:view_only()" | awesome-client >/dev/null 2>&1
+    # Log what we're trying to do
+    echo "Restoring window: workspace=$workspace, window_id=$window_id" >> /tmp/window-manager-debug.log
     
-    # Small delay to ensure workspace switch
-    sleep 0.1
+    # Restore the window and switch to its workspace
+    local result=$(echo "
+    local awful = require('awful')
+    local naughty = require('naughty')
     
-    # Then restore the window on the current (newly switched) workspace
-    echo "
-    local tag = require('awful').screen.focused().selected_tag
-    if tag then
-        local client = tag:clients()[$window_index]
-        if client then
-            client.minimized = false
-            client:raise()
-            require('awful').client.focus.byidx(0, client)
+    -- Find the client by window ID
+    for s in screen do
+        for _, tag in ipairs(s.tags) do
+            for _, c in ipairs(tag:clients()) do
+                if tostring(c.window) == '$window_id' then
+                    naughty.notify({
+                        title = 'Found Window',
+                        text = string.format('Window: %s in workspace %d', 
+                            c.name or 'Unknown', tag.index),
+                        timeout = 2
+                    })
+                    -- Unminimize and activate
+                    c.minimized = false
+                    tag:view_only()
+                    c:emit_signal('request::activate', 'window_manager', {raise = true})
+                    awful.client.focus = c
+                    c:raise()
+                    return true
+                end
+            end
         end
     end
-    " | awesome-client >/dev/null 2>&1
+    
+    naughty.notify({
+        title = 'Error',
+        text = string.format('Window with ID %s not found', '$window_id'),
+        timeout = 2
+    })
+    return false
+    " | awesome-client 2>&1)
+    
+    echo "Awesome-client result: $result" >> /tmp/window-manager-debug.log
 }
 
 # Function to show main window menu
@@ -132,7 +154,7 @@ show_main_menu() {
             display_line+="$name"
             
             menu_entries+="$display_line\n"
-            window_data[$line_num]="$workspace:$index"
+            window_data[$line_num]="$workspace:$window_id"
             ((line_num++))
         fi
     done <<< "$windows_info"
@@ -155,8 +177,8 @@ show_main_menu() {
         if [ -n "$selected_data" ]; then
             IFS=':' read -ra RESTORE_INFO <<< "$selected_data"
             local workspace="${RESTORE_INFO[0]}"
-            local index="${RESTORE_INFO[1]}"
-            restore_window "$workspace" "$index"
+            local window_id="${RESTORE_INFO[1]}"
+            restore_window "$workspace" "$window_id"
             notify-send "Window Manager" "Switched to workspace $workspace" -t 1500 -i "dialog-information"
         fi
     fi
@@ -207,7 +229,7 @@ show_minimized_menu() {
                 fi
                 
                 menu_entries+="$display_line\n"
-                window_data[$line_num]="$workspace:$index"
+                window_data[$line_num]="$workspace:$window_id"
                 ((line_num++))
             fi
         fi
@@ -236,9 +258,12 @@ show_minimized_menu() {
         if [ -n "$selected_data" ]; then
             IFS=':' read -ra RESTORE_INFO <<< "$selected_data"
             local workspace="${RESTORE_INFO[0]}"
-            local index="${RESTORE_INFO[1]}"
-            restore_window "$workspace" "$index"
-            notify-send "Window Restored" "Window restored from workspace $workspace" -t 1500 -i "dialog-information"
+            local window_id="${RESTORE_INFO[1]}"
+            # Debug output
+            notify-send "Debug" "Choice: $choice, Data: $selected_data, WS: $workspace, Window ID: $window_id" -t 3000
+            restore_window "$workspace" "$window_id"
+        else
+            notify-send "Debug" "No data for choice: $choice" -t 3000
         fi
     fi
 }
@@ -302,7 +327,7 @@ show_current_workspace_menu() {
                 display_line+="$name"
                 
                 menu_entries+="$display_line\n"
-                window_data[$line_num]="$workspace:$index"
+                window_data[$line_num]="$workspace:$window_id"
                 ((line_num++))
             fi
         fi
@@ -331,10 +356,32 @@ show_current_workspace_menu() {
         if [ -n "$selected_data" ]; then
             IFS=':' read -ra RESTORE_INFO <<< "$selected_data"
             local workspace="${RESTORE_INFO[0]}"
-            local index="${RESTORE_INFO[1]}"
-            restore_window "$workspace" "$index"
+            local window_id="${RESTORE_INFO[1]}"
+            restore_window "$workspace" "$window_id"
         fi
     fi
+}
+
+# Test function to restore first minimized window
+test_restore() {
+    echo "
+    local awful = require('awful')
+    local naughty = require('naughty')
+    
+    -- Find first minimized window
+    for _, tag in ipairs(awful.screen.focused().tags) do
+        for _, c in ipairs(tag:clients()) do
+            if c.minimized then
+                naughty.notify({title = 'Found minimized', text = c.name or 'Unknown'})
+                c.minimized = false
+                tag:view_only()
+                c:emit_signal('request::activate', 'test', {raise = true})
+                return 'Restored: ' .. (c.name or 'Unknown')
+            end
+        end
+    end
+    return 'No minimized windows found'
+    " | awesome-client
 }
 
 # Main execution
@@ -365,6 +412,9 @@ case "${1:-main}" in
         else
             echo ""  # Empty but prefix icon will still show
         fi
+        ;;
+    "test")
+        test_restore
         ;;
     *)
         echo "Usage: $0 [main|minimized|current|count|display]"

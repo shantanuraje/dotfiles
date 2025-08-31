@@ -364,6 +364,8 @@ awful.screen.connect_for_each_screen(function(s)
                                           if c == client.focus then
                                               c.minimized = true
                                           else
+                                              -- Unminimize if it's minimized
+                                              c.minimized = false
                                               c:emit_signal(
                                                   "request::activate",
                                                   "tasklist",
@@ -656,6 +658,17 @@ clientkeys = gears.table.join(
             c.minimized = true
         end ,
         {description = "minimize", group = "client"}),
+    awful.key({ modkey, "Ctrl"    }, "n",
+        function ()
+            local c = awful.client.restore()
+            -- Focus restored client
+            if c then
+                c:emit_signal(
+                    "request::activate", "key.unminimize", {raise = true}
+                )
+            end
+        end,
+        {description = "restore minimized", group = "client"}),
     awful.key({ modkey,           }, "m",
         function (c)
             c.maximized = not c.maximized
@@ -804,10 +817,6 @@ awful.rules.rules = {
     { rule_any = { class = { "Insync", "insync" }, name = { "Insync" } },
       callback = function(c)
           c:move_to_tag(awful.screen.focused().tags[5])
-          gears.timer.start_new(0.1, function()
-              c.minimized = true
-              return false
-          end)
       end },
     { rule_any = { class = { "discord", "Discord" }, name = { "Discord" } },
       callback = function(c)
