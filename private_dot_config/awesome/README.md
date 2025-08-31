@@ -16,7 +16,7 @@ Your AwesomeWM configuration perfectly matches your Hyprland setup:
 - **Terminal**: kitty
 - **File Manager**: dolphin  
 - **Launcher**: rofi
-- **Wallpaper**: same forest_bridge.jpg
+- **Wallpaper**: automatic rotation every 10 minutes from ~/Pictures/wallpapers/
 - **Notifications**: dunst
 
 ### Status Bar & Widgets
@@ -49,6 +49,7 @@ Your AwesomeWM configuration perfectly matches your Hyprland setup:
 │   └── theme.lua                    # Theme colors & styling
 ├── lain/                            # Widget library
 ├── freedesktop/                     # Application menu
+├── wallpaper-rotate.sh              # Wallpaper rotation script
 ├── install-packages.sh              # Package installer
 ├── packages-needed.md               # Required packages list
 └── README.md                        # This file

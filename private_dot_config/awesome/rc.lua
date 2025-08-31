@@ -66,7 +66,7 @@ local function autostart()
     -- System services that don't need workspace assignment
     local system_cmds = {
         "picom --config ~/.config/picom/picom.conf",  -- compositor
-        "feh --bg-scale ~/Pictures/wallpapers/forest_bridge.jpg",  -- wallpaper
+        "~/.config/awesome/wallpaper-rotate.sh",  -- wallpaper rotation
         "dunst",  -- notifications
     }
     
@@ -122,8 +122,8 @@ end
 
 -- Wallpaper
 local function set_wallpaper(s)
-    -- Use feh to set wallpaper to match Hyprland
-    awful.spawn.with_shell("feh --bg-scale ~/Pictures/wallpapers/forest_bridge.jpg")
+    -- Start wallpaper rotation script if not already running
+    awful.spawn.with_shell("pgrep -f wallpaper-rotate.sh || ~/.config/awesome/wallpaper-rotate.sh")
 end
 
 -- Re-set wallpaper when a screen's geometry changes
