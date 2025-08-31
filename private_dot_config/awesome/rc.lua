@@ -66,7 +66,7 @@ local function autostart()
     -- System services that don't need workspace assignment
     local system_cmds = {
         "picom --config ~/.config/picom/picom.conf",  -- compositor
-        "~/.config/awesome/wallpaper-rotate.sh",  -- wallpaper rotation
+        "bash ~/.config/awesome/wallpaper-rotate.sh",  -- wallpaper rotation
         "dunst",  -- notifications
     }
     
