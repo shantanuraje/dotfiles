@@ -1,0 +1,17 @@
+/**
+ * {{THEME_NAME}} Rofi Color Theme
+ * Generated from theme switcher
+ */
+
+* {
+    BG:    {{BASE}}ff;
+    BGA:   {{TEAL}}ff;
+    FG:    {{TEXT}}ff;
+    FGA:   {{MAUVE}}ff;
+    BDR:   {{BLUE}}ff;
+    SEL:   {{SURFACE0}}ff;
+    UGT:   {{RED}}ff;
+    IMG:   {{YELLOW}}ff;
+    OFF:   {{OVERLAY0}}ff;
+    ON:    {{GREEN}}ff;
+}

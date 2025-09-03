@@ -1,0 +1,214 @@
+/**
+ * {{THEME_NAME}} Window Switcher Theme
+ * Matches AwesomeWM, Polybar, and Kitty configuration
+ */
+
+@import "font.rasi"
+
+* {
+    /* {{THEME_NAME}} colors */
+    bg0:     {{BASE}}ff;  /* base */
+    bg1:     {{MANTLE}}ff;  /* mantle */
+    bg2:     {{SURFACE0}}ff;  /* surface0 */
+    bg3:     {{SURFACE1}}ff;  /* surface1 */
+    
+    fg0:     {{TEXT}}ff;  /* text */
+    fg1:     {{SUBTEXT1}}ff;  /* subtext1 */
+    fg2:     {{SUBTEXT0}}ff;  /* subtext0 */
+    
+    accent:  {{TEAL}}ff;  /* teal - matches Awesome border_focus */
+    urgent:  {{RED}}ff;  /* red */
+    active:  {{GREEN}}ff;  /* green */
+    selected: {{MAUVE}}ff; /* mauve */
+    
+    transparent: #00000000;
+    
+    /* Theme variables */
+    background-color: @bg0;
+    text-color: @fg0;
+    
+    margin: 0px;
+    padding: 0px;
+    border: 0px solid;
+    border-color: @accent;
+    spacing: 0px;
+}
+
+configuration {
+    show-icons: true;
+    icon-theme: "Papirus";
+    display-window: "🪟 Windows";
+    font: "JetBrains Mono Nerd Font 11";
+    window-format: "{w}  {i}{c}  {t:0}";
+}
+
+window {
+    transparency: "real";
+    background-color: @bg0;
+    text-color: @fg0;
+    border: 3px solid;
+    border-color: @accent;
+    border-radius: 12px;
+    
+    /* Responsive sizing */
+    width: 70%;
+    height: 60%;
+    location: center;
+    anchor: center;
+}
+
+mainbox {
+    background-color: transparent;
+    children: [ inputbar, listview, mode-switcher ];
+    spacing: 15px;
+    padding: 25px;
+}
+
+inputbar {
+    children: [ prompt, entry ];
+    background-color: @bg1;
+    border-radius: 8px;
+    padding: 10px 15px;
+    border: 2px solid;
+    border-color: @bg2;
+}
+
+prompt {
+    background-color: transparent;
+    text-color: @accent;
+    font: "JetBrains Mono Nerd Font Bold 12";
+    margin: 0px 10px 0px 0px;
+}
+
+entry {
+    background-color: transparent;
+    text-color: @fg0;
+    placeholder-color: @fg2;
+    expand: true;
+    placeholder: "Search windows...";
+}
+
+listview {
+    background-color: transparent;
+    columns: 1;
+    lines: 8;
+    spacing: 6px;
+    cycle: true;
+    dynamic: true;
+    scrollbar: true;
+    layout: vertical;
+    reverse: false;
+    fixed-height: true;
+}
+
+scrollbar {
+    width: 6px;
+    border: 0px;
+    border-radius: 3px;
+    background-color: @bg2;
+    handle-color: @accent;
+    handle-width: 6px;
+    padding: 0px;
+}
+
+element {
+    background-color: @bg1;
+    text-color: @fg0;
+    orientation: horizontal;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin: 1px;
+    border: 2px solid;
+    border-color: transparent;
+}
+
+element.normal.normal {
+    background-color: @bg1;
+    text-color: @fg0;
+}
+
+element.normal.urgent {
+    background-color: @urgent;
+    text-color: @bg0;
+}
+
+element.normal.active {
+    background-color: @active;
+    text-color: @bg0;
+}
+
+element.selected.normal {
+    background-color: @accent;
+    text-color: @bg0;
+    border-color: @accent;
+    font: "JetBrains Mono Nerd Font Bold 11";
+}
+
+element.selected.urgent {
+    background-color: @urgent;
+    text-color: @bg0;
+    border-color: @urgent;
+}
+
+element.selected.active {
+    background-color: @selected;
+    text-color: @bg0;
+    border-color: @selected;
+}
+
+element.alternate.normal {
+    background-color: @bg1;
+    text-color: @fg0;
+}
+
+element.alternate.urgent {
+    background-color: @urgent;
+    text-color: @bg0;
+}
+
+element.alternate.active {
+    background-color: @active;
+    text-color: @bg0;
+}
+
+element-icon {
+    background-color: transparent;
+    text-color: inherit;
+    size: 24px;
+    border: 0px;
+    padding: 0px 8px 0px 0px;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    expand: true;
+    horizontal-align: 0;
+    vertical-align: 0.5;
+    margin: 0px;
+    padding: 0px;
+    font: "JetBrains Mono Nerd Font 10";
+}
+
+mode-switcher {
+    enabled: true;
+    spacing: 10px;
+    background-color: transparent;
+    text-color: @fg0;
+}
+
+button {
+    padding: 8px 12px;
+    background-color: @bg1;
+    text-color: @fg2;
+    border: 2px solid;
+    border-radius: 6px;
+    border-color: @bg2;
+}
+
+button.selected {
+    background-color: @accent;
+    text-color: @bg0;
+    border-color: @accent;
+    font: "JetBrains Mono Nerd Font Bold 10";
+}

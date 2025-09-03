@@ -1,0 +1,257 @@
+/**
+ * {{THEME_NAME}} App Launcher Theme
+ * Matches AwesomeWM, Polybar, and Kitty configuration
+ */
+
+@import "colors.rasi"
+@import "font.rasi"
+
+* {
+    /* {{THEME_NAME}} colors */
+    bg0:     {{BASE}}ff;  /* base */
+    bg1:     {{MANTLE}}ff;  /* mantle */
+    bg2:     {{SURFACE0}}ff;  /* surface0 */
+    bg3:     {{SURFACE1}}ff;  /* surface1 */
+    fg0:     {{TEXT}}ff;  /* text */
+    fg1:     {{SUBTEXT1}}ff;  /* subtext1 */
+    fg2:     {{SUBTEXT0}}ff;  /* subtext0 */
+    red:     {{RED}}ff;
+    green:   {{GREEN}}ff;
+    yellow:  {{YELLOW}}ff;
+    blue:    {{BLUE}}ff;
+    magenta: {{MAUVE}}ff;
+    cyan:    {{TEAL}}ff;
+    emphasis: {{TEAL}}ff;
+    on: {{GREEN}}ff;
+    off: {{OVERLAY0}}ff;
+    transparent: #00000000;
+    
+    /* Theme variables */
+    background-color: @bg0;
+    text-color: @fg0;
+    font: "JetBrains Mono Nerd Font 12";
+    border-color: @bg2;
+    separatorcolor: @bg1;
+    selected-normal-foreground: @fg0;
+    selected-normal-background: @bg2;
+}
+
+configuration {
+    show-icons: true;
+    icon-theme: "Papirus";
+    drun-display-format: "{icon} {name}";
+    disable-history: false;
+    sidebar-mode: false;
+    hover-select: true;
+    eh-select-1: "Tab";
+    eh-select-2: "ISO_Left_Tab";
+}
+
+window {
+    transparency: "real";
+    background-color: @bg0;
+    text-color: @fg0;
+    border: 2px solid;
+    border-color: @bg2;
+    border-radius: 12px;
+    width: 40%;
+    location: center;
+    anchor: center;
+    x-offset: 0;
+    y-offset: 0;
+}
+
+prompt {
+    enabled: true;
+    padding: 8px 12px;
+    background-color: @bg1;
+    text-color: @fg0;
+    border: 0px 0px 2px 0px;
+    border-color: @emphasis;
+    border-radius: 6px;
+    margin: 0px 0px 20px 0px;
+}
+
+textbox-prompt-colon {
+    expand: false;
+    str: " ";
+    margin: 0px 8px 0px 0px;
+    text-color: @emphasis;
+    background-color: transparent;
+}
+
+entry {
+    background-color: transparent;
+    text-color: @fg0;
+    placeholder-color: @fg2;
+    expand: true;
+    horizontal-align: 0;
+    placeholder: "Search applications...";
+    blink: true;
+    padding: 8px 12px;
+}
+
+case-indicator {
+    background-color: transparent;
+    text-color: @fg2;
+    spacing: 0;
+}
+
+inputbar {
+    children: [ prompt, entry ];
+    background-color: transparent;
+    text-color: @fg0;
+    expand: false;
+    border: 0px 0px 0px 0px;
+    border-radius: 0px;
+    border-color: @emphasis;
+    margin: 0px 0px 10px 0px;
+    padding: 0px;
+}
+
+listview {
+    background-color: transparent;
+    columns: 1;
+    lines: 8;
+    spacing: 4px;
+    cycle: true;
+    dynamic: true;
+    layout: vertical;
+    fixed-height: false;
+    border: 0px 0px 0px 0px;
+    border-radius: 6px;
+    scrollbar: false;
+}
+
+mainbox {
+    background-color: transparent;
+    children: [ inputbar, listview ];
+    spacing: 15px;
+    padding: 30px;
+}
+
+element {
+    background-color: transparent;
+    text-color: @fg0;
+    orientation: horizontal;
+    border-radius: 6px;
+    padding: 10px 15px;
+    border: 0px;
+}
+
+element-icon {
+    background-color: transparent;
+    text-color: inherit;
+    size: 32px;
+    border: 0px;
+    padding: 0px 12px 0px 0px;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    expand: true;
+    horizontal-align: 0;
+    vertical-align: 0.5;
+    margin: 0px;
+    padding: 0px;
+}
+
+element.normal.normal {
+    background-color: transparent;
+    text-color: @fg0;
+}
+
+element.normal.urgent {
+    background-color: @red;
+    text-color: @bg0;
+}
+
+element.normal.active {
+    background-color: @emphasis;
+    text-color: @bg0;
+}
+
+element.selected.normal {
+    background-color: @bg2;
+    text-color: @fg0;
+    border: 0px 0px 0px 4px;
+    border-color: @emphasis;
+}
+
+element.selected.urgent {
+    background-color: @red;
+    text-color: @bg0;
+}
+
+element.selected.active {
+    background-color: @emphasis;
+    text-color: @bg0;
+}
+
+element.alternate.normal {
+    background-color: transparent;
+    text-color: @fg0;
+}
+
+element.alternate.urgent {
+    background-color: @red;
+    text-color: @bg0;
+}
+
+element.alternate.active {
+    background-color: @emphasis;
+    text-color: @bg0;
+}
+
+/* Scrollbar styling */
+scrollbar {
+    width: 4px;
+    border: 0px;
+    border-radius: 2px;
+    background-color: @bg2;
+    handle-color: @emphasis;
+    handle-width: 4px;
+    padding: 0px;
+}
+
+mode-switcher {
+    enabled: true;
+    spacing: 10px;
+    background-color: transparent;
+    text-color: @fg0;
+}
+
+button {
+    padding: 8px;
+    background-color: @bg1;
+    text-color: @fg2;
+    border: 2px 0px 2px 0px;
+    border-radius: 6px;
+    border-color: @bg2;
+}
+
+button.selected {
+    background-color: @emphasis;
+    text-color: @bg0;
+    border-color: @emphasis;
+}
+
+message {
+    background-color: transparent;
+    border: 0px;
+    margin: 0px 0px 10px 0px;
+    padding: 0px;
+    border-radius: 0px;
+}
+
+textbox {
+    background-color: @bg1;
+    text-color: @fg0;
+    vertical-align: 0.5;
+    horizontal-align: 0.0;
+    padding: 12px;
+    border: 0px 0px 2px 0px;
+    border-radius: 6px;
+    border-color: @emphasis;
+}

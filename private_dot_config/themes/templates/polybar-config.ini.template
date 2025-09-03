@@ -1,0 +1,469 @@
+[colors]
+; {{THEME_NAME}} color scheme
+background = {{BASE}}
+background-alt = {{SURFACE0}}
+foreground = {{TEXT}}
+primary = {{TEAL}}
+alert = {{RED}}
+disabled = {{OVERLAY0}}
+
+; Additional colors for modules
+cyan = {{TEAL}}
+green = {{GREEN}}
+yellow = {{YELLOW}}
+orange = {{PEACH}}
+red = {{RED}}
+pink = {{PINK}}
+purple = {{MAUVE}}
+blue = {{BLUE}}
+teal = {{TEAL}}
+
+[global/wm]
+; DPI awareness for responsive sizing
+margin-top = 0
+margin-bottom = 0
+
+[bar/main]
+; Monitor settings
+monitor = ${env:MONITOR:}
+width = 100%
+; Dynamic height calculation:
+; Method 1: Percentage-based (2.2% works well for most resolutions)
+height = 2.2%
+; Method 2: DPI-aware alternative - uncomment if you prefer fixed pt size
+; height = 22pt
+; Dynamic radius scaling (quarter of height, minimum 4px)
+radius = 6
+
+; Position
+bottom = false
+fixed-center = true
+offset-x = 0
+offset-y = 0
+
+; Colors
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+; Border
+border-size = 2pt
+border-color = ${colors.background-alt}
+
+; Padding
+padding-left = 1
+padding-right = 1
+module-margin = 1
+
+; Fonts
+font-0 = "JetBrains Mono Nerd Font:size=10;2"
+font-1 = "Font Awesome 6 Free:style=Solid:size=10;2"
+font-2 = "Font Awesome 6 Brands:size=10;2"
+font-3 = "Material Design Icons:size=12;3"
+
+; Modules with better organization and visual balance
+modules-left = awesome-workspaces window-manager window-manager-count separator filesystem memory cpu temperature
+modules-center = date uptime
+modules-right = load separator pulseaudio separator network separator battery separator notifications separator systray
+
+; Cursor
+cursor-click = pointer
+cursor-scroll = ns-resize
+
+; Window manager settings
+wm-restack = awesome
+override-redirect = false
+
+[module/separator]
+type = custom/text
+format = <label>
+label = "󰿟"
+label-foreground = ${colors.disabled}
+label-font = 2
+
+[module/awesome-workspaces]
+type = custom/script
+exec = ~/.config/polybar/scripts/awesome-workspaces.sh
+interval = 0.1
+format = <label>
+format-background = ${colors.background}
+format-foreground = ${colors.foreground}
+
+[module/window-manager]
+type = custom/text
+content = "󰕰"
+content-foreground = ${colors.cyan}
+content-font = 2
+click-left = ~/.config/polybar/scripts/window-manager.sh main
+click-middle = ~/.config/polybar/scripts/window-manager.sh current
+click-right = ~/.config/polybar/scripts/window-manager.sh minimized
+tooltip = "Window Manager: Left=All Windows, Middle=Current Workspace, Right=Minimized Only"
+format-padding = 1
+
+[module/window-manager-count]
+type = custom/script
+exec = ~/.config/polybar/scripts/window-manager.sh display
+interval = 1
+format = <label>
+label = %output%
+label-foreground = ${colors.foreground}
+label-font = 1
+
+[module/window-menu]
+type = custom/script
+exec = bash ~/.config/polybar/scripts/window-menu.sh
+interval = 1
+click-left = bash ~/.config/polybar/scripts/window-menu.sh click
+format = <label>
+format-prefix = "🪟 "
+format-prefix-foreground = ${colors.cyan}
+format-foreground = ${colors.foreground}
+format-background = ${colors.background}
+format-padding = 1
+
+[module/filesystem]
+type = internal/fs
+interval = 25
+mount-0 = /
+
+; Beautiful filesystem display with warning colors
+format-mounted = <label-mounted>
+format-mounted-prefix = "󰋊 "
+format-mounted-prefix-foreground = ${colors.orange}
+format-mounted-prefix-font = 2
+label-mounted = %percentage_used%%
+label-mounted-foreground = ${colors.foreground}
+label-mounted-font = 1
+
+format-unmounted = <label-unmounted>
+format-unmounted-prefix = "󰋊 "
+format-unmounted-prefix-foreground = ${colors.disabled}
+label-unmounted = %mountpoint% not mounted
+label-unmounted-foreground = ${colors.disabled}
+
+; Warning for high disk usage
+format-warn = <label-warn>
+format-warn-prefix = "󰋊 "
+format-warn-prefix-foreground = ${colors.alert}
+label-warn = %percentage_used%%
+label-warn-foreground = ${colors.alert}
+
+; Click for detailed disk information
+click-left = "~/.config/polybar/scripts/disk-info.sh"
+
+[module/memory]
+type = internal/memory
+interval = 2
+; Modern styling with beautiful icon
+format = <label>
+format-prefix = "󰍛 "
+format-prefix-foreground = ${colors.green}
+format-prefix-font = 2
+label = %percentage_used:2%%
+label-foreground = ${colors.foreground}
+label-font = 1
+
+; Hover tooltip with detailed memory info
+tooltip = true
+tooltip-format = Memory: %used%/%total% (%percentage_used%%) | Swap: %swap_used%/%swap_total% | Available: %available%
+
+; Click for even more details
+click-left = "~/.config/polybar/scripts/memory-info.sh"
+
+[module/cpu]
+type = internal/cpu
+interval = 2
+; Beautiful CPU module with gradient coloring and detailed info
+format = <label> <ramp-coreload>
+format-prefix = "󰘚 "
+format-prefix-foreground = ${colors.blue}
+format-prefix-font = 2
+label = %percentage:2%%
+label-foreground = ${colors.foreground}
+label-font = 1
+
+; CPU core load visualization
+ramp-coreload-spacing = 1
+ramp-coreload-0 = ▁
+ramp-coreload-1 = ▂
+ramp-coreload-2 = ▃
+ramp-coreload-3 = ▄
+ramp-coreload-4 = ▅
+ramp-coreload-5 = ▆
+ramp-coreload-6 = ▇
+ramp-coreload-7 = █
+ramp-coreload-0-foreground = ${colors.green}
+ramp-coreload-1-foreground = ${colors.green}
+ramp-coreload-2-foreground = ${colors.yellow}
+ramp-coreload-3-foreground = ${colors.yellow}
+ramp-coreload-4-foreground = ${colors.orange}
+ramp-coreload-5-foreground = ${colors.orange}
+ramp-coreload-6-foreground = ${colors.red}
+ramp-coreload-7-foreground = ${colors.red}
+
+; Click for detailed CPU information
+click-left = "~/.config/polybar/scripts/cpu-info.sh"
+
+[module/temperature]
+type = internal/temperature
+thermal-zone = 0
+base-temperature = 20
+warn-temperature = 80
+
+; Enhanced temperature display with better icons and colors
+format = <ramp> <label>
+format-warn = <ramp> <label-warn>
+format-prefix = ""
+format-prefix-font = 2
+
+label = %temperature-c%
+label-foreground = ${colors.foreground}
+label-font = 1
+label-warn = %temperature-c%
+label-warn-foreground = ${colors.alert}
+label-warn-font = 1
+
+; Hover tooltip with detailed temperature info
+tooltip = true
+tooltip-format = Temperature: %temperature-c% | Zone: %thermal-zone% | Base: %base-temperature%°C | Warning: %warn-temperature%°C
+
+; Temperature-based icons with colors (using Nerd Font icons)
+ramp-0 = ""
+ramp-1 = ""
+ramp-2 = ""
+ramp-3 = ""
+ramp-0-foreground = ${colors.cyan}
+ramp-1-foreground = ${colors.blue}
+ramp-2-foreground = ${colors.yellow}
+ramp-3-foreground = ${colors.red}
+ramp-font = 2
+
+; Interactive features
+click-left = "~/.config/polybar/scripts/cpu-info.sh"
+
+[module/date]
+type = internal/date
+interval = 1
+
+date = %a %b %d
+time = %I:%M %p
+
+; Beautiful date/time with modern icon
+format = <label>
+format-prefix = "󰸗 "
+format-prefix-foreground = ${colors.purple}
+format-prefix-font = 2
+label = %date% %time%
+label-foreground = ${colors.foreground}
+label-font = 1
+
+; Hover tooltip with detailed date/time info
+tooltip = true
+tooltip-format = %A, %B %d, %Y | %I:%M:%S %p | Week %W of %Y | Day %j of %Y | Click: Left=Calendar, Middle=Clock, Right=Notification
+
+; Interactive calendar with multiple actions
+click-left = bash ~/.config/polybar/scripts/calendar-info.sh calendar
+click-middle = bash ~/.config/polybar/scripts/calendar-info.sh clock
+click-right = bash ~/.config/polybar/scripts/calendar-info.sh notification
+
+[module/pulseaudio]
+type = custom/script
+exec = pamixer --get-volume-human
+interval = 1
+
+; Enhanced audio module with dynamic icons
+format = <label>
+format-prefix = "󰕾 "
+format-prefix-foreground = ${colors.yellow}
+format-prefix-font = 2
+label = %output%
+label-foreground = ${colors.foreground}
+label-font = 1
+
+; Hover tooltip with detailed audio info
+tooltip = true
+exec-tooltip = echo "Volume: $(pamixer --get-volume-human)\\nDevice: $(pamixer --get-default-sink | cut -d'\\"' -f2)\\nMuted: $(pamixer --get-mute && echo 'Yes' || echo 'No')"
+
+; Interactive controls
+click-right = pavucontrol
+click-left = pamixer --toggle-mute
+scroll-up = pamixer --increase 5
+scroll-down = pamixer --decrease 5
+
+; Visual feedback
+format-muted = 󰖁 MUTED
+format-muted-foreground = ${colors.disabled}
+
+[module/network]
+type = internal/network
+; Dynamic interface detection - will use first available wired interface
+; Polybar 3.6.0+ supports automatic detection with interface-type
+interface-type = wired
+
+; Enhanced wired network display
+format-connected = <label-connected>
+format-connected-prefix = "󰈀 "
+format-connected-prefix-foreground = ${colors.green}
+format-connected-prefix-font = 2
+label-connected = %local_ip%
+label-connected-foreground = ${colors.foreground}
+label-connected-font = 1
+
+; Hover tooltip with detailed network info
+tooltip = true
+format-connected-tooltip = Interface: %interface% | IP: %local_ip% | Upload: %upspeed% | Download: %downspeed%
+
+format-disconnected = <label-disconnected>
+format-disconnected-prefix = "󰈂 "
+format-disconnected-prefix-foreground = ${colors.alert}
+format-disconnected-prefix-font = 2
+label-disconnected = disconnected
+label-disconnected-foreground = ${colors.alert}
+
+; Click for detailed network information
+click-left = "~/.config/polybar/scripts/network-info.sh"
+
+; For WiFi (if available)
+[module/wlan]
+type = internal/network
+interface = wlan0
+interface-type = wireless
+
+; Beautiful WiFi display with signal strength
+format-connected = <ramp-signal> <label-connected>
+label-connected = %essid% %local_ip%
+label-connected-foreground = ${colors.foreground}
+label-connected-font = 1
+
+format-disconnected = <label-disconnected>
+format-disconnected-prefix = "󰤮 "
+format-disconnected-prefix-foreground = ${colors.alert}
+format-disconnected-prefix-font = 2
+label-disconnected = disconnected
+label-disconnected-foreground = ${colors.alert}
+
+; Signal strength indicators with colors
+ramp-signal-0 = 󰤟
+ramp-signal-1 = 󰤢
+ramp-signal-2 = 󰤥
+ramp-signal-3 = 󰤨
+ramp-signal-0-foreground = ${colors.red}
+ramp-signal-1-foreground = ${colors.orange}
+ramp-signal-2-foreground = ${colors.yellow}
+ramp-signal-3-foreground = ${colors.green}
+ramp-signal-font = 2
+
+; Interactive WiFi info
+click-left = "~/.config/polybar/scripts/network-info.sh"
+
+[module/battery]
+type = custom/script
+exec = ~/.config/polybar/scripts/battery-monitor.sh
+interval = 30
+
+format = <label>
+format-prefix = "󰁹 "
+format-prefix-foreground = ${colors.yellow}
+format-prefix-font = 2
+format-foreground = ${colors.foreground}
+
+; Click actions for battery monitoring
+click-left = "~/.config/polybar/scripts/battery-monitor.sh info"
+click-right = "~/.config/polybar/scripts/battery-monitor.sh check"
+
+[module/systray]
+type = internal/tray
+format-margin = 8pt
+tray-spacing = 8pt
+tray-background = ${colors.background}
+tray-padding = 2
+
+[module/updates]
+type = custom/script
+exec = ~/.config/polybar/scripts/updates.sh
+interval = 3600
+format = <label>
+click-left = ~/.config/polybar/scripts/updates.sh --update
+
+[module/powermenu]
+type = custom/script
+exec = ~/.config/polybar/scripts/powermenu.sh
+interval = 0
+format = <label>
+format-foreground = ${colors.red}
+
+[module/media]
+type = custom/script
+exec = ~/.config/polybar/scripts/media.sh
+interval = 2
+format = <label>
+
+[module/notifications]
+type = custom/script
+exec = ~/.config/polybar/scripts/notifications.sh
+interval = 1
+format = <label>
+
+; ================================
+; Advanced System Modules
+; ================================
+
+[module/uptime]
+type = custom/script
+exec = ~/.config/polybar/scripts/uptime.sh
+interval = 60
+
+; System uptime with beautiful styling
+format = <label>
+format-prefix = "󰅐 "
+format-prefix-foreground = ${colors.cyan}
+format-prefix-font = 2
+label = %output%
+label-foreground = ${colors.foreground}
+label-font = 1
+
+; Hover tooltip with detailed uptime info
+tooltip = true
+exec-tooltip = ~/.config/polybar/scripts/uptime-tooltip.sh --tooltip
+
+; Click to show detailed system info with notification
+click-left = "~/.config/polybar/scripts/uptime.sh"
+
+[module/load]
+type = custom/script
+exec = ~/.config/polybar/scripts/load.sh
+interval = 5
+
+; System load average with color coding
+format = <label>
+format-prefix = "󰍛 "
+format-prefix-foreground = ${colors.pink}
+format-prefix-font = 2
+label = %output%
+label-foreground = ${colors.foreground}
+label-font = 1
+
+; Hover tooltip with detailed load info
+tooltip = true
+exec-tooltip = ~/.config/polybar/scripts/load.sh --tooltip
+
+; Click for detailed process info
+click-left = "~/.config/polybar/scripts/load.sh"
+
+[module/kernel]
+type = custom/script
+exec = uname -r
+interval = 3600
+
+; Kernel version display
+format = <label>
+format-prefix = "󰌽 "
+format-prefix-foreground = ${colors.blue}
+format-prefix-font = 2
+label = %output%
+label-foreground = ${colors.foreground}
+label-font = 1
+
+; Click for full system information
+click-left = "~/.config/polybar/scripts/kernel-info.sh"
+
+; vim:ft=dosini

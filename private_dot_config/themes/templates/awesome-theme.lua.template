@@ -1,0 +1,166 @@
+---------------------------
+-- {{THEME_NAME}} AwesomeWM theme
+-- Generated from theme switcher
+---------------------------
+
+local theme_assets = require("beautiful.theme_assets")
+local xresources = require("beautiful.xresources")
+local dpi = xresources.apply_dpi
+local gfs = require("gears.filesystem")
+local themes_path = gfs.get_themes_dir()
+
+local theme = {}
+
+-- {{THEME_NAME}} colors
+local colors = {
+{{COLOR_DEFINITIONS}}
+}
+
+-- Font (using FiraCode Nerd Font)
+theme.font          = "FiraCode Nerd Font Propo 10"
+theme.taglist_font  = "FiraCode Nerd Font Propo Bold 10"
+
+-- Background colors
+theme.bg_normal     = colors.base
+theme.bg_focus      = colors.surface0
+theme.bg_urgent     = colors.red
+theme.bg_minimize   = colors.surface1
+theme.bg_systray    = colors.base
+
+-- Foreground colors
+theme.fg_normal     = colors.text
+theme.fg_focus      = colors.text
+theme.fg_urgent     = colors.base
+theme.fg_minimize   = colors.overlay0
+
+-- Gaps (matches Hyprland gaps_in=2, gaps_out=4)
+theme.useless_gap   = dpi(2)
+
+-- Borders (matches Hyprland border_size=2, rounding=10)
+theme.border_width  = dpi(2)
+theme.border_normal = colors.overlay0
+theme.border_focus  = colors.teal
+theme.border_marked = colors.red
+
+-- Titlebar colors
+theme.titlebar_bg_focus  = colors.surface0
+theme.titlebar_bg_normal = colors.base
+theme.titlebar_fg_focus  = colors.text
+theme.titlebar_fg_normal = colors.subtext0
+
+-- Menu colors
+theme.menu_submenu_icon = themes_path.."default/submenu.png"
+theme.menu_height = dpi(15)
+theme.menu_width  = dpi(100)
+theme.menu_bg_normal = colors.base
+theme.menu_bg_focus  = colors.surface0
+theme.menu_fg_normal = colors.text
+theme.menu_fg_focus  = colors.text
+theme.menu_border_color = colors.overlay0
+theme.menu_border_width = dpi(1)
+
+-- Hotkeys popup
+theme.hotkeys_bg = colors.base
+theme.hotkeys_fg = colors.text
+theme.hotkeys_border_width = dpi(2)
+theme.hotkeys_border_color = colors.overlay0
+theme.hotkeys_modifiers_fg = colors.mauve
+theme.hotkeys_label_bg = colors.surface0
+theme.hotkeys_label_fg = colors.text
+theme.hotkeys_group_margin = dpi(20)
+
+-- Notifications
+theme.notification_font = theme.font
+theme.notification_bg = colors.base
+theme.notification_fg = colors.text
+theme.notification_border_color = colors.overlay0
+theme.notification_border_width = dpi(2)
+theme.notification_margin = dpi(10)
+theme.notification_opacity = 0.9
+theme.notification_max_width = dpi(400)
+theme.notification_max_height = dpi(200)
+
+-- Taglist
+theme.taglist_bg_focus    = colors.surface0
+theme.taglist_bg_urgent   = colors.red
+theme.taglist_bg_occupied = colors.surface1
+theme.taglist_bg_empty    = "transparent"
+theme.taglist_fg_focus    = colors.text
+theme.taglist_fg_urgent   = colors.base
+theme.taglist_fg_occupied = colors.subtext0
+theme.taglist_fg_empty    = colors.overlay0
+
+-- Taglist shapes and spacing
+theme.taglist_spacing = 4
+theme.taglist_shape = function(cr, width, height)
+    return require("gears").shape.rounded_rect(cr, width, height, 8)
+end
+
+-- Tasklist
+theme.tasklist_bg_focus  = colors.surface0
+theme.tasklist_bg_normal = "transparent"
+theme.tasklist_fg_focus  = colors.text
+theme.tasklist_fg_normal = colors.subtext0
+
+-- Systray
+theme.systray_icon_spacing = dpi(5)
+
+-- Wibar (status bar)
+theme.wibar_bg = "transparent"
+theme.wibar_fg = colors.text
+theme.wibar_border_color = colors.overlay0
+theme.wibar_border_width = dpi(0)
+theme.wibar_height = dpi(40)
+
+-- Module backgrounds (for individual widget groups)
+theme.module_bg = colors.base .. "dd"
+theme.module_shape = function(cr, width, height)
+    return require("gears").shape.rounded_rect(cr, width, height, 10)
+end
+
+-- Widget icons (placeholder paths)
+theme.widget_ac                     = themes_path.."default/icons/ac.png"
+theme.widget_battery                = themes_path.."default/icons/battery.png"
+theme.widget_battery_low            = themes_path.."default/icons/battery_low.png"
+theme.widget_battery_empty          = themes_path.."default/icons/battery_empty.png"
+theme.widget_brightness             = themes_path.."default/icons/brightness.png"
+theme.widget_clock                  = themes_path.."default/icons/clock.png"
+theme.widget_cpu                    = themes_path.."default/icons/cpu.png"
+theme.widget_mem                    = themes_path.."default/icons/mem.png"
+theme.widget_net                    = themes_path.."default/icons/net.png"
+theme.widget_temp                   = themes_path.."default/icons/temp.png"
+theme.widget_vol                    = themes_path.."default/icons/vol.png"
+theme.widget_vol_low                = themes_path.."default/icons/vol_low.png"
+theme.widget_vol_no                 = themes_path.."default/icons/vol_no.png"
+theme.widget_vol_mute               = themes_path.."default/icons/vol_mute.png"
+
+-- Layout icons
+theme.layout_fairh      = themes_path.."default/layouts/fairhw.png"
+theme.layout_fairv      = themes_path.."default/layouts/fairvw.png"
+theme.layout_floating   = themes_path.."default/layouts/floatingw.png"
+theme.layout_magnifier  = themes_path.."default/layouts/magnifierw.png"
+theme.layout_max        = themes_path.."default/layouts/maxw.png"
+theme.layout_fullscreen = themes_path.."default/layouts/fullscreenw.png"
+theme.layout_tilebottom = themes_path.."default/layouts/tilebottomw.png"
+theme.layout_tileleft   = themes_path.."default/layouts/tileleftw.png"
+theme.layout_tile       = themes_path.."default/layouts/tilew.png"
+theme.layout_tiletop    = themes_path.."default/layouts/tiletopw.png"
+theme.layout_spiral     = themes_path.."default/layouts/spiralw.png"
+theme.layout_dwindle    = themes_path.."default/layouts/dwindlew.png"
+theme.layout_cornernw   = themes_path.."default/layouts/cornernww.png"
+theme.layout_cornerne   = themes_path.."default/layouts/cornernew.png"
+theme.layout_cornersw   = themes_path.."default/layouts/cornersww.png"
+theme.layout_cornerse   = themes_path.."default/layouts/cornersew.png"
+
+-- Generate Awesome icon using beautiful
+theme.awesome_icon = theme_assets.awesome_icon(
+    theme.menu_height, theme.bg_focus, theme.fg_focus
+)
+
+-- Define the icon theme for application icons
+theme.icon_theme = nil
+
+-- Wallpaper (matches Hyprland wallpaper)
+theme.wallpaper = os.getenv("HOME") .. "/Pictures/wallpapers/forest_bridge.jpg"
+
+return theme

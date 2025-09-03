@@ -14,8 +14,15 @@ chezmoi init && chezmoi apply
 
 ## ✨ Key Features
 
-### 🎨 **Modern Polybar Status Bar**
-- **Catppuccin Macchiato** theme with modern aesthetics
+### 🎨 **Universal Theme System**
+- **9 Beautiful Themes** - Catppuccin, Gruvbox, Nord, Tokyo Night, Dracula + light variants
+- **Seamless Switching** - One command changes AwesomeWM, Polybar, Rofi, Kitty simultaneously
+- **Interactive Selection** - Beautiful Rofi interface with color previews (Super+P)
+- **Live Reload** - Applications restart automatically with new themes
+- **Template System** - Easy to add new themes and customize
+
+### 🎯 **Modern Polybar Status Bar**
+- **Dynamic Theming** - Matches selected theme automatically
 - **Interactive Calendar & Clock** - Left/middle/right click for different views
 - **Enhanced Window Management** - Restore minimized windows across workspaces
 - **System Monitoring** - CPU, memory, temperature, network, and more
@@ -39,7 +46,8 @@ chezmoi init && chezmoi apply
 
 - **[📖 Documentation Index](docs/README.md)** - Main navigation and overview
 - **[🚀 Installation Guide](docs/Installation%20Guide.md)** - Step-by-step setup
-- **[🎨 Polybar System](docs/polybar/)** - Status bar documentation
+- **[🎨 Theme System](private_dot_config/themes/README.md)** - Universal theme switcher
+- **[🎯 Polybar System](docs/polybar/)** - Status bar documentation
 - **[🖥️ System Configuration](docs/system/)** - NixOS and hardware setup
 - **[📋 Project Management](docs/project/)** - Development progress and roadmap
 

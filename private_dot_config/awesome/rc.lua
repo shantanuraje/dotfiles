@@ -647,7 +647,12 @@ globalkeys = gears.table.join(
     -- Lock screen (matches Hyprland)
     awful.key({ modkey,           }, "l",
         function () awful.spawn("i3lock -c 000000") end,
-        {description = "lock screen", group = "hotkeys"})
+        {description = "lock screen", group = "hotkeys"}),
+
+    -- Theme switcher (using p for preferences/palette)
+    awful.key({ modkey,           }, "p",
+        function () awful.spawn.with_shell("bash ~/.config/themes/rofi-theme-selector.sh") end,
+        {description = "theme switcher", group = "system"})
 
     -- Toggle bar visibility - DISABLED FOR POLYBAR
     --[[
