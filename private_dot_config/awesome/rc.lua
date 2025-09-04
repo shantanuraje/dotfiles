@@ -399,6 +399,12 @@ awful.screen.connect_for_each_screen(function(s)
         },
     }
 
+    -- Adds an empty wibar under Polybar so that the workarea changes
+    awful.wibar {
+        position = 'top',
+        height   = 23,
+    }
+
     -- Create the wibox (status bar) - DISABLED FOR POLYBAR
     --[[
     s.mywibox = awful.wibar({ 
