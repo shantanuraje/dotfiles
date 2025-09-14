@@ -599,9 +599,9 @@ globalkeys = gears.table.join(
     
     awful.key({ modkey }, "w",
         function()
-            awful.spawn.with_shell("bash ~/.config/rofi/bin/window-switcher.sh")
+            mymainmenu:toggle()
         end,
-        {description = "quick window switcher", group = "window switcher"}),
+        {description = "open context menu", group = "launcher"}),
 
     -- Volume controls (matches Hyprland)
     awful.key({ }, "XF86AudioRaiseVolume",

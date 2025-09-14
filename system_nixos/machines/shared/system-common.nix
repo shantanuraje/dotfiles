@@ -252,6 +252,7 @@
     stylua
     testdisk
     lazygit
+    arduino-ide    # Arduino IDE for embedded development
 
     discord  # For team communication
     bottom   # Better top/htop for monitoring
