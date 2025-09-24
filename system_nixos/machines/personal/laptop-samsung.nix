@@ -22,6 +22,15 @@ in
   # Personal laptop uses DHCP (simple networking)
   networking.networkmanager.enable = true;
   
+  # Samsung laptop-specific packages
+  environment.systemPackages = with pkgs; [
+    # Open-source remote desktop client with VNC, RDP, SSH support
+    remmina
+    
+    # Lightweight VNC viewer from TigerVNC project
+    tigervnc
+  ];
+  
   # # Personal-specific packages (additions to the base set from system-common.nix)
   # environment.systemPackages = with pkgs; [
   #   # Personal development and creative tools

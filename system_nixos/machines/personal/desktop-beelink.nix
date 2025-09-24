@@ -28,6 +28,31 @@ in
     })
   ];
   
+  # Beelink-specific packages
+  environment.systemPackages = with pkgs; [
+    # VNC server for remote access
+    x11vnc
+  ];
+  
+  # VNC Server configuration (x11vnc)
+  # Note: x11vnc shares your existing X11 session, not a separate virtual desktop
+  # The VNC server is started automatically by AwesomeWM in rc.lua
+  # 
+  # To set up a VNC password:
+  #   x11vnc -storepasswd ~/.vnc/passwd
+  #
+  # Default configuration in AwesomeWM rc.lua:
+  #   Port: 5901
+  #   Localhost only (requires SSH tunnel for remote access)
+  #   Auth: ~/.vnc/passwd
+  #
+  # For remote access, use SSH tunnel:
+  #   ssh -L 5901:localhost:5901 user@beelink-ser8-desktop
+  #   Then connect VNC viewer to localhost:5901
+
+  # Open firewall port for VNC (for LAN access)
+  networking.firewall.allowedTCPPorts = [ 5901 ];
+  
   # # Personal-specific packages (additions to the base set from system-common.nix)
   # environment.systemPackages = with pkgs; [
   #   # Personal development and creative tools

@@ -31,6 +31,7 @@ chezmoi init && chezmoi apply
 ### 🖥️ **System Integration**
 - **NixOS Configuration** - Declarative system management
 - **Hardware Fixes** - Samsung Galaxy Book audio fixes
+- **Remote Access** - VNC server integration with AwesomeWM
 - **Cross-Platform Planning** - Universal Linux system management
 - **Automated Deployment** - Safe, tested deployment scripts
 

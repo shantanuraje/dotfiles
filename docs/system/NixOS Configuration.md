@@ -25,6 +25,7 @@ The NixOS configuration provides a declarative, reproducible system setup with m
 - **Display Management** - Screen layout configuration
 - **Power Management** - Laptop-specific power optimizations
 - **Input Devices** - Keyboard and touchpad configuration
+- **Remote Access** - VNC server configuration for Beelink system
 
 ## 🗂️ Configuration Structure
 
@@ -303,6 +304,7 @@ xrandr --verbose
 
 - **[[Hardware Fixes]]** - Hardware-specific fixes and drivers
 - **[[System Scripts]]** - Automation and utility scripts
+- **[[VNC_Setup.md]]** - VNC server setup for remote access
 - **[[../polybar/Polybar Overview]]** - Desktop environment setup
 - **[[../project/Development Progress]]** - Current development status
 
