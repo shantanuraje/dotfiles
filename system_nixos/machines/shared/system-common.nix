@@ -216,7 +216,7 @@
     
     # Wayland/Hyprland ecosystem
     waybar
-    rofi-wayland
+    rofi
     swaybg
     dunst
     playerctl
@@ -271,7 +271,7 @@
     # Creative and productivity apps (personal setup)
     shotwell
     # bambu-studio  # Temporarily disabled to test libsoup issue
-    libsForQt5.okular
+    # libsForQt5.okular
     realvnc-vnc-viewer
     iwd
     zellij
