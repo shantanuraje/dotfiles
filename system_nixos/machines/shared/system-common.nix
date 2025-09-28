@@ -80,8 +80,10 @@
   };
   
   # Autologin configuration (can be overridden per machine)
+  # TEMPORARILY DISABLED: GDM autologin causing boot hang at graphical target
+  # Error: pam_unix helper binary execve failed
   services.displayManager.autoLogin = {
-    enable = lib.mkDefault true;  # Can be overridden by individual machines
+    enable = lib.mkDefault false;  # Temporarily disabled to fix boot issues
     user = "shantanu";
   };
   
@@ -144,6 +146,7 @@
     bluetuith
     impala
     usbutils
+    pciutils  # Hardware information tools (lspci, etc.)
     chezmoi
     neofetch
     powerline

@@ -68,7 +68,7 @@ local function autostart()
         "picom --config ~/.config/picom/picom.conf",  -- compositor
         "bash ~/.config/awesome/wallpaper-rotate.sh",  -- wallpaper rotation
         "dunst",  -- notifications
-        "x11vnc -display :0 -rfbport 5901 -forever -loop -noxdamage -repeat -rfbauth ~/.vnc/passwd",  -- VNC server (removed -localhost for LAN access)
+        "pkill x11vnc; x11vnc -display :0 -rfbport 5901 -forever -loop -noxdamage -repeat -nomodtweak -xkb -rfbauth ~/.vnc/passwd",  -- VNC server (removed -localhost for LAN access)
     }
     
     -- Launch system services first (always run with singleton checks)

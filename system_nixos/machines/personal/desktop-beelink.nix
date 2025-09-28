@@ -53,6 +53,12 @@ in
   # Open firewall port for VNC (for LAN access)
   networking.firewall.allowedTCPPorts = [ 5901 ];
   
+  # Custom iptables rule for VNC (alternative approach)
+  # This creates the exact iptables rule you specified
+  # networking.firewall.extraCommands = ''
+  #   iptables -I nixos-fw -p tcp --dport 5901 -j nixos-fw-accept
+  # '';
+  
   # # Personal-specific packages (additions to the base set from system-common.nix)
   # environment.systemPackages = with pkgs; [
   #   # Personal development and creative tools

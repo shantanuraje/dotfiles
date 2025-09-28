@@ -16,6 +16,9 @@ environment.systemPackages = with pkgs; [
   # VNC server for remote access
   x11vnc
 ];
+
+# Open firewall port for VNC (for LAN access)
+networking.firewall.allowedTCPPorts = [ 5901 ];
 ```
 
 ### AwesomeWM Integration
@@ -28,7 +31,7 @@ local system_cmds = {
     "picom --config ~/.config/picom/picom.conf",
     "bash ~/.config/awesome/wallpaper-rotate.sh",
     "dunst",
-    "x11vnc -display :0 -rfbport 5901 -forever -loop -noxdamage -repeat -rfbauth ~/.vnc/passwd",
+    "pkill x11vnc; x11vnc -display :0 -rfbport 5901 -forever -loop -noxdamage -repeat -nomodtweak -xkb -rfbauth ~/.vnc/passwd",
 }
 ```
 
@@ -39,10 +42,13 @@ local system_cmds = {
 - **Binding**: All interfaces (accessible on LAN)
 - **Authentication**: Password file at `~/.vnc/passwd`
 - **Options**:
+  - `pkill x11vnc`: Kill any existing x11vnc instances before starting
   - `-forever`: Keep running after client disconnects
   - `-loop`: Restart if it crashes
   - `-noxdamage`: Better compatibility with compositors
   - `-repeat`: Allow keyboard repeat
+  - `-nomodtweak`: Disable modifier key tweaking for better keyboard compatibility
+  - `-xkb`: Use XKB extension for improved keyboard handling
 
 ## Initial Setup
 
@@ -135,7 +141,7 @@ pgrep -f x11vnc
 journalctl --user -u awesome
 
 # Run x11vnc manually to see errors
-x11vnc -display :0 -rfbport 5901 -localhost -forever -loop -noxdamage -repeat -rfbauth ~/.vnc/passwd
+pkill x11vnc; x11vnc -display :0 -rfbport 5901 -forever -loop -noxdamage -repeat -nomodtweak -xkb -rfbauth ~/.vnc/passwd
 ```
 
 ### Common Issues
@@ -151,6 +157,11 @@ x11vnc -display :0 -rfbport 5901 -localhost -forever -loop -noxdamage -repeat -r
 3. **Black screen**
    - Ensure you're using the correct display (:0)
    - Check if compositor (picom) is running
+
+4. **Keyboard issues (e.g., Shift+Tab not working)**
+   - The `-nomodtweak` and `-xkb` flags help with keyboard compatibility
+   - Common with Android VNC clients
+   - These flags improve modifier key handling
 
 ## Security Considerations
 
@@ -183,7 +194,7 @@ After=graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=/run/current-system/sw/bin/x11vnc -display :0 -auth guess -forever -loop -noxdamage -repeat -rfbauth %h/.vnc/passwd -rfbport 5901 -localhost
+ExecStart=/bin/sh -c 'pkill x11vnc; /run/current-system/sw/bin/x11vnc -display :0 -auth guess -forever -loop -noxdamage -repeat -nomodtweak -xkb -rfbauth %h/.vnc/passwd -rfbport 5901'
 Restart=on-failure
 RestartSec=10
 
