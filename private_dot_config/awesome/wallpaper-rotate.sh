@@ -15,7 +15,17 @@ fi
 # Function to set random wallpaper
 set_random_wallpaper() {
     # Get all image files (handle spaces in filenames)
-    readarray -t WALLPAPERS < <(find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.bmp" \) | shuf)
+    # Previous solution:
+    # mapfile -t WALLPAPERS < <(find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.bmp" \))
+    # if [ ${#WALLPAPERS[@]} -eq 0 ]; then
+    #     echo "No wallpapers found in $WALLPAPER_DIR"
+    #     exit 1
+    # fi
+    # RANDOM_INDEX=$((RANDOM % ${#WALLPAPERS[@]}))
+    # WALLPAPERS=("${WALLPAPERS[$RANDOM_INDEX]}")
+
+    # Improved randomness using shuf
+    mapfile -t WALLPAPERS < <(find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.bmp" \) -print0 | shuf -z | xargs -0 -n1)
     
     if [ ${#WALLPAPERS[@]} -eq 0 ]; then
         echo "No wallpapers found in $WALLPAPER_DIR"

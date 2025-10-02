@@ -31,7 +31,7 @@ local system_cmds = {
     "picom --config ~/.config/picom/picom.conf",
     "bash ~/.config/awesome/wallpaper-rotate.sh",
     "dunst",
-    "pkill x11vnc; x11vnc -display :0 -rfbport 5901 -forever -loop -noxdamage -repeat -nomodtweak -xkb -rfbauth ~/.vnc/passwd",
+    "pkill x11vnc; x11vnc -display :0 -rfbport 5901 -forever -loop -noxdamage -repeat -rfbauth ~/.vnc/passwd",
 }
 ```
 
@@ -47,8 +47,6 @@ local system_cmds = {
   - `-loop`: Restart if it crashes
   - `-noxdamage`: Better compatibility with compositors
   - `-repeat`: Allow keyboard repeat
-  - `-nomodtweak`: Disable modifier key tweaking for better keyboard compatibility
-  - `-xkb`: Use XKB extension for improved keyboard handling
 
 ## Initial Setup
 
@@ -141,7 +139,7 @@ pgrep -f x11vnc
 journalctl --user -u awesome
 
 # Run x11vnc manually to see errors
-pkill x11vnc; x11vnc -display :0 -rfbport 5901 -forever -loop -noxdamage -repeat -nomodtweak -xkb -rfbauth ~/.vnc/passwd
+pkill x11vnc; x11vnc -display :0 -rfbport 5901 -forever -loop -noxdamage -repeat -rfbauth ~/.vnc/passwd
 ```
 
 ### Common Issues
@@ -159,9 +157,10 @@ pkill x11vnc; x11vnc -display :0 -rfbport 5901 -forever -loop -noxdamage -repeat
    - Check if compositor (picom) is running
 
 4. **Keyboard issues (e.g., Shift+Tab not working)**
-   - The `-nomodtweak` and `-xkb` flags help with keyboard compatibility
-   - Common with Android VNC clients
-   - These flags improve modifier key handling
+   - Common with Android VNC clients (especially bVNC)
+   - Known issue: Having `xorg.xmodmap` package installed can interfere with x11vnc keyboard handling
+   - Some key combinations (like Super+Enter) may not work properly with Android clients
+   - Consider using alternative key bindings or input methods in your VNC client
 
 ## Security Considerations
 
@@ -194,7 +193,7 @@ After=graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=/bin/sh -c 'pkill x11vnc; /run/current-system/sw/bin/x11vnc -display :0 -auth guess -forever -loop -noxdamage -repeat -nomodtweak -xkb -rfbauth %h/.vnc/passwd -rfbport 5901'
+ExecStart=/bin/sh -c 'pkill x11vnc; /run/current-system/sw/bin/x11vnc -display :0 -auth guess -forever -loop -noxdamage -repeat -rfbauth %h/.vnc/passwd -rfbport 5901'
 Restart=on-failure
 RestartSec=10
 

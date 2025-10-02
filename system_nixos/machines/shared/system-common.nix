@@ -236,6 +236,7 @@
     noto-fonts-emoji
     xorg.xwininfo
     xorg.xprop
+    # xorg.xmodmap  # Commented out - interferes with VNC keyboard handling
     scrot
     
     # Polybar and audio controls
