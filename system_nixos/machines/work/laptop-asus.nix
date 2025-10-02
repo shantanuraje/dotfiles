@@ -80,13 +80,13 @@
     # Use modesetting driver (works with both Intel and NVIDIA)
     videoDrivers = [ "modesetting" ];
 
-    # Configure displays - HDMI-1-1 as primary to the left of laptop screen (eDP-1)
+    # Configure displays - eDP-1 as primary, HDMI-1-1 vertical to the right
     displayManager.sessionCommands = ''
       # Wait a moment for displays to be detected
       sleep 2
-      # Configure monitors
-      ${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1-1 --primary --mode 1920x1080 --pos 0x0 || true
-      ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --mode 1920x1080 --pos 1920x0 --right-of HDMI-1-1 || true
+      # Configure monitors - laptop screen primary, external monitor vertical on right
+      ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal || true
+      ${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1-1 --mode 1920x1080 --pos 1920x0 --rotate right --right-of eDP-1 || true
     '';
   };
 
@@ -98,7 +98,7 @@
     wantedBy = [ "graphical-session.target" ];
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1-1 --primary --mode 1920x1080 --pos 0x0 && ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --mode 1920x1080 --pos 1920x0 --right-of HDMI-1-1'";
+      ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal && ${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1-1 --mode 1920x1080 --pos 1920x0 --rotate right --right-of eDP-1'";
       RemainAfterExit = true;
     };
   };

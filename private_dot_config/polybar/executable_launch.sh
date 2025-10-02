@@ -21,12 +21,18 @@ done
 # Small delay to ensure clean shutdown
 sleep 1
 
-# Launch polybar using the config location
-log "Launching polybar..."
-polybar main -c ~/.config/polybar/config.ini 2>&1 | tee -a /tmp/polybar.log &
+# Detect connected monitors
+MONITORS=$(xrandr --query | grep " connected" | cut -d" " -f1)
+log "Detected monitors: $MONITORS"
 
-# Get the PID and disown the process
-POLYBAR_PID=$!
-disown
+# Launch polybar on each connected monitor
+for monitor in $MONITORS; do
+    log "Launching polybar on monitor: $monitor"
+    MONITOR=$monitor polybar main -c ~/.config/polybar/config.ini 2>&1 | tee -a /tmp/polybar.log &
 
-log "Polybar launched with PID: $POLYBAR_PID"
+    # Get the PID and disown the process
+    POLYBAR_PID=$!
+    disown
+
+    log "Polybar launched on $monitor with PID: $POLYBAR_PID"
+done

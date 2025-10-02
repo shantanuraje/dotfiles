@@ -126,6 +126,7 @@
     vim
     wget
     git
+    openssl
     
     # Desktop applications (common across personal/work)
     vscode
