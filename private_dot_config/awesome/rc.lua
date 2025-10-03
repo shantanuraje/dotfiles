@@ -401,9 +401,21 @@ awful.screen.connect_for_each_screen(function(s)
     }
 
     -- Adds an empty wibar under Polybar so that the workarea changes
+    -- Calculate height based on screen orientation to match polybar height
+    -- Horizontal monitors: 2.5% of height, Vertical monitors: 1.75% of height
+    local wibar_height
+    if s.geometry.height > s.geometry.width then
+        -- Vertical/Portrait monitor (1.75% of height)
+        wibar_height = math.ceil(s.geometry.height * 0.0175)
+    else
+        -- Horizontal/Landscape monitor (2.5% of height)
+        wibar_height = math.ceil(s.geometry.height * 0.025)
+    end
+
     awful.wibar {
         position = 'top',
-        height   = 23,
+        height   = wibar_height,
+        screen   = s,
     }
 
     -- Create the wibox (status bar) - DISABLED FOR POLYBAR

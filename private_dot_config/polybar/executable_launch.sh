@@ -28,7 +28,24 @@ log "Detected monitors: $MONITORS"
 # Launch polybar on each connected monitor
 for monitor in $MONITORS; do
     log "Launching polybar on monitor: $monitor"
-    MONITOR=$monitor polybar main -c ~/.config/polybar/config.ini 2>&1 | tee -a /tmp/polybar.log &
+
+    # Get monitor resolution to detect orientation
+    MONITOR_INFO=$(xrandr --query | grep "^$monitor connected" | grep -oP '\d+x\d+')
+    WIDTH=$(echo $MONITOR_INFO | cut -d'x' -f1)
+    HEIGHT=$(echo $MONITOR_INFO | cut -d'x' -f2)
+
+    # Determine config based on orientation
+    if [ "$HEIGHT" -gt "$WIDTH" ]; then
+        # Vertical/Portrait monitor
+        CONFIG="~/.config/polybar/config-vertical.ini"
+        log "Monitor $monitor is vertical (${WIDTH}x${HEIGHT}), using vertical config"
+    else
+        # Horizontal/Landscape monitor
+        CONFIG="~/.config/polybar/config.ini"
+        log "Monitor $monitor is horizontal (${WIDTH}x${HEIGHT}), using standard config"
+    fi
+
+    MONITOR=$monitor polybar main -c $CONFIG 2>&1 | tee -a /tmp/polybar.log &
 
     # Get the PID and disown the process
     POLYBAR_PID=$!
