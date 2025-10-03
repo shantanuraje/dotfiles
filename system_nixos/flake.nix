@@ -3,19 +3,19 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    claude-desktop-linux-flake.url = "github:k3d3/claude-desktop-linux-flake";
+    nix-ai-tools.url = "github:numtide/nix-ai-tools";
     # awesome-git = {
     #   url = "github:awesomeWM/awesome";
     #   flake = false;
     # };
   };
 
-  outputs = { self, nixpkgs, claude-desktop-linux-flake, ... }: {
+  outputs = { self, nixpkgs, nix-ai-tools, ... }: {
     nixosConfigurations = {
       # Multiple host configurations - nixos-rebuild automatically uses current hostname
       samsung-laptop-personal = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = { inherit claude-desktop-linux-flake; };
+        specialArgs = { inherit nix-ai-tools; };
         modules = [
           ./configuration.nix
         ];
@@ -24,7 +24,7 @@
       # Beelink desktop configuration
       beelink-ser8-desktop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = { inherit claude-desktop-linux-flake; };
+        specialArgs = { inherit nix-ai-tools; };
         modules = [
           ./configuration.nix
         ];
@@ -33,7 +33,7 @@
       # Default fallback configuration
       nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = { inherit claude-desktop-linux-flake; };
+        specialArgs = { inherit nix-ai-tools; };
         modules = [
           ./configuration.nix
         ];

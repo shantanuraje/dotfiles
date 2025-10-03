@@ -1,7 +1,7 @@
 # Shared system configuration for all machines
 # Contains common settings like autologin, swap management, and base system config
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, nix-ai-tools, ... }:
 
 {
   # Bootloader configuration (common to all machines)
@@ -292,10 +292,8 @@
     qt5.qtx11extras
 
 
-    # AI and specialized tools (personal environment)
-    # claude-desktop-linux-flake.packages.${pkgs.system}.claude-desktop  # Disabled due to persistent hash mismatch
-    claude-code
-    gemini-cli  # Using nixpkgs version
+    # AI and specialized tools from nix-ai-tools (all available tools)
+  ] ++ (builtins.attrValues nix-ai-tools.packages.${pkgs.system}) ++ [
 
     
     # Python development environment
