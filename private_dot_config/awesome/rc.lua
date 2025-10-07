@@ -69,6 +69,7 @@ local function autostart()
         "bash ~/.config/awesome/wallpaper-rotate.sh",  -- wallpaper rotation
         "dunst",  -- notifications
         "pkill x11vnc; x11vnc -display :0 -rfbport 5901 -forever -loop -noxdamage -repeat -rfbauth ~/.vnc/passwd",  -- VNC server
+        "gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'",  -- enforce dark mode for GTK apps
     }
     
     -- Launch system services first (always run with singleton checks)
