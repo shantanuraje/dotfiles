@@ -326,6 +326,10 @@
       plotly
       dash
       dash-bootstrap-components
+      # Jupyter and VS Code kernel support
+      jupyter
+      ipykernel
+      ipython
     ]))
   ];
   
