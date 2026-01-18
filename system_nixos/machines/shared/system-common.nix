@@ -195,7 +195,7 @@
     w3m           # Text-based web browser with image support
     viu           # Terminal image viewer
     chafa         # Terminal image viewer with better color
-    termpdfpy       # Terminal PDF viewer
+    # termpdfpy       # Terminal PDF viewer (disabled: bibtool build failure)
     unrar         # RAR archive support
     zip           # ZIP creation/extraction
     
