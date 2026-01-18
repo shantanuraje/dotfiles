@@ -278,7 +278,8 @@
     
     # Creative and productivity apps (personal setup)
     shotwell
-    bambu-studio  # Temporarily disabled to test libsoup issue
+    bambu-studio
+    freecad
     # libsForQt5.okular
     realvnc-vnc-viewer
     iwd
