@@ -69,8 +69,7 @@
   
   # Common programs
   programs.firefox.enable = true;
-  programs.adb.enable = true;
-  
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
   
