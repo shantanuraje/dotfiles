@@ -102,8 +102,12 @@
   # If the swapfile doesn't exist yet, create it automatically
   systemd.services.create-swapfile = {
     description = "Create swap file if it doesn't exist";
-    wantedBy = [ "swap.target" ];
-    before = [ "swap.target" ];
+    wantedBy = [ "multi-user.target" ];
+    after = [ "local-fs.target" ];
+    before = [ "swapfile.swap" ];
+    unitConfig = {
+      RequiresMountsFor = "/";
+    };
     serviceConfig = {
       Type = "oneshot";
       ExecStart = pkgs.writeShellScript "create-swapfile" ''
@@ -118,7 +122,7 @@
       RemainAfterExit = true;
     };
   };
-  
+
   # Core system packages (common to all machines)
   environment.systemPackages = with pkgs; [
     # Essential tools
@@ -164,7 +168,7 @@
     mediainfo     # Media file information for previews  
     w3m           # Text-based web browser for HTML previews
     atool         # Archive handling and extraction
-    poppler_utils # PDF preview support (pdftotext)
+    poppler-utils # PDF preview support (pdftotext)
     ffmpegthumbnailer  # Video thumbnail generation
     highlight     # Syntax highlighting for code files
     tree          # Directory tree visualization
@@ -237,7 +241,7 @@
     acpi
     lm_sensors
     libnotify
-    noto-fonts-emoji
+    noto-fonts-color-emoji
     xorg.xwininfo
     xorg.xprop
     # xorg.xmodmap  # Commented out - interferes with VNC keyboard handling
@@ -274,7 +278,7 @@
     
     # Creative and productivity apps (personal setup)
     shotwell
-    # bambu-studio  # Temporarily disabled to test libsoup issue
+    bambu-studio  # Temporarily disabled to test libsoup issue
     # libsForQt5.okular
     realvnc-vnc-viewer
     iwd
