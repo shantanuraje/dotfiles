@@ -1,7 +1,7 @@
 # Shared system configuration for all machines
 # Contains common settings like autologin, swap management, and base system config
 
-{ config, pkgs, lib, nix-ai-tools, ... }:
+{ config, pkgs, lib, nix-ai-tools, kimi-cli, ... }:
 
 {
   # Bootloader configuration (common to all machines)
@@ -134,7 +134,7 @@
     # Desktop applications (common across personal/work)
     vscode
     kitty
-    synergy
+    # synergy  # Disabled: Qt5 deprecation build failure upstream
     insync
     firefox
     
@@ -213,6 +213,7 @@
     hyperfine # Benchmarking
     tokei     # Code statistics
     glow      # Terminal markdown renderer
+    pandoc    # Universal document converter
     
     # Automation and scripting tools
     expect    # Automate interactive applications
@@ -299,8 +300,22 @@
     qt5.qtx11extras
 
 
-    # AI and specialized tools from nix-ai-tools (all available tools)
-  ] ++ (builtins.attrValues nix-ai-tools.packages.${pkgs.system}) ++ [
+    # Kimi Code CLI - AI coding agent
+    kimi-cli.packages.${pkgs.system}.default
+
+    # AI and specialized tools from nix-ai-tools (excluding broken packages)
+  ] ++ (builtins.attrValues (removeAttrs nix-ai-tools.packages.${pkgs.system} [
+    "coding-agent-search"  # Disabled: upstream tarball download corrupted
+    "vibe-kanban"          # Disabled: upstream tarball download corrupted
+    "goose-cli"            # Disabled: download failure
+    "openclaw"             # Disabled: download failure (still broken)
+    "agent-deck"              # Disabled: download failure
+    "agent-browser"           # Disabled: download failure
+    "flake-inputs"         # Not a package, just a file
+    "code"                 # Collides with vscode bin/code
+    "codex"                # OpenAI Codex - not needed
+    "codex-acp"            # OpenAI Codex ACP variant - not needed
+  ])) ++ [
 
     
     # Python development environment

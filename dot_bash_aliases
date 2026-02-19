@@ -170,6 +170,26 @@ alias fe='fd --type f | fzf --preview "bat --color=always {}" | xargs nvim'
 # Search content with rg + fzf
 alias search='rg --line-number . | fzf --delimiter : --preview "bat --color=always --highlight-line {2} {1}"'
 
+# === Claude Vault Automation ===
+# Show all of today's Claude vault reports
+vault-status() {
+    for unit in morning-briefing work-check inbox-sweep evening-review; do
+        local output
+        output=$(journalctl --user -u "claude-vault-$unit" --since today --no-pager 2>/dev/null | grep -v "^--")
+        if [ -n "$output" ]; then
+            echo "=============================="
+            echo "  claude-vault-$unit"
+            echo "=============================="
+            echo "$output"
+            echo ""
+        fi
+    done
+}
+vault-report() { journalctl --user -u "claude-vault-${1}" --since today --no-pager; }
+vault-run() { systemctl --user start "claude-vault-${1}.service" && echo "Started. View with: vault-report $1"; }
+vault-timers() { systemctl --user list-timers | grep claude-vault; }
+vault-states() { ls -la ~/Documents/personal/05-Meta/05-03-Scripts/.vault-automation/state/ 2>/dev/null; }
+
 # === Conditional Aliases (fallbacks) ===
 # If modern tools aren't available, these provide fallbacks
 command -v eza >/dev/null || alias ls='ls --color=auto'
