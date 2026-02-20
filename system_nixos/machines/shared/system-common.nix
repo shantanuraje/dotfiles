@@ -3,6 +3,11 @@
 
 { config, pkgs, lib, nix-ai-tools, kimi-cli, ... }:
 
+let
+  # RealVNC Server package
+  realvnc-server = pkgs.callPackage ../../realvnc-server.nix {};
+in
+
 {
   # Bootloader configuration (common to all machines)
   boot.loader.systemd-boot.enable = true;
@@ -303,6 +308,9 @@
     # Kimi Code CLI - AI coding agent
     kimi-cli.packages.${pkgs.system}.default
 
+    # RealVNC Server for remote access (runs on port 5902)
+    realvnc-server
+
     # AI and specialized tools from nix-ai-tools (excluding broken packages)
   ] ++ (builtins.attrValues (removeAttrs nix-ai-tools.packages.${pkgs.system} [
     "coding-agent-search"  # Disabled: upstream tarball download corrupted
@@ -365,4 +373,21 @@
   
   # NixOS version
   system.stateVersion = "24.11";
+
+  # RealVNC Server systemd user service
+  # Runs automatically when user logs in, provides remote access on port 5902
+  systemd.user.services.vncserver-x11-serviced = {
+    description = "RealVNC Server in Service Mode daemon";
+    after = [ "graphical-session.target" ];
+    wantedBy = [ "default.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${realvnc-server}/bin/vncserver-x11-serviced -fg";
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+  };
+
+  # Firewall configuration for VNC servers
+  networking.firewall.allowedTCPPorts = [ 5902 ];  # RealVNC Server port (5901 used by x11vnc)
 }
