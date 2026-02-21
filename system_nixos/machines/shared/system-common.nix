@@ -374,12 +374,13 @@ in
   # NixOS version
   system.stateVersion = "24.11";
 
-  # RealVNC Server systemd user service
-  # Runs automatically when user logs in, provides remote access on port 5902
-  systemd.user.services.vncserver-x11-serviced = {
+  # RealVNC Server systemd system service
+  # Runs automatically at boot, provides remote access on port 5902
+  # Note: Must run as root (RealVNC Server requirement)
+  systemd.services.vncserver-x11-serviced = {
     description = "RealVNC Server in Service Mode daemon";
-    after = [ "graphical-session.target" ];
-    wantedBy = [ "default.target" ];
+    after = [ "network.target" "syslog.target" ];
+    wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "simple";
       ExecStart = "${realvnc-server}/bin/vncserver-x11-serviced -fg";
