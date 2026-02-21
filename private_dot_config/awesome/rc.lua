@@ -672,18 +672,14 @@ globalkeys = gears.table.join(
     -- Theme switcher (using p for preferences/palette)
     awful.key({ modkey,           }, "p",
         function () awful.spawn.with_shell("bash ~/.config/themes/rofi-theme-selector.sh") end,
-        {description = "theme switcher", group = "system"})
+        {description = "theme switcher", group = "system"}),
 
-    -- Toggle bar visibility - DISABLED FOR POLYBAR
-    --[[
+    -- Toggle polybar visibility (Super+b)
     awful.key({ modkey,           }, "b",
         function ()
-            for s in screen do
-                s.mywibox.visible = not s.mywibox.visible
-            end
+            awful.spawn.with_shell("polybar-msg cmd toggle || ~/.config/polybar/launch.sh")
         end,
-        {description = "toggle bar", group = "awesome"})
-    --]]
+        {description = "toggle polybar", group = "awesome"})
 )
 
 clientkeys = gears.table.join(
