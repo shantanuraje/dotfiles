@@ -1,0 +1,3 @@
+{{ if .opencode.is_work_machine }}
+private_dot_config/opencode/agents/algo-sensei.md.tmpl
+{{ end }}
