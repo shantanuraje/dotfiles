@@ -2,17 +2,11 @@
 name: review
 description: "Read-only vault health audit -- find orphans, broken links, missing frontmatter, and report statistics"
 permission:
-  write:
-    deny: true
-  edit:
-    deny: true
-  bash:
-    deny: true
-  webfetch:
-    deny: true
-  external_directory:
-    - path: "{{ .opencode.vault_path }}/**"
-      allow: true
+  write: "deny"
+  edit: "deny"
+  bash: "deny"
+  webfetch: "deny"
+  external_directory: "allow"
 ---
 
 # Vault Review Agent

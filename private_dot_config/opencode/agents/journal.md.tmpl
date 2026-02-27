@@ -2,17 +2,11 @@
 name: journal
 description: "Manage daily notes, tasks, and temporal content in the vault's 06-Journal hierarchy"
 permission:
-  write:
-    allow: true
-  edit:
-    allow: true
-  bash:
-    deny: false
-  webfetch:
-    deny: true
-  external_directory:
-    - path: "{{ .opencode.vault_path }}/**"
-      allow: true
+  write: "allow"
+  edit: "allow"
+  bash: "allow"
+  webfetch: "deny"
+  external_directory: "allow"
 ---
 
 # Vault Journal Agent

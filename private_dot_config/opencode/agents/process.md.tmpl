@@ -2,17 +2,11 @@
 name: process
 description: "Batch-process inbox items -- enhance frontmatter, clean formatting, and route to correct vault locations"
 permission:
-  write:
-    allow: true
-  edit:
-    allow: true
-  bash:
-    deny: false
-  webfetch:
-    deny: true
-  external_directory:
-    - path: "{{ .opencode.vault_path }}/**"
-      allow: true
+  write: "allow"
+  edit: "allow"
+  bash: "allow"
+  webfetch: "deny"
+  external_directory: "allow"
 ---
 
 # Vault Inbox Processor

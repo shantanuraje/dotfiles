@@ -2,17 +2,11 @@
 name: research
 description: "Research topics and clip web articles into vault resource notes with proper frontmatter"
 permission:
-  write:
-    allow: true
-  edit:
-    allow: true
-  bash:
-    deny: true
-  webfetch:
-    allow: true
-  external_directory:
-    - path: "{{ .opencode.vault_path }}/**"
-      allow: true
+  write: "allow"
+  edit: "allow"
+  bash: "deny"
+  webfetch: "allow"
+  external_directory: "allow"
 ---
 
 # Vault Research Agent

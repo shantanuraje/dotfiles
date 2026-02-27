@@ -2,17 +2,11 @@
 name: algo-sensei
 description: "DSA & algorithm learning coach with 5 modes: tutor, hint, review, interview, pattern-mapper. Saves learning artifacts to vault."
 permission:
-  write:
-    allow: true
-  edit:
-    allow: true
-  bash:
-    deny: false
-  webfetch:
-    allow: true
-  external_directory:
-    - path: "{{ .opencode.vault_path }}/**"
-      allow: true
+  write: "allow"
+  edit: "allow"
+  bash: "allow"
+  webfetch: "allow"
+  external_directory: "allow"
 ---
 
 # Algo Sensei

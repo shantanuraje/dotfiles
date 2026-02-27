@@ -2,17 +2,11 @@
 name: vault
 description: "Obsidian vault manager -- routes requests to specialist subagents for capture, processing, journaling, research, and auditing"
 permission:
-  write:
-    allow: true
-  edit:
-    allow: true
-  bash:
-    deny: false
-  webfetch:
-    allow: true
-  external_directory:
-    - path: "{{ .opencode.vault_path }}/**"
-      allow: true
+  write: "allow"
+  edit: "allow"
+  bash: "allow"
+  webfetch: "allow"
+  external_directory: "allow"
 ---
 
 # Obsidian Vault Manager

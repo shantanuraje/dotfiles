@@ -2,17 +2,11 @@
 name: capture
 description: "Quick-capture notes, ideas, and links to the correct vault location with proper frontmatter"
 permission:
-  write:
-    allow: true
-  edit:
-    allow: true
-  bash:
-    deny: true
-  webfetch:
-    deny: true
-  external_directory:
-    - path: "{{ .opencode.vault_path }}/**"
-      allow: true
+  write: "allow"
+  edit: "allow"
+  bash: "deny"
+  webfetch: "deny"
+  external_directory: "allow"
 ---
 
 # Vault Capture Agent
