@@ -14,6 +14,120 @@ local freedesktop = require("freedesktop")
 local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
 
+-- Custom application shortcuts (context-aware)
+-- Nnn File Manager
+hotkeys_popup.add_group_rules("Nnn", { name = { "nnn" } })
+hotkeys_popup.add_hotkeys({
+    ["Nnn"] = {{
+        modifiers = {},
+        keys = {
+            ["Enter"] = "Open file/directory",
+            ["~"] = "Go to home",
+            ["-"] = "Go to last directory",
+            ["/"] = "Search",
+            ["Space"] = "Select file",
+            a = "Select all",
+            ["Ctrl-x"] = "Delete selected",
+            ["Ctrl-r"] = "Rename",
+            q = "Quit",
+        }
+    }}
+})
+
+-- Gotop System Monitor
+hotkeys_popup.add_group_rules("Gotop", { name = { "gotop" } })
+hotkeys_popup.add_hotkeys({
+    ["Gotop"] = {{
+        modifiers = {},
+        keys = {
+            p = "Toggle process list",
+            c = "Toggle CPU graph",
+            m = "Toggle memory graph",
+            n = "Toggle network graph",
+            d = "Toggle disk I/O",
+            t = "Toggle temperature",
+            ["h/j/k/l"] = "Navigate (vim keys)",
+            ["<Tab>"] = "Next process widget",
+            ["dd"] = "Kill selected process",
+            ["/"] = "Filter processes",
+            q = "Quit",
+        }
+    }}
+})
+
+-- Nvim Editor
+hotkeys_popup.add_group_rules("Nvim", { name = { "nvim", "vim" } })
+hotkeys_popup.add_hotkeys({
+    ["Nvim"] = {{
+        modifiers = {},
+        keys = {
+            ["<Space>"] = "Leader key",
+            [":w"] = "Save file",
+            [":q"] = "Quit",
+            [":wq"] = "Save and quit",
+            ["dd"] = "Delete line",
+            ["yy"] = "Yank (copy) line",
+            p = "Paste",
+            u = "Undo",
+            ["Ctrl-r"] = "Redo",
+        }
+    }, {
+        modifiers = { "Leader" },
+        keys = {
+            ff = "Find files",
+            fg = "Live grep",
+            fb = "Find buffers",
+            e = "Toggle file tree",
+        }
+    }}
+})
+
+-- Kitty Terminal
+hotkeys_popup.add_group_rules("Kitty", { class = { "kitty" } })
+hotkeys_popup.add_hotkeys({
+    ["Kitty"] = {{
+        modifiers = { "Ctrl", "Shift" },
+        keys = {
+            c = "Copy to clipboard",
+            v = "Paste from clipboard",
+            t = "New tab",
+            q = "Close tab",
+            ["Right"] = "Next tab",
+            ["Left"] = "Previous tab",
+            ["Enter"] = "New window",
+            ["="] = "Increase font size",
+            ["-"] = "Decrease font size",
+        }
+    }}
+})
+
+-- Zellij Terminal Multiplexer
+hotkeys_popup.add_group_rules("Zellij", { name = { "zellij" } })
+hotkeys_popup.add_hotkeys({
+    ["Zellij"] = {{
+        modifiers = { "Ctrl" },
+        keys = {
+            p = "Pane mode",
+            t = "Tab mode",
+            n = "Resize mode",
+            h = "Move mode",
+            s = "Scroll mode",
+            o = "Session mode",
+            q = "Quit Zellij",
+        }
+    }, {
+        modifiers = {},
+        keys = {
+            ["In Tab mode: 1-9"] = "Switch to tab N",
+            ["In Tab mode: n"] = "New tab",
+            ["In Tab mode: x"] = "Close tab",
+            ["In Pane mode: n"] = "New pane",
+            ["In Pane mode: x"] = "Close pane",
+            ["In Pane mode: hjkl"] = "Navigate panes",
+        }
+    }}
+})
+
 -- Error handling (using print instead of naughty to avoid D-Bus conflict)
 if awesome.startup_errors then
     print("AwesomeWM startup errors: " .. awesome.startup_errors)
