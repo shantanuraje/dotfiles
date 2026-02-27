@@ -165,9 +165,9 @@ You are now equipped with complete context about this NixOS system. Manage it wi
 # Obsidian Vault Management
 
 ## Overview
-The user maintains a PARA-based Obsidian vault at `~/Documents/personal/` with a multi-agent specialist system. The vault uses 6 CLAUDE.md agent definitions (one per top-level folder) that define specialist roles for content processing, project management, area stewardship, knowledge curation, archival, and system administration.
+The user maintains a PARA-based Obsidian vault at `~/Documents/personal/` with a multi-agent specialist system. Agent definitions are managed as OpenCode agent files at `~/.config/opencode/agents/` (chezmoi-managed from `private_dot_config/opencode/agents/`).
 
-**Always respect the existing agent definitions** in each folder's CLAUDE.md when working within that domain.
+**When working on vault tasks, read the relevant agent file from `~/.config/opencode/agents/`** to understand domain-specific protocols, YAML standards, and routing rules. Ignore the YAML frontmatter (OpenCode-specific permissions) and follow the markdown body instructions.
 
 ## Vault Structure
 ```
@@ -221,19 +221,20 @@ Task-specific fields: `status`, `priority`, `scheduled`, `due`, `recurrence` (RF
 - Frontmatter array format preferred (not inline `#tags`)
 - Categories: content type (#task, #project, #area), domain (#health, #career, #learning), status (#inbox, #completed, #in-progress)
 
-## Multi-Agent System
-Each top-level folder has a `CLAUDE.md` defining a specialist agent:
+## Vault Agent System
+Agent definitions live at `~/.config/opencode/agents/` and are shared across OpenCode and Claude Code. When working on vault tasks, read the relevant agent file for detailed instructions.
 
-| Folder | Agent Role | Core Responsibility |
-|--------|-----------|-------------------|
-| `00-Inbox` | Inbox Processing Specialist | Achieve inbox zero, route to specialists |
-| `01-Projects` | Project Lifecycle Manager | Strategic planning, project documentation |
-| `02-Areas` | Area Stewardship Manager | Monitor 10 life areas, dashboards, reviews |
-| `03-Resources` | Knowledge Curator | Permanent reference, templates, guides |
-| `04-Archive` | Historical Preservation Manager | Completed/deprecated content |
-| `05-Meta` | System Administrator | Vault health, automation, templates, scripts |
+| Agent File | Role | Read When |
+|-----------|------|-----------|
+| `vault.md` | Router -- detects intent, delegates | General vault questions |
+| `capture.md` | Quick save to correct location | Capturing notes, ideas, links |
+| `process.md` | Batch inbox processing & routing | Processing `00-Inbox/` items |
+| `journal.md` | Daily notes, tasks in `06-Journal/` | Creating daily notes, managing tasks |
+| `research.md` | Web research → resource notes | Clipping articles, researching topics |
+| `review.md` | Read-only vault health audit | Auditing vault health, finding issues |
+| `algo-sensei.md` | DSA learning coach (5 modes) | Algorithm/data structure learning |
 
-**When working in a specific folder, read its CLAUDE.md first** to understand the agent's protocols, YAML standards, and routing rules.
+**Before performing vault operations**, read `~/.config/opencode/agents/<relevant-agent>.md` and follow the markdown instructions within (skip the YAML frontmatter -- that's OpenCode-specific configuration).
 
 ### Key Agent Rules
 - **Inbox items are never stored permanently** -- they get enhanced and routed
@@ -256,7 +257,7 @@ Each top-level folder has a `CLAUDE.md` defining a specialist agent:
 
 ## Vault Maintenance Rules
 When Claude is asked to work on the vault or suggests maintenance:
-1. **Read the relevant folder's CLAUDE.md first** before making changes
+1. **Read the relevant agent file from `~/.config/opencode/agents/`** before making changes
 2. **Preserve existing frontmatter** -- update `dateModified` when editing, never overwrite `dateCreated`
 3. **Use the correct date hierarchy** for journal content: `06-Journal/YYYY/QX/W-XX/YYYY-MM-DD/`
 4. **Route content through the agent system** -- don't bypass the Inbox Specialist for new captures
