@@ -8,7 +8,22 @@ return {
       "nvim-lua/plenary.nvim",
     },
     opts = {
-      -- see below for full list of options 👇
+      workspaces = {
+        {
+          name = "personal",
+          path = "~/Documents/personal",
+        },
+      },
+
+      -- Optional: Disable UI features if you don't have nerd fonts
+      ui = {
+        enable = false,
+      },
+
+      -- Optional: Customize daily notes location
+      daily_notes = {
+        folder = "06-Journal",
+      },
     },
   },
 } 
