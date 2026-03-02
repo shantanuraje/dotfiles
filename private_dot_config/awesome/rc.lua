@@ -14,7 +14,10 @@ local freedesktop = require("freedesktop")
 local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
 
--- Custom application shortcuts (context-aware)
+-- Custom application shortcuts for help popup
+-- NOTE: add_group_rules and add_hotkeys are not available in AwesomeWM 4.3.
+-- Uncomment when upgrading to a newer version that supports these APIs.
+--[[ DISABLED: requires AwesomeWM > 4.3
 -- Nnn File Manager
 hotkeys_popup.add_group_rules("Nnn", { name = { "nnn" } })
 hotkeys_popup.add_hotkeys({
@@ -127,6 +130,7 @@ hotkeys_popup.add_hotkeys({
         }
     }}
 })
+--]]
 
 -- Error handling (using print instead of naughty to avoid D-Bus conflict)
 if awesome.startup_errors then

@@ -1,0 +1,8 @@
+{
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "medium",
+  "statusLine": {
+    "type": "command",
+    "command": "ccstatusline"
+  }
+}

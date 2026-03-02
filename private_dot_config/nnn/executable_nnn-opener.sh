@@ -5,9 +5,10 @@
 file_path="$1"
 mime_type=$(file --mime-type -b "$file_path")
 
+
 case "$mime_type" in
     text/*|application/json|application/xml|application/javascript)
-        # Text files - use editor
+        # Text files, JSON, XML, JS - use editor
         "$EDITOR" "$file_path"
         ;;
     image/*)

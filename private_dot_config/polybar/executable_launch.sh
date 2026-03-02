@@ -10,7 +10,7 @@ log() {
 
 # Terminate already running bar instances
 log "Terminating existing polybar instances..."
-killall -q polybar
+pkill -x polybar
 
 # Wait until the processes have been shut down
 while pgrep -u $UID -x polybar >/dev/null; do 

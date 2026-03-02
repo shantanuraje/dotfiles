@@ -126,10 +126,16 @@ apply_awesome_theme() {
     local colors
     colors=$(jq -r ".themes[\"$theme\"].colors" "$THEMES_JSON")
     
-    # Build the color definitions string
+    # Build the color definitions string (skip non-string values like nested objects)
     local color_block=""
     while IFS= read -r key; do
         local value
+        local val_type
+        val_type=$(echo "$colors" | jq -r ".[\"$key\"] | type")
+        if [[ "$val_type" != "string" ]]; then
+            log_warn "Skipping non-string color key '$key' (type: $val_type)"
+            continue
+        fi
         value=$(echo "$colors" | jq -r ".[\"$key\"]")
         color_block+="    $key = \"$value\",\n"
     done < <(echo "$colors" | jq -r 'keys[]')

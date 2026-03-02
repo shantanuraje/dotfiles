@@ -348,7 +348,7 @@ in
       pyqt5
       pyqt5-sip
       # Document processing
-      python-docx
+      # python-docx  # Disabled: upstream cucumber-expressions build failure (uv_build version mismatch)
       # Data visualization and web applications
       plotly
       dash
