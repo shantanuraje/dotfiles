@@ -41,8 +41,22 @@ in
   # Desktop Environment stack (common to all machines)
   programs.hyprland.enable = true;
   services.xserver.enable = true;
-  services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;  # Keep GNOME enabled
+  services.displayManager.gdm.enable = lib.mkForce false;  # Override GNOME's auto-enable of GDM
+  services.displayManager.defaultSession = "none+awesome";  # Default session for LightDM
+
+  # LightDM with slick-greeter (X11 greeter — VNC can capture login screen)
+  # Replaces GDM whose GNOME 49+ greeter is Wayland-only and breaks VNC
+  services.xserver.displayManager.lightdm = {
+    enable = true;
+    greeters.slick = {
+      enable = true;
+      extraConfig = ''
+        show-a11y=true
+        show-keyboard=true
+      '';
+    };
+  };
   
   # AwesomeWM configuration (common to all machines)
   services.xserver.windowManager.awesome = {
@@ -84,16 +98,10 @@ in
   };
   
   # Autologin configuration (can be overridden per machine)
-  # TEMPORARILY DISABLED: GDM autologin causing boot hang at graphical target
-  # Error: pam_unix helper binary execve failed
   services.displayManager.autoLogin = {
-    enable = lib.mkDefault false;  # Temporarily disabled to fix boot issues
+    enable = lib.mkDefault false;
     user = "shantanu";
   };
-  
-  # Workaround for GNOME autologin bug (keeping disabled for consistency)
-  systemd.services."getty@tty1".enable = false;
-  systemd.services."autovt@tty1".enable = false;
   
   # Automatic swap activation
   swapDevices = [
@@ -375,20 +383,22 @@ in
   system.stateVersion = "24.11";
 
   # RealVNC Server systemd system service
-  # Runs automatically at boot, provides remote access on port 5902
-  # Note: Must run as root (RealVNC Server requirement)
+  # Provides remote access via RealVNC cloud relay (no direct TCP port needed)
+  # Config is read from /root/.vnc/config.d/vncserver-x11 (Service Mode default)
+  # The supervisor daemon (vncserver-x11-serviced) does NOT accept VNC params on CLI
+  # To set VNC password: sudo vncpasswd -service
+  # To change settings: sudo vncserver-x11 -service -<Param> <Value>
   systemd.services.vncserver-x11-serviced = {
     description = "RealVNC Server in Service Mode daemon";
-    after = [ "network.target" "syslog.target" ];
+    after = [ "network.target" "syslog.target" "display-manager.service" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "simple";
+      # Ensure config directory exists before starting
+      ExecStartPre = "${pkgs.bash}/bin/bash -c '${pkgs.coreutils}/bin/mkdir -p /root/.vnc/config.d'";
       ExecStart = "${realvnc-server}/bin/vncserver-x11-serviced -fg";
       Restart = "on-failure";
       RestartSec = "5s";
     };
   };
-
-  # Firewall configuration for VNC servers
-  networking.firewall.allowedTCPPorts = [ 5902 ];  # RealVNC Server port (5901 used by x11vnc)
 }

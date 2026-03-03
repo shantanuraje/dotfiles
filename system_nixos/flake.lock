@@ -31,11 +31,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1772194714,
-        "narHash": "sha256-09+KoZ3Ld+2Is6s6a3sfiY/tC/pFKOOcib1bPGGgzJk=",
+        "lastModified": 1772439609,
+        "narHash": "sha256-UoxWj09xB2kQlC98+imEiz/IrksoWhF/KrFCafoDzuE=",
         "owner": "MoonshotAI",
         "repo": "kimi-cli",
-        "rev": "e2193d99066976af1bf0dfabe8103a0076144588",
+        "rev": "6aafcb3702868c388a833f7a16b63a8a4293412a",
         "type": "github"
       },
       "original": {
@@ -51,11 +51,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1772374548,
-        "narHash": "sha256-bGW4bjkmiJObX8fFzeRNDI0Fp3LASsVb1yPfLtSFnDU=",
+        "lastModified": 1772467729,
+        "narHash": "sha256-1HHpNSbSnkxlPspE6o/1+Jn6f3U666vnz8G0yvsHKo0=",
         "owner": "numtide",
         "repo": "nix-ai-tools",
-        "rev": "672c0a4dbd75152ac4ec3039dc617e7f3d7041c7",
+        "rev": "eb55c412a01ca6d5b830dcbd420e69baf2d35f39",
         "type": "github"
       },
       "original": {
@@ -98,11 +98,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1772198003,
-        "narHash": "sha256-I45esRSssFtJ8p/gLHUZ1OUaaTaVLluNkABkk6arQwE=",
+        "lastModified": 1772433332,
+        "narHash": "sha256-izhTDFKsg6KeVBxJS9EblGeQ8y+O8eCa6RcW874vxEc=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "dd9b079222d43e1943b6ebd802f04fd959dc8e61",
+        "rev": "cf59864ef8aa2e178cccedbe2c178185b0365705",
         "type": "github"
       },
       "original": {

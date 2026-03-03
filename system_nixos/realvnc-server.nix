@@ -32,6 +32,7 @@ pkgs.stdenv.mkDerivation rec {
     xorg.libXcursor
     xorg.libXi
     xorg.libXrender
+    gtk2-x11
     glib
     libGL
     systemd

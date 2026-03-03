@@ -98,21 +98,41 @@ in
     x11vnc
   ];
   
-  # VNC Server configuration (x11vnc)
-  # Note: x11vnc shares your existing X11 session, not a separate virtual desktop
-  # The VNC server is started automatically by AwesomeWM in rc.lua
-  # 
-  # To set up a VNC password:
-  #   x11vnc -storepasswd ~/.vnc/passwd
-  #
-  # Default configuration in AwesomeWM rc.lua:
-  #   Port: 5901
-  #   Localhost only (requires SSH tunnel for remote access)
-  #   Auth: ~/.vnc/passwd
-  #
-  # For remote access, use SSH tunnel:
-  #   ssh -L 5901:localhost:5901 user@beelink-ser8-desktop
-  #   Then connect VNC viewer to localhost:5901
+  # x11vnc - shares existing X11 session for LAN remote access
+  # Starts at boot as a systemd service (available at LightDM login screen)
+  # Port: 5901 | Auth: ~/.vnc/passwd
+  # To set up password: x11vnc -storepasswd ~/.vnc/passwd
+  # LightDM auth file: /var/run/lightdm/root/:0
+  systemd.services.x11vnc = {
+    description = "x11vnc - shared X11 session VNC server";
+    after = [ "display-manager.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = let
+        x11vnc-start = pkgs.writeShellScript "x11vnc-start" ''
+          AUTH_FILE="/var/run/lightdm/root/:0"
+
+          # Wait up to 30s for LightDM auth file to appear
+          for i in $(${pkgs.coreutils}/bin/seq 1 30); do
+            [ -f "$AUTH_FILE" ] && break
+            ${pkgs.coreutils}/bin/sleep 1
+          done
+
+          if [ ! -f "$AUTH_FILE" ]; then
+            echo "LightDM auth file not found after 30s" >&2
+            exit 1
+          fi
+
+          export DISPLAY=:0
+          export XAUTHORITY="$AUTH_FILE"
+          exec ${pkgs.x11vnc}/bin/x11vnc -display :0 -auth "$AUTH_FILE" -rfbport 5901 -forever -loop -noxdamage -repeat -shared -rfbauth /home/shantanu/.vnc/passwd
+        '';
+      in "${x11vnc-start}";
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+  };
 
   # Open firewall port for VNC (for LAN access)
   networking.firewall.allowedTCPPorts = [ 5901 ];
