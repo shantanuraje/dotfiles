@@ -47,13 +47,29 @@ in
 
   # LightDM with slick-greeter (X11 greeter — VNC can capture login screen)
   # Replaces GDM whose GNOME 49+ greeter is Wayland-only and breaks VNC
+  # Random wallpaper is selected at boot via display-setup-script
   services.xserver.displayManager.lightdm = {
     enable = true;
+    # display-setup-script runs after X starts, before greeter — picks random wallpaper
+    extraSeatDefaults = ''
+      display-setup-script=${pkgs.writeShellScript "lightdm-wallpaper" ''
+        WALLPAPER_DIR="/home/shantanu/Pictures/wallpapers"
+        LINK="/var/run/lightdm-wallpaper.jpg"
+        if [ -d "$WALLPAPER_DIR" ]; then
+          WP=$(${pkgs.findutils}/bin/find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) | ${pkgs.coreutils}/bin/shuf -n1)
+          if [ -n "$WP" ]; then
+            ${pkgs.coreutils}/bin/cp -f "$WP" "$LINK"
+            ${pkgs.coreutils}/bin/chmod 644 "$LINK"
+          fi
+        fi
+      ''}
+    '';
     greeters.slick = {
       enable = true;
       extraConfig = ''
         show-a11y=true
         show-keyboard=true
+        background=/var/run/lightdm-wallpaper.jpg
       '';
     };
   };

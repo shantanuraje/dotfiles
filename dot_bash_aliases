@@ -133,7 +133,10 @@ alias ps='ps auxf'
 alias psg='ps aux | grep -v grep | grep -i -e VSZ -e'
 
 # === Disk Usage ===
-alias df='df -H'
+# combine df with fzf for interactive selection
+alias df='df -H | fzf --header="Select a filesystem to view details" --preview="echo {} | awk '\''{print \$1}'\'' | xargs df -H"'
+alias du='du -h --max-depth=1 | fzf --header="Select a directory to view details" --preview="echo {} | awk '\''{print \$2}'\'' | xargs du -h"'
+# alias df='df -H'
 alias free='free -mt'
 
 # === Safety Nets ===

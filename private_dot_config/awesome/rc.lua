@@ -194,9 +194,11 @@ local function autostart()
         awful.spawn.with_shell(string.format("pgrep -u $USER -fx '%s' > /dev/null || (%s)", cmd, cmd))
     end
 
+    -- Release systray selection from AwesomeWM so polybar can claim it
+    -- awesome auto-claims _NET_SYSTEM_TRAY_S0; xdotool releases it before polybar starts
     -- Start Polybar using proper launch script (always run, script handles singleton)
     gears.timer.start_new(2, function()
-        awful.spawn.with_shell("~/.config/polybar/launch.sh")
+        awful.spawn.with_shell("xprop -root -remove _NET_SYSTEM_TRAY_S0 2>/dev/null; ~/.config/polybar/launch.sh")
         return false -- run only once
     end)
     
