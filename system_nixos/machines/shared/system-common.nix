@@ -8,6 +8,8 @@ let
   realvnc-server = pkgs.callPackage ../../realvnc-server.nix {};
   # ZeroClaw - pre-built binary (upstream flake is broken)
   zeroclaw = pkgs.callPackage ../../zeroclaw.nix {};
+  # OpenCode Desktop - Tauri app beta
+  opencode-desktop = pkgs.callPackage ../../opencode-desktop.nix {};
 in
 
 {
@@ -350,6 +352,9 @@ in
 
     # Claude Desktop app (via overlay from aaddrick/claude-desktop-debian)
     claude-desktop
+
+    # OpenCode Desktop - AI coding assistant (Tauri beta app)
+    opencode-desktop
 
     # RealVNC Server for remote access (runs on port 5902)
     realvnc-server
