@@ -279,6 +279,9 @@ in
     # Polybar and audio controls
     polybar
     pavucontrol
+
+    # Eww widgets (calendar popup, system stats, etc.)
+    eww
     
     # Development tools
     android-tools
@@ -347,6 +350,7 @@ in
     "code"                 # Collides with vscode bin/code
     "codex"                # OpenAI Codex - not needed
     "codex-acp"            # OpenAI Codex ACP variant - not needed
+    "zeroclaw"             # Disabled: download failure (still broken)
   ])) ++ [
 
     
@@ -413,6 +417,12 @@ in
       # Ensure config directory exists before starting
       ExecStartPre = "${pkgs.bash}/bin/bash -c '${pkgs.coreutils}/bin/mkdir -p /root/.vnc/config.d'";
       ExecStart = "${realvnc-server}/bin/vncserver-x11-serviced -fg";
+      # Clean shutdown: kill entire process group so core + agent terminate
+      # This ensures the cloud relay gets a proper disconnect signal
+      ExecStop = "${pkgs.coreutils}/bin/kill -TERM $MAINPID";
+      KillMode = "control-group";
+      KillSignal = "SIGTERM";
+      TimeoutStopSec = "10";
       Restart = "on-failure";
       RestartSec = "5s";
     };

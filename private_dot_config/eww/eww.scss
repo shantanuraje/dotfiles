@@ -1,0 +1,139 @@
+// Eww Widgets - Catppuccin Macchiato Theme
+// Matches AwesomeWM, Polybar, and Kitty configuration
+
+// Catppuccin Macchiato palette
+$base: #24273a;
+$mantle: #1e2030;
+$surface0: #363a4f;
+$surface1: #494d64;
+$surface2: #5b6078;
+$overlay0: #6e738d;
+$text: #cad3f5;
+$subtext1: #b8c0e0;
+$subtext0: #a5adcb;
+$teal: #8bd5ca;
+$mauve: #c6a0f6;
+$red: #ed8796;
+$green: #a6da95;
+$yellow: #eed49f;
+$blue: #8aadf4;
+$pink: #f5bde6;
+$orange: #f5a97f;
+
+// ================================
+// Calendar Popup
+// ================================
+
+.cal-container {
+  background-color: $base;
+  border: 2px solid $mauve;
+  border-radius: 12px;
+  padding: 0;
+}
+
+.cal-header {
+  background-color: $mantle;
+  border-radius: 10px 10px 0 0;
+  padding: 16px 20px 12px 20px;
+}
+
+.cal-time {
+  font-size: 28px;
+  font-weight: bold;
+  font-family: "JetBrains Mono Nerd Font";
+  color: $text;
+}
+
+.cal-date {
+  font-size: 13px;
+  font-family: "JetBrains Mono Nerd Font";
+  color: $subtext1;
+}
+
+.cal-weekinfo {
+  font-size: 11px;
+  font-family: "JetBrains Mono Nerd Font";
+  color: $overlay0;
+  margin-top: 2px;
+}
+
+// Calendar widget styling
+.cal-calendar-box {
+  padding: 8px 12px;
+}
+
+.cal-calendar {
+  font-family: "JetBrains Mono Nerd Font";
+  font-size: 11px;
+  color: $text;
+  padding: 4px;
+
+  // Calendar header (month/year navigation)
+  &:header {
+    color: $mauve;
+    font-weight: bold;
+    font-size: 13px;
+  }
+
+  // Day name headers (Mo Tu We...)
+  &:indeterminate {
+    color: $overlay0;
+  }
+
+  // Regular days
+  &:normal {
+    color: $text;
+  }
+
+  // Today highlight
+  &:selected {
+    color: $base;
+    background-color: $mauve;
+    border-radius: 6px;
+  }
+}
+
+// World clocks section
+.cal-clocks {
+  padding: 8px 16px;
+  border-top: 1px solid $surface0;
+}
+
+.cal-section-title {
+  font-family: "JetBrains Mono Nerd Font";
+  font-size: 11px;
+  font-weight: bold;
+  color: $teal;
+  margin-bottom: 6px;
+}
+
+.cal-tz {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background-color: $surface0;
+}
+
+.cal-tz-time {
+  font-family: "JetBrains Mono Nerd Font";
+  font-size: 13px;
+  font-weight: bold;
+  color: $text;
+}
+
+.cal-tz-label {
+  font-family: "JetBrains Mono Nerd Font";
+  font-size: 9px;
+  color: $overlay0;
+}
+
+// System info
+.cal-sysinfo {
+  padding: 8px 16px 12px 16px;
+  border-top: 1px solid $surface0;
+}
+
+.cal-uptime {
+  font-family: "JetBrains Mono Nerd Font";
+  font-size: 11px;
+  color: $subtext0;
+}

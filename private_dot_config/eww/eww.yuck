@@ -1,0 +1,77 @@
+; Eww widgets for AwesomeWM + Polybar
+; Catppuccin Macchiato theme
+
+; ============================
+; Variables
+; ============================
+
+(defpoll time-hour :interval "1s" "date '+%I:%M %p'")
+(defpoll time-date :interval "60s" "date '+%A, %B %-d, %Y'")
+(defpoll time-zone :interval "3600s" "date '+%Z %z'")
+(defpoll week-info :interval "3600s" "echo \"Week $(date '+%W') · Day $(date '+%-j')\"")
+(defpoll uptime-val :interval "60s" "uptime | sed 's/.*up\\s*//' | sed 's/,\\s*[0-9]* user.*//'")
+
+; Timezone clocks
+(defpoll tz-utc :interval "60s" "TZ=UTC date '+%H:%M'")
+(defpoll tz-est :interval "60s" "TZ=America/New_York date '+%H:%M'")
+(defpoll tz-gmt :interval "60s" "TZ=Europe/London date '+%H:%M'")
+(defpoll tz-ist :interval "60s" "TZ=Asia/Kolkata date '+%H:%M'")
+(defpoll tz-jst :interval "60s" "TZ=Asia/Tokyo date '+%H:%M'")
+
+; Calendar visibility toggle
+(defvar cal-visible false)
+
+; ============================
+; Calendar Popup Window
+; ============================
+
+(defwindow calendar-popup
+  :monitor 0
+  :geometry (geometry
+    :x "0%"
+    :y "8px"
+    :width "340px"
+    :anchor "top center")
+  :stacking "overlay"
+  :focusable true
+  :namespace "eww-calendar"
+
+  (cal-container))
+
+(defwidget cal-container []
+  (box :class "cal-container" :orientation "v" :space-evenly false :spacing 0
+    ; Header with time and date
+    (box :class "cal-header" :orientation "v" :space-evenly false :spacing 4
+      (label :class "cal-time" :text time-hour)
+      (label :class "cal-date" :text time-date)
+      (label :class "cal-weekinfo" :text "${week-info} · ${time-zone}"))
+
+    ; Calendar widget
+    (box :class "cal-calendar-box" :orientation "v" :space-evenly false
+      (calendar :class "cal-calendar"
+                :show-heading true
+                :show-day-names true))
+
+    ; World clocks
+    (box :class "cal-clocks" :orientation "v" :space-evenly false :spacing 2
+      (label :class "cal-section-title" :text "World Clocks" :halign "start")
+      (box :orientation "h" :space-evenly true
+        (box :class "cal-tz" :orientation "v" :space-evenly false
+          (label :class "cal-tz-time" :text tz-utc)
+          (label :class "cal-tz-label" :text "UTC"))
+        (box :class "cal-tz" :orientation "v" :space-evenly false
+          (label :class "cal-tz-time" :text tz-est)
+          (label :class "cal-tz-label" :text "EST"))
+        (box :class "cal-tz" :orientation "v" :space-evenly false
+          (label :class "cal-tz-time" :text tz-gmt)
+          (label :class "cal-tz-label" :text "GMT"))
+        (box :class "cal-tz" :orientation "v" :space-evenly false
+          (label :class "cal-tz-time" :text tz-ist)
+          (label :class "cal-tz-label" :text "IST"))
+        (box :class "cal-tz" :orientation "v" :space-evenly false
+          (label :class "cal-tz-time" :text tz-jst)
+          (label :class "cal-tz-label" :text "JST"))))
+
+    ; System info
+    (box :class "cal-sysinfo" :orientation "h" :space-evenly false :spacing 8
+      (label :class "cal-uptime" :text "󰌽 up ${uptime-val}" :halign "start"))))

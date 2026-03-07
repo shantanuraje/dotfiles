@@ -35,4 +35,4 @@ Thumbs.db
 .env
 
 # System-specific files that shouldn't be shared
-system_nixos/hardware-configuration.nix.local
+system_nixos/hardware-configuration.nix.local.nanocoder/

@@ -1,0 +1,177 @@
+/**
+ * Catppuccin Macchiato Calendar/Clock Popup Theme
+ * Matches AwesomeWM, Polybar, and Kitty configuration
+ */
+
+@import "font.rasi"
+
+* {
+    /* Catppuccin Macchiato colors */
+    bg0:     #24273aff;  /* base */
+    bg1:     #1e2030ff;  /* mantle */
+    bg2:     #363a4fff;  /* surface0 */
+    bg3:     #494d64ff;  /* surface1 */
+
+    fg0:     #cad3f5ff;  /* text */
+    fg1:     #b8c0e0ff;  /* subtext1 */
+    fg2:     #a5adcbff;  /* subtext0 */
+
+    accent:  #c6a0f6ff;  /* mauve - purple for date/time */
+    teal:    #8bd5caff;  /* teal */
+    urgent:  #ed8796ff;  /* red */
+    active:  #a6da95ff;  /* green */
+
+    transparent: #00000000;
+
+    background-color: @bg0;
+    text-color: @fg0;
+
+    margin: 0px;
+    padding: 0px;
+    spacing: 0px;
+}
+
+configuration {
+    show-icons: false;
+    disable-history: true;
+    sidebar-mode: false;
+    fixed-num-lines: false;
+}
+
+window {
+    location: center;
+    anchor: center;
+    fullscreen: false;
+    width: 520px;
+
+    enabled: true;
+    border-radius: 12px;
+    cursor: "default";
+
+    background-color: @bg0;
+    border: 2px;
+    border-color: @accent;
+}
+
+mainbox {
+    enabled: true;
+    spacing: 0px;
+    background-color: transparent;
+    orientation: vertical;
+    children: [ "inputbar", "listbox" ];
+}
+
+listbox {
+    spacing: 8px;
+    padding: 12px;
+    background-color: transparent;
+    orientation: vertical;
+    children: [ "listview" ];
+}
+
+inputbar {
+    enabled: true;
+    spacing: 10px;
+    padding: 16px 20px;
+    background-color: @bg1;
+    text-color: @fg0;
+    orientation: horizontal;
+    children: [ "textbox-prompt-colon", "entry" ];
+    border-radius: 12px 12px 0px 0px;
+}
+
+textbox-prompt-colon {
+    enabled: true;
+    expand: false;
+    str: "󰸗";
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: @accent;
+    text-color: @bg0;
+    font: "JetBrains Mono Nerd Font 13";
+}
+
+entry {
+    enabled: false;
+}
+
+listview {
+    enabled: true;
+    columns: 1;
+    lines: 16;
+    cycle: false;
+    dynamic: true;
+    scrollbar: false;
+    layout: vertical;
+    reverse: false;
+    fixed-height: false;
+    fixed-columns: true;
+
+    spacing: 3px;
+    background-color: transparent;
+    text-color: @fg0;
+    cursor: "default";
+}
+
+element {
+    enabled: true;
+    spacing: 10px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background-color: transparent;
+    text-color: @fg0;
+    cursor: pointer;
+}
+
+element normal.normal {
+    background-color: transparent;
+    text-color: @fg0;
+}
+
+element normal.urgent {
+    background-color: transparent;
+    text-color: @accent;
+}
+
+element normal.active {
+    background-color: @bg2;
+    text-color: @teal;
+}
+
+element selected.normal {
+    background-color: @bg2;
+    text-color: @fg0;
+}
+
+element selected.urgent {
+    background-color: @accent;
+    text-color: @bg0;
+}
+
+element selected.active {
+    background-color: @teal;
+    text-color: @bg0;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    cursor: inherit;
+    vertical-align: 0.5;
+    horizontal-align: 0.0;
+    font: "JetBrains Mono Nerd Font 10";
+}
+
+message {
+    background-color: @bg2;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+textbox {
+    padding: 8px;
+    background-color: transparent;
+    text-color: @fg0;
+    vertical-align: 0.5;
+    horizontal-align: 0.0;
+}

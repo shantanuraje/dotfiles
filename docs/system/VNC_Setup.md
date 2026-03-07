@@ -2,209 +2,147 @@
 
 ## Overview
 
-This guide documents the VNC server setup for remote desktop access on the Beelink system running AwesomeWM. The configuration uses x11vnc to share the existing X11 session rather than creating a separate virtual desktop.
+Remote desktop access on the Beelink system running AwesomeWM. Two VNC servers run simultaneously:
 
-## Configuration Details
+| Server | Port | Access | Use Case |
+|--------|------|--------|----------|
+| **x11vnc** | 5901 (LAN) | Direct TCP | LAN access, SSH tunnels |
+| **RealVNC** | Cloud relay | RealVNC cloud | Android remote access |
 
-### NixOS Configuration
+## RealVNC Server (Primary for Android)
 
-The x11vnc package is installed specifically on the Beelink system:
+### NixOS Service
+
+**File**: `system_nixos/machines/shared/system-common.nix`
+```nix
+systemd.services.vncserver-x11-serviced = {
+  description = "RealVNC Server in Service Mode daemon";
+  after = [ "network.target" "syslog.target" "display-manager.service" ];
+  wantedBy = [ "multi-user.target" ];
+  serviceConfig = {
+    Type = "simple";
+    ExecStart = "${realvnc-server}/bin/vncserver-x11-serviced -fg";
+    ExecStop = "${pkgs.coreutils}/bin/kill -TERM $MAINPID";
+    KillMode = "control-group";
+    KillSignal = "SIGTERM";
+    TimeoutStopSec = "10";
+    Restart = "on-failure";
+    RestartSec = "5s";
+  };
+};
+```
+
+### Key Configuration
+
+Config file: `/root/.vnc/config.d/vncserver-x11` (Service Mode, root-owned)
+
+```bash
+# Set parameters (requires sudo)
+sudo vncserver-x11 -service -AlterShiftWithMods 0
+sudo vncserver-x11 -service -<Param> <Value>
+
+# Set VNC password
+sudo vncpasswd -service
+
+# Restart after config changes
+sudo systemctl restart vncserver-x11-serviced
+```
+
+### Critical Settings
+
+| Parameter | Value | Why |
+|-----------|-------|-----|
+| `AlterShiftWithMods` | `0` | **Must disable.** Default (1) mangles Ctrl+key combos on Android. Breaks Ctrl+C/V/etc. |
+| `AcceptKeyEvents` | `1` | Allow keyboard input (default) |
+
+### Known Limitations — Android VNC Viewer
+
+**Super/Mod4 key cannot be sent from Android VNC viewers.** This is a platform limitation — Android intercepts the Super key before any app can use it.
+
+**Workarounds implemented:**
+- Polybar WM Actions button (󰣆) — rofi command palette with all WM operations
+- Polybar launcher (󰍉) — mouse-based app/window access
+- Polybar layout indicator — click to cycle layouts
+- Polybar window-actions — click-based close/float/fullscreen/move
+
+**Ctrl+Alt combos were tested but also proved unreliable** over RealVNC Android — the viewer doesn't forward them consistently. These were removed from rc.lua.
+
+**Why not change modkey to Mod1 (Alt)?** Analyzed and rejected — would break ~50 application shortcuts (readline Alt+B/F word navigation, Chrome Alt+1-9 tabs, VSCode Alt+Click multi-cursor, all GTK menu accelerators, etc.). See session notes.
+
+### Clean Shutdown Fix
+
+The systemd service includes `KillMode=control-group` and `TimeoutStopSec=10` to ensure the RealVNC cloud relay receives a proper disconnect on reboot. Without this, stale cloud sessions would persist until the server came back up.
+
+## x11vnc Server (LAN Access)
+
+### NixOS Service
 
 **File**: `system_nixos/machines/personal/desktop-beelink.nix`
 ```nix
-environment.systemPackages = with pkgs; [
-  # VNC server for remote access
-  x11vnc
-];
-
-# Open firewall port for VNC (for LAN access)
-networking.firewall.allowedTCPPorts = [ 5901 ];
+systemd.services.x11vnc = {
+  description = "x11vnc - shared X11 session VNC server";
+  serviceConfig = {
+    ExecStart = "${pkgs.x11vnc}/bin/x11vnc -display :0 -auth $AUTH_FILE -rfbport 5901 -forever -loop -noxdamage -repeat -shared -rfbauth /home/shantanu/.vnc/passwd";
+  };
+};
 ```
 
-### AwesomeWM Integration
+### Parameters
+- `-display :0` — shares main X11 session
+- `-rfbport 5901` — LAN port
+- `-forever -loop` — persist and restart
+- `-noxdamage` — compositor compatibility
+- `-repeat` — keyboard repeat
+- `-shared` — allow multiple viewers
 
-VNC server starts automatically when AwesomeWM launches:
-
-**File**: `private_dot_config/awesome/rc.lua` (lines 67-71)
-```lua
-local system_cmds = {
-    "picom --config ~/.config/picom/picom.conf",
-    "bash ~/.config/awesome/wallpaper-rotate.sh",
-    "dunst",
-    "pkill x11vnc; x11vnc -display :0 -rfbport 5901 -forever -loop -noxdamage -repeat -rfbauth ~/.vnc/passwd",
-}
-```
-
-### VNC Server Parameters
-
-- **Port**: 5901
-- **Display**: :0 (main X11 display)
-- **Binding**: All interfaces (accessible on LAN)
-- **Authentication**: Password file at `~/.vnc/passwd`
-- **Options**:
-  - `pkill x11vnc`: Kill any existing x11vnc instances before starting
-  - `-forever`: Keep running after client disconnects
-  - `-loop`: Restart if it crashes
-  - `-noxdamage`: Better compatibility with compositors
-  - `-repeat`: Allow keyboard repeat
-
-## Initial Setup
-
-### 1. Set VNC Password
-
-Before first use, create a VNC password:
-
+### Setup
 ```bash
+# Set VNC password
 mkdir -p ~/.vnc
 x11vnc -storepasswd ~/.vnc/passwd
+
+# Connect (from another machine)
+vncviewer 192.168.x.x:5901
+
+# Or via SSH tunnel
+ssh -L 5901:localhost:5901 shantanu@beelink-ser8-desktop
+vncviewer localhost:5901
 ```
-
-### 2. Deploy Configuration
-
-```bash
-# Test NixOS configuration
-bash ~/.local/share/chezmoi/system_scripts/test-deploy-nixos.sh
-
-# Deploy NixOS changes
-bash ~/.local/share/chezmoi/system_scripts/deploy-nixos.sh
-
-# Apply dotfiles changes
-chezmoi apply
-```
-
-### 3. Restart AwesomeWM
-
-Either log out and back in, or press `Super + Ctrl + r` to reload AwesomeWM.
-
-## Usage
-
-### Local Network Access (Direct Connection)
-
-When connecting from another machine on the same network:
-
-1. **Enable firewall port** in `desktop-beelink.nix`:
-   ```nix
-   networking.firewall.allowedTCPPorts = [ 5901 ];
-   ```
-
-2. **Find the Beelink's IP address**:
-   ```bash
-   # On the Beelink machine
-   ip addr | grep inet
-   # Look for your LAN IP (usually 192.168.x.x or 10.x.x.x)
-   ```
-
-3. **Connect from Samsung laptop**:
-   
-   **Using Remmina**:
-   - Open Remmina
-   - Click "+" for new connection
-   - Protocol: VNC
-   - Server: `192.168.x.x:5901` (replace with actual IP)
-   - Name: `Beelink Desktop`
-   - Enter VNC password when prompted
-   
-   **Using TigerVNC**:
-   ```bash
-   vncviewer 192.168.x.x:5901
-   ```
-
-### Remote Access (SSH Tunnel - More Secure)
-
-For accessing from outside your network or for extra security:
-
-1. **Create SSH tunnel** from Samsung laptop:
-   ```bash
-   ssh -L 5901:localhost:5901 shantanu@beelink-ser8-desktop
-   ```
-
-2. **Connect VNC viewer** to localhost:
-   ```bash
-   # In another terminal
-   vncviewer localhost:5901
-   ```
 
 ## Troubleshooting
 
-### Check if VNC is running
+### Keyboard Issues
+- **Ctrl+key not working over RealVNC Android**: Set `AlterShiftWithMods=0` (see above)
+- **Super/Mod4 key not working**: Use Polybar WM Actions button (󰣆) instead — this is a platform limitation, not fixable
+- **xmodmap interference**: `xorg.xmodmap` is intentionally disabled in `system-common.nix` to prevent VNC keyboard conflicts
 
+### Stale RealVNC Cloud Sessions
+- **Symptom**: After reboot, old session lingers in RealVNC cloud
+- **Fix**: `KillMode=control-group` + `TimeoutStopSec=10` in systemd service (applied)
+- **Manual**: `sudo systemctl restart vncserver-x11-serviced`
+
+### Connection Issues
 ```bash
+# Check x11vnc
 pgrep -f x11vnc
+journalctl -u x11vnc
+
+# Check RealVNC
+sudo systemctl status vncserver-x11-serviced
+sudo journalctl -u vncserver-x11-serviced
 ```
 
-### View VNC server logs
-
-```bash
-# Check AwesomeWM logs for startup issues
-journalctl --user -u awesome
-
-# Run x11vnc manually to see errors
-pkill x11vnc; x11vnc -display :0 -rfbport 5901 -forever -loop -noxdamage -repeat -rfbauth ~/.vnc/passwd
+### Systray Icons Missing
+AwesomeWM auto-claims `_NET_SYSTEM_TRAY_S0`. The autostart in rc.lua releases it before Polybar launches:
+```lua
+awful.spawn.with_shell("xprop -root -remove _NET_SYSTEM_TRAY_S0 2>/dev/null; ~/.config/polybar/launch.sh")
 ```
 
-### Common Issues
-
-1. **"Authentication failed"**
-   - Recreate password: `x11vnc -storepasswd ~/.vnc/passwd`
-
-2. **"Connection refused"**
-   - Ensure x11vnc is running
-   - Check firewall settings
-   - Verify SSH tunnel is active
-
-3. **Black screen**
-   - Ensure you're using the correct display (:0)
-   - Check if compositor (picom) is running
-
-4. **Keyboard issues (e.g., Shift+Tab not working)**
-   - Common with Android VNC clients (especially bVNC)
-   - Known issue: Having `xorg.xmodmap` package installed can interfere with x11vnc keyboard handling
-   - Some key combinations (like Super+Enter) may not work properly with Android clients
-   - Consider using alternative key bindings or input methods in your VNC client
-
-## Security Considerations
-
-1. **Localhost binding**: VNC only accepts connections from localhost, requiring SSH tunnel for remote access
-2. **Password authentication**: Always use a strong VNC password
-3. **Firewall**: Keep port 5901 closed unless specifically needed
-4. **SSH**: Use key-based SSH authentication for tunnel creation
-
-## Alternative Configurations
-
-### Using TigerVNC (Virtual Desktop)
-
-If you prefer a separate virtual desktop instead of sharing the main session:
-
-```bash
-# Install tigervnc instead of x11vnc
-# Start with: tigervncserver -localhost -geometry 1920x1080 -depth 24 :1
-# Connect to display :1 instead of :0
-```
-
-### Systemd Service
-
-For system-wide VNC service (instead of AwesomeWM autostart):
-
-```bash
-# Create: ~/.config/systemd/user/x11vnc.service
-[Unit]
-Description=x11vnc VNC Server
-After=graphical-session.target
-
-[Service]
-Type=simple
-ExecStart=/bin/sh -c 'pkill x11vnc; /run/current-system/sw/bin/x11vnc -display :0 -auth guess -forever -loop -noxdamage -repeat -rfbauth %h/.vnc/passwd -rfbport 5901'
-Restart=on-failure
-RestartSec=10
-
-[Install]
-WantedBy=default.target
-
-# Enable with: systemctl --user enable --now x11vnc
-```
+## Security
+- x11vnc: password + firewall (port 5901 open only on Beelink)
+- RealVNC: cloud relay with end-to-end encryption, no direct TCP port
+- SSH tunnels recommended for x11vnc remote access
 
 ## Related Documentation
-
-- [AwesomeWM Configuration](../awesome/README.md)
-- [NixOS Configuration](./NixOS%20Configuration.md)
-- [System Security](../WORK_MACHINE_SAFETY.md)
+- [[../polybar/Window Management]] — Mouse-based VNC controls
+- [[../polybar/Calendar System]] — Eww calendar popup

@@ -1,179 +1,105 @@
 #!/usr/bin/env bash
 
-# Enhanced Calendar and Clock popup for polybar
-# Displays a beautiful calendar with clock information using rofi
+# Themed calendar and clock popup for polybar
+# Uses rofi with Catppuccin Macchiato calendar theme
 
-# Ensure we have a display
 export DISPLAY=${DISPLAY:-:0}
 
-# Colors matching Catppuccin Macchiato theme
-COLOR_BG="#1e2030"
-COLOR_FG="#cad3f5"
-COLOR_ACCENT="#8bd5ca"
-COLOR_SECONDARY="#8aadf4"
-COLOR_HIGHLIGHT="#f5bde6"
-COLOR_MUTED="#6e738d"
+THEME="$HOME/.config/rofi/config/calendar.rasi"
 
-# Function to get current date and time information
-get_date_info() {
-    echo "$(date '+%A, %B %d, %Y')"
-}
-
-get_time_info() {
-    echo "$(date '+%I:%M:%S %p')"
-}
-
-get_timezone_info() {
-    echo "$(date '+%Z %z')"
-}
-
-get_week_info() {
-    echo "Week $(date '+%W') of $(date '+%Y') | Day $(date '+%j') of $(date '+%Y')"
-}
-
-get_moon_phase() {
-    # Simple moon phase calculation (approximate)
-    local day=$(date '+%d')
-    local month=$(date '+%m')
-    local year=$(date '+%Y')
-    
-    # Simplified moon phase - this is approximate
-    local phase_days=$(( (day + month * 30 + (year - 2000) * 365) % 29 ))
-    
-    case $phase_days in
-        0|1|2) echo "🌑 New Moon" ;;
-        3|4|5|6) echo "🌒 Waxing Crescent" ;;
-        7|8|9) echo "🌓 First Quarter" ;;
-        10|11|12|13) echo "🌔 Waxing Gibbous" ;;
-        14|15|16) echo "🌕 Full Moon" ;;
-        17|18|19|20) echo "🌖 Waning Gibbous" ;;
-        21|22|23) echo "🌗 Third Quarter" ;;
-        *) echo "🌘 Waning Crescent" ;;
-    esac
-}
-
-# Function to create a formatted calendar
-get_calendar() {
-    # Get current month calendar with highlighting
-    local current_day=$(date '+%d')
-    local calendar_output
-    
-    # Remove leading zeros from day for comparison
-    current_day=$(echo $current_day | sed 's/^0*//')
-    
-    # Get calendar and process it
-    calendar_output=$(cal -m | sed '1d' | sed '2s/^/    /')
-    
-    # Highlight current day (simple approach)
-    # This is a basic implementation - you might want to enhance it
-    echo "$calendar_output"
-}
-
-# Function to get upcoming events (placeholder - you can integrate with your calendar system)
-get_upcoming_events() {
-    echo "📅 No events configured"
-    echo "   Set up calendar integration in"
-    echo "   ~/.config/polybar/scripts/calendar-info.sh"
-}
-
-# Function to show calendar popup
+# Build all calendar content into a variable, then pipe once to rofi
 show_calendar_popup() {
-    local current_date=$(get_date_info)
-    local current_time=$(get_time_info)
-    local timezone=$(get_timezone_info)
-    local week_info=$(get_week_info)
-    local moon_phase=$(get_moon_phase)
-    local calendar=$(get_calendar)
-    local events=$(get_upcoming_events)
-    
-    # Create the popup content
-    local popup_content="🗓️  $current_date
-🕐 $current_time
-🌍 $timezone
-📊 $week_info
-$moon_phase
+    local current_day
+    current_day=$(date '+%-d')
+    local content=""
 
-📅 Calendar:
-$calendar
+    # Header
+    content+="  $(date '+%A, %B %-d, %Y')"$'\n'
+    content+="󰅐  $(date '+%I:%M:%S %p  %Z')"$'\n'
+    content+="󰇧  Week $(date '+%W')  |  Day $(date '+%-j') of $(date '+%Y')"$'\n'
+    content+=""$'\n'
 
-📝 Upcoming Events:
-$events
+    # Calendar title
+    content+="            $(cal -m | head -1)"$'\n'
 
-💡 Tips:
-• Click date again to refresh
-• Integrate with your calendar app
-• Customize in calendar-info.sh"
-    
-    # Show rofi popup with calendar information
-    echo "$popup_content" | rofi \
+    # Day-of-week header - widened
+    content+="     Mo    Tu    We    Th    Fr    Sa    Su"$'\n'
+
+    # Calendar rows - widen by splitting into 3-char fields
+    while IFS= read -r line; do
+        if [ -n "$line" ]; then
+            local widened=""
+            for i in 0 1 2 3 4 5 6; do
+                local field="${line:$((i * 3)):2}"
+                if [ "$i" -lt 6 ]; then
+                    widened+=$(printf "%-6s" "$field")
+                else
+                    widened+="$field"
+                fi
+            done
+            # Mark today with brackets
+            local formatted
+            formatted=$(echo "$widened" | sed "s/\b${current_day}\b/[${current_day}]/")
+            content+="     $formatted"$'\n'
+        fi
+    done < <(cal -m | tail -n +3)
+
+    content+=""$'\n'
+
+    # Time zones
+    content+="  Time Zones"$'\n'
+    content+="    UTC   $(TZ=UTC date '+%H:%M')"$'\n'
+    content+="    EST   $(TZ=America/New_York date '+%H:%M')"$'\n'
+    content+="    GMT   $(TZ=Europe/London date '+%H:%M')"$'\n'
+    content+="    IST   $(TZ=Asia/Kolkata date '+%H:%M')"$'\n'
+    content+="    JST   $(TZ=Asia/Tokyo date '+%H:%M')"$'\n'
+
+    content+=""$'\n'
+
+    # Uptime
+    local up
+    up=$(uptime | sed 's/.*up\s*//' | sed 's/,\s*[0-9]* user.*//')
+    content+="󰌽  up $up"$'\n'
+
+    echo -n "$content" | rofi \
         -dmenu \
-        -i \
-        -p "📅 Calendar & Clock" \
-        -theme-str 'window {width: 600px; height: 500px;}' \
-        -theme-str 'listview {lines: 20;}' \
-        -theme-str 'element {padding: 8px; border-radius: 4px;}' \
-        -theme-str 'element selected {background-color: #8bd5ca; text-color: #1e2030;}' \
+        -p "$(date '+%b %-d')" \
+        -theme "$THEME" \
         -no-custom \
-        -format 'i' >/dev/null 2>/tmp/rofi-debug.log
+        -format 'i' >/dev/null 2>&1
 }
 
-# Function to show compact calendar notification
 show_calendar_notification() {
-    local current_date=$(get_date_info)
-    local current_time=$(get_time_info)
-    local week_info=$(get_week_info)
-    local calendar=$(cal -m | head -n 8)
-    
-    notify-send "📅 Calendar" "$current_date
-$current_time
-$week_info
-
-$calendar" -t 5000 -i "calendar"
+    local calendar
+    calendar=$(cal -m | head -n 8)
+    notify-send "$(date '+%A, %B %-d')" "$(date '+%I:%M %p  %Z')\nWeek $(date '+%W') | Day $(date '+%-j')\n\n$calendar" -t 5000 -i "calendar"
 }
 
-# Function to show clock popup
 show_clock_popup() {
-    local current_time=$(get_time_info)
-    local timezone=$(get_timezone_info)
-    local date_info=$(get_date_info)
-    
-    # Create a simple clock display
-    local clock_content="🕐 $current_time
-🌍 $timezone
-📅 $date_info
+    local up
+    up=$(uptime | sed 's/.*up\s*//' | sed 's/,\s*[0-9]* user.*//')
+    local content=""
+    content+="󰅐  $(date '+%I:%M:%S %p')"$'\n'
+    content+="  $(date '+%Z %z')"$'\n'
+    content+="  $(date '+%A, %B %-d, %Y')"$'\n'
+    content+=""$'\n'
+    content+="  Time Zones"$'\n'
+    content+="    UTC   $(TZ=UTC date '+%H:%M')"$'\n'
+    content+="    EST   $(TZ=America/New_York date '+%H:%M')"$'\n'
+    content+="    GMT   $(TZ=Europe/London date '+%H:%M')"$'\n'
+    content+="    IST   $(TZ=Asia/Kolkata date '+%H:%M')"$'\n'
+    content+="    JST   $(TZ=Asia/Tokyo date '+%H:%M')"$'\n'
+    content+=""$'\n'
+    content+="󰌽  up $up"$'\n'
+    content+="󰍛  Load:$(uptime | awk -F'load average:' '{print $2}')"$'\n'
 
-⏰ Time Zones:
-🌍 UTC: $(TZ=UTC date '+%H:%M %Z')
-🇺🇸 EST: $(TZ=America/New_York date '+%H:%M %Z')
-🇬🇧 GMT: $(TZ=Europe/London date '+%H:%M %Z')
-🇯🇵 JST: $(TZ=Asia/Tokyo date '+%H:%M %Z')
-
-⏱️ System Info:
-💻 Uptime: $(uptime -p)
-🔋 Load: $(uptime | awk -F'load average:' '{print $2}')
-
-Press Enter to close"
-    
-    # Show rofi popup with clock information
-    echo "$clock_content" | rofi \
+    echo -n "$content" | rofi \
         -dmenu \
-        -i \
-        -p "🕐 World Clock" \
-        -theme-str 'window {width: 500px; height: 400px;}' \
-        -theme-str 'listview {lines: 15;}' \
-        -theme-str 'element {padding: 8px; border-radius: 4px;}' \
-        -theme-str 'element selected {background-color: #8aadf4; text-color: #1e2030;}' \
+        -p "$(date '+%H:%M')" \
+        -theme "$THEME" \
         -no-custom \
-        -format 'i' >/dev/null 2>/tmp/rofi-clock-debug.log
+        -format 'i' >/dev/null 2>&1
 }
-
-# Main logic
-echo "Calendar script called with argument: $1" >> /tmp/calendar-debug.log
-date >> /tmp/calendar-debug.log
-echo "DISPLAY: $DISPLAY" >> /tmp/calendar-debug.log
-echo "USER: $USER" >> /tmp/calendar-debug.log
-echo "XDG_CURRENT_DESKTOP: $XDG_CURRENT_DESKTOP" >> /tmp/calendar-debug.log
-echo "---" >> /tmp/calendar-debug.log
 
 case "${1:-calendar}" in
     "calendar"|"popup")
@@ -184,16 +110,6 @@ case "${1:-calendar}" in
         ;;
     "clock")
         show_clock_popup
-        ;;
-    "help")
-        echo "Calendar & Clock Script"
-        echo "Usage: $0 [calendar|notification|clock|help]"
-        echo ""
-        echo "Commands:"
-        echo "  calendar     - Show calendar popup (default)"
-        echo "  notification - Show calendar notification"
-        echo "  clock        - Show world clock popup"
-        echo "  help         - Show this help"
         ;;
     *)
         show_calendar_popup
