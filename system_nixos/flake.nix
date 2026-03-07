@@ -5,13 +5,14 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nix-ai-tools.url = "github:numtide/nix-ai-tools";
     kimi-cli.url = "github:MoonshotAI/kimi-cli";
+    claude-desktop.url = "github:aaddrick/claude-desktop-debian";
     # awesome-git = {
     #   url = "github:awesomeWM/awesome";
     #   flake = false;
     # };
   };
 
-  outputs = { self, nixpkgs, nix-ai-tools, kimi-cli, ... }: {
+  outputs = { self, nixpkgs, nix-ai-tools, kimi-cli, claude-desktop, ... }: {
     nixosConfigurations = {
       # Multiple host configurations - nixos-rebuild automatically uses current hostname
       samsung-laptop-personal = nixpkgs.lib.nixosSystem {
@@ -19,6 +20,7 @@
         specialArgs = { inherit nix-ai-tools kimi-cli; };
         modules = [
           ./configuration.nix
+          { nixpkgs.overlays = [ claude-desktop.overlays.default ]; }
         ];
       };
       
@@ -28,6 +30,7 @@
         specialArgs = { inherit nix-ai-tools kimi-cli; };
         modules = [
           ./configuration.nix
+          { nixpkgs.overlays = [ claude-desktop.overlays.default ]; }
         ];
       };
       
@@ -37,26 +40,10 @@
         specialArgs = { inherit nix-ai-tools kimi-cli; };
         modules = [
           ./configuration.nix
+          { nixpkgs.overlays = [ claude-desktop.overlays.default ]; }
         ];
       };
     };
   };
 
-  # outputs = { self, nixpkgs, claude-desktop-linux-flake, ... }: {
-  #   nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-  #     system = "x86_64-linux";
-  #     specialArgs = { inherit claude-desktop-linux-flake; };
-  #     modules = [ 
-  #       ./configuration.nix 
-  #       ({ pkgs, ... }: {
-  #         nixpkgs.overlays = [
-  #           (final: prev: {
-  #             awesome-git = prev.awesome.overrideAttrs {
-  #               src = awesome-git;
-  #               version = "git";
-  #             };
-  #           })
-  #     ];
-  #   };
-  # };
 }

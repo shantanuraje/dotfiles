@@ -348,6 +348,9 @@ in
     # ZeroClaw - lightweight AI assistant infrastructure (pre-built binary)
     zeroclaw
 
+    # Claude Desktop app (via overlay from aaddrick/claude-desktop-debian)
+    claude-desktop
+
     # RealVNC Server for remote access (runs on port 5902)
     realvnc-server
 
