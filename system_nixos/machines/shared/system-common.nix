@@ -6,6 +6,8 @@
 let
   # RealVNC Server package
   realvnc-server = pkgs.callPackage ../../realvnc-server.nix {};
+  # ZeroClaw - pre-built binary (upstream flake is broken)
+  zeroclaw = pkgs.callPackage ../../zeroclaw.nix {};
 in
 
 {
@@ -20,6 +22,14 @@ in
       experimental-features = nix-command flakes
     '';
   };
+
+  # Raise file descriptor limits for nix-daemon to prevent "Too many open files"
+  # during evaluation of large configurations with many flake inputs
+  systemd.services.nix-daemon.serviceConfig.LimitNOFILE = lib.mkForce 1048576;
+  security.pam.loginLimits = [
+    { domain = "*"; type = "soft"; item = "nofile"; value = "524288"; }
+    { domain = "*"; type = "hard"; item = "nofile"; value = "1048576"; }
+  ];
   
   # Time zone (common across all machines)
   time.timeZone = "America/New_York";
@@ -181,7 +191,7 @@ in
     usbutils
     pciutils  # Hardware information tools (lspci, etc.)
     chezmoi
-    neofetch
+    # neofetch removed from nixpkgs (unmaintained) — using fastfetch instead
     powerline
     jq
     ripgrep
@@ -335,6 +345,9 @@ in
     # Kimi Code CLI - AI coding agent
     kimi-cli.packages.${pkgs.system}.default
 
+    # ZeroClaw - lightweight AI assistant infrastructure (pre-built binary)
+    zeroclaw
+
     # RealVNC Server for remote access (runs on port 5902)
     realvnc-server
 
@@ -350,7 +363,7 @@ in
     "code"                 # Collides with vscode bin/code
     "codex"                # OpenAI Codex - not needed
     "codex-acp"            # OpenAI Codex ACP variant - not needed
-    "zeroclaw"             # Disabled: download failure (still broken)
+    "zeroclaw"             # Installed via local derivation (upstream flake is broken)
   ])) ++ [
 
     
