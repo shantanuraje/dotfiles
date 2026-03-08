@@ -367,7 +367,7 @@ This dotfiles repository includes Claude AI integration for:
 
 ## 📊 Statistics
 
-- **Total configurations**: 18+ applications
+- **Total configurations**: 21+ applications
 - **Themes supported**: Unified Catppuccin across all apps
 - **Platforms**: NixOS, Arch Linux, Ubuntu compatible
 - **Update frequency**: Continuously maintained
