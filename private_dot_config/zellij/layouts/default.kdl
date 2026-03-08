@@ -19,6 +19,15 @@ layout {
         }
     }
 
+    tab name="zeroclaw" {
+        pane split_direction="vertical" {
+            pane cwd="/home/shantanu/.zeroclaw"  // Left pane - shell in .zeroclaw dir
+            pane command="bash" {
+                args "-ic" "zclog"
+            }  // Right pane - zeroclaw service logs
+        }
+    }
+
     tab name="dotfiles" cwd="/home/shantanu/.local/share/chezmoi" {
         pane split_direction="vertical" {
             pane  // Left pane - shell in chezmoi dir

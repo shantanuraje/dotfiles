@@ -193,6 +193,14 @@ vault-run() { systemctl --user start "claude-vault-${1}.service" && echo "Starte
 vault-timers() { systemctl --user list-timers | grep claude-vault; }
 vault-states() { ls -la ~/Documents/personal/05-Meta/05-03-Scripts/.vault-automation/state/ 2>/dev/null; }
 
+# === ZeroClaw ===
+alias zclog='journalctl --user -u zeroclaw.service -f -o cat'
+alias zclog-full='journalctl --user -u zeroclaw.service -f'
+alias zclog-today='journalctl --user -u zeroclaw.service --since today -o cat --no-pager'
+alias zcstatus='systemctl --user status zeroclaw.service --no-pager'
+alias zcrestart='systemctl --user restart zeroclaw.service'
+alias zcstop='systemctl --user stop zeroclaw.service'
+
 # === Conditional Aliases (fallbacks) ===
 # If modern tools aren't available, these provide fallbacks
 command -v eza >/dev/null || alias ls='ls --color=auto'
