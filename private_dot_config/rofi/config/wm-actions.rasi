@@ -1,0 +1,229 @@
+/**
+ * Unified Command Palette Theme
+ * Catppuccin Macchiato - tabbed interface with drun, window, and WM actions modes
+ * Tab between modes with Ctrl+Tab or click the tabs
+ */
+
+* {
+    /* Catppuccin Macchiato colors */
+    bg0:     #24273aff;  /* base */
+    bg1:     #1e2030ff;  /* mantle */
+    bg2:     #363a4fff;  /* surface0 */
+    bg3:     #494d64ff;  /* surface1 */
+
+    fg0:     #cad3f5ff;  /* text */
+    fg1:     #b8c0e0ff;  /* subtext1 */
+    fg2:     #a5adcbff;  /* subtext0 */
+
+    accent:  #8bd5caff;  /* teal */
+    urgent:  #ed8796ff;  /* red */
+    active:  #a6da95ff;  /* green */
+    selected: #c6a0f6ff; /* mauve */
+    orange:  #f5a97fff;  /* peach */
+
+    transparent: #00000000;
+
+    background-color: @bg0;
+    text-color: @fg0;
+
+    margin: 0px;
+    padding: 0px;
+    spacing: 0px;
+}
+
+configuration {
+    show-icons: true;
+    icon-theme: "Papirus";
+    drun-display-format: "{name}";
+    disable-history: false;
+    click-to-exit: true;
+    location: 0;
+}
+
+window {
+    location: center;
+    anchor: center;
+    fullscreen: false;
+    width: 600px;
+
+    enabled: true;
+    border-radius: 10px;
+    cursor: "default";
+
+    background-color: @bg0;
+    border: 2px;
+    border-color: @accent;
+}
+
+mainbox {
+    enabled: true;
+    spacing: 0px;
+    background-color: transparent;
+    orientation: vertical;
+    children: [ "inputbar", "mode-switcher", "listbox" ];
+}
+
+/* ---- Tab Bar ---- */
+mode-switcher {
+    enabled: true;
+    spacing: 0px;
+    padding: 4px 12px;
+    background-color: @bg1;
+    text-color: @fg0;
+}
+
+button {
+    padding: 6px 16px;
+    border-radius: 6px 6px 0px 0px;
+    background-color: transparent;
+    text-color: @fg2;
+    cursor: pointer;
+    font: "Iosevka Nerd Font 10";
+}
+
+button selected {
+    background-color: @bg2;
+    text-color: @accent;
+    border: 0px 0px 2px 0px;
+    border-color: @accent;
+}
+
+/* ---- Search Bar ---- */
+inputbar {
+    enabled: true;
+    spacing: 8px;
+    padding: 10px 14px;
+    background-color: @bg1;
+    text-color: @fg0;
+    orientation: horizontal;
+    children: [ "textbox-prompt-colon", "entry" ];
+}
+
+textbox-prompt-colon {
+    enabled: true;
+    expand: false;
+    str: "󰣆";
+    padding: 8px 12px;
+    border-radius: 6px;
+    background-color: @accent;
+    text-color: @bg0;
+    font: "JetBrains Mono Nerd Font 11";
+}
+
+entry {
+    enabled: true;
+    expand: true;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background-color: @bg2;
+    text-color: @fg0;
+    cursor: text;
+    placeholder: "Search...";
+    placeholder-color: @fg2;
+}
+
+/* ---- List ---- */
+listbox {
+    spacing: 2px;
+    padding: 6px 8px;
+    background-color: transparent;
+    orientation: vertical;
+    children: [ "listview" ];
+}
+
+listview {
+    enabled: true;
+    columns: 1;
+    lines: 16;
+    cycle: true;
+    dynamic: true;
+    scrollbar: false;
+    layout: vertical;
+    reverse: false;
+    fixed-height: true;
+    fixed-columns: true;
+
+    spacing: 2px;
+    background-color: transparent;
+    text-color: @fg0;
+    cursor: "default";
+}
+
+/* ---- Items ---- */
+element {
+    enabled: true;
+    spacing: 10px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background-color: transparent;
+    text-color: @fg0;
+    cursor: pointer;
+    orientation: horizontal;
+}
+
+element normal.normal {
+    background-color: @bg1;
+    text-color: @fg0;
+}
+
+element normal.urgent {
+    background-color: @bg1;
+    text-color: @urgent;
+}
+
+element normal.active {
+    background-color: @bg2;
+    text-color: @active;
+}
+
+element selected.normal {
+    background-color: @accent;
+    text-color: @bg0;
+}
+
+element selected.urgent {
+    background-color: @urgent;
+    text-color: @bg0;
+}
+
+element selected.active {
+    background-color: @active;
+    text-color: @bg0;
+}
+
+element-icon {
+    size: 24px;
+    cursor: inherit;
+    background-color: transparent;
+    text-color: inherit;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    cursor: inherit;
+    vertical-align: 0.5;
+    horizontal-align: 0.0;
+    markup: true;
+}
+
+/* ---- Messages ---- */
+message {
+    background-color: @bg2;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+textbox {
+    padding: 10px;
+    background-color: transparent;
+    text-color: @fg0;
+    vertical-align: 0.5;
+    horizontal-align: 0.0;
+}
+
+error-message {
+    padding: 10px;
+    background-color: @bg0;
+    text-color: @fg0;
+}

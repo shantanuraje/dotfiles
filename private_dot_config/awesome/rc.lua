@@ -770,13 +770,16 @@ globalkeys = gears.table.join(
         function () awful.spawn("playerctl previous") end,
         {description = "previous track", group = "hotkeys"}),
 
-    -- Screenshot (matches Hyprland hyprshot)
+    -- Screenshot (maim + xclip for clipboard support)
     awful.key({ }, "Print",
-        function () awful.spawn.with_shell("scrot ~/Pictures/$(date +%Y-%m-%d-%H%M%S)-screenshot.png") end,
-        {description = "screenshot", group = "hotkeys"}),
+        function () awful.spawn.with_shell("~/.config/rofi/bin/screenshot-helper.sh full") end,
+        {description = "screenshot fullscreen", group = "hotkeys"}),
     awful.key({ modkey }, "Print",
-        function () awful.spawn.with_shell("scrot -s ~/Pictures/$(date +%Y-%m-%d-%H%M%S)-screenshot-selection.png") end,
-        {description = "screenshot selection", group = "hotkeys"}),
+        function () awful.spawn.with_shell("~/.config/rofi/bin/screenshot-helper.sh area") end,
+        {description = "screenshot area selection", group = "hotkeys"}),
+    awful.key({ modkey, "Shift" }, "Print",
+        function () awful.spawn.with_shell("~/.config/rofi/bin/screenshot-helper.sh window") end,
+        {description = "screenshot active window", group = "hotkeys"}),
 
     -- Lock screen (matches Hyprland)
     awful.key({ modkey,           }, "l",
