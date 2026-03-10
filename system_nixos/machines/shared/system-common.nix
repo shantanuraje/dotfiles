@@ -10,6 +10,8 @@ let
   zeroclaw = pkgs.callPackage ../../zeroclaw.nix {};
   # OpenCode Desktop - Tauri app beta
   opencode-desktop = pkgs.callPackage ../../opencode-desktop.nix {};
+  # BambuStudio - AppImage wrapper (nixpkgs source build has broken OAuth login)
+  bambu-studio = pkgs.callPackage ../../bambu-studio-appimage.nix {};
 in
 
 {
