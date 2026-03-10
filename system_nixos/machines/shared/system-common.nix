@@ -270,7 +270,7 @@ in
     rofi
     rofi-calc          # Calculator mode for rofi
     rofimoji           # Emoji/unicode picker for rofi
-    greenclip          # Clipboard history manager for rofi
+    haskellPackages.greenclip  # Clipboard history manager for rofi
     libqalculate       # Backend for rofi-calc
     swaybg
     dunst

@@ -42,7 +42,7 @@ case "$MODE" in
     *)          SHOW="actions" ;;
 esac
 
-rofi -modi "drun,window,actions:${SCRIPTS}/wm-actions-mode.sh,clipboard:${SCRIPTS}/clipboard-mode.sh,calc,files:${SCRIPTS}/file-search-mode.sh,media:${SCRIPTS}/media-control-mode.sh,services:${SCRIPTS}/systemd-mode.sh,keys:${SCRIPTS}/keybindings-mode.sh" \
+rofi -modi "drun,window,actions:${SCRIPTS}/wm-actions-mode.sh,clipboard:greenclip print,calc,files:${SCRIPTS}/file-search-mode.sh,media:${SCRIPTS}/media-control-mode.sh,services:${SCRIPTS}/systemd-mode.sh,keys:${SCRIPTS}/keybindings-mode.sh" \
      -show "$SHOW" \
      -theme "$THEME" \
      -display-drun "󰀻 Apps" \
