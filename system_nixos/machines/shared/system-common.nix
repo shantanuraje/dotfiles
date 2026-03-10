@@ -360,6 +360,9 @@ in
     # Claude Desktop app (via overlay from aaddrick/claude-desktop-debian)
     claude-desktop
 
+    # Claude Code usage monitor (real-time CLI dashboard)
+    claude-monitor
+
     # OpenCode Desktop - AI coding assistant (Tauri beta app)
     opencode-desktop
 
