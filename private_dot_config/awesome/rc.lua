@@ -186,6 +186,7 @@ local function autostart()
         "picom --config ~/.config/picom/picom.conf",  -- compositor
         "bash ~/.config/awesome/wallpaper-rotate.sh",  -- wallpaper rotation
         "dunst",  -- notifications
+        "greenclip daemon",  -- clipboard history manager for rofi
         "gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'",  -- enforce dark mode for GTK apps
     }
     
@@ -699,12 +700,25 @@ globalkeys = gears.table.join(
     awful.key({ modkey,           }, "comma", function () awful.layout.inc(-1)                end,
               {description = "select previous", group = "layout"}),
 
-    -- Application launcher (rofi - matches Hyprland)
+    -- Command palette (unified rofi with tabs)
     awful.key({ modkey }, "space",
-        function()
-            awful.spawn("rofi -show drun -theme ~/.config/rofi/config/app-launcher.rasi")
-        end,
-        {description = "show rofi launcher", group = "launcher"}),
+        function() awful.spawn.with_shell("~/.config/polybar/scripts/wm-actions.sh apps") end,
+        {description = "command palette (apps)", group = "launcher"}),
+    awful.key({ modkey }, "p",
+        function() awful.spawn.with_shell("~/.config/polybar/scripts/wm-actions.sh") end,
+        {description = "command palette (actions)", group = "launcher"}),
+    awful.key({ modkey }, "v",
+        function() awful.spawn.with_shell("~/.config/polybar/scripts/wm-actions.sh clipboard") end,
+        {description = "clipboard history", group = "launcher"}),
+    awful.key({ modkey, "Shift" }, "e",
+        function() awful.spawn.with_shell("~/.config/polybar/scripts/wm-actions.sh emoji") end,
+        {description = "emoji picker", group = "launcher"}),
+    awful.key({ modkey, "Shift" }, "n",
+        function() awful.spawn.with_shell("~/.config/polybar/scripts/wm-actions.sh note") end,
+        {description = "quick note to inbox", group = "launcher"}),
+    awful.key({ modkey }, "slash",
+        function() awful.spawn.with_shell("~/.config/polybar/scripts/wm-actions.sh keys") end,
+        {description = "show keybindings", group = "launcher"}),
     
     -- Window switcher keybindings
     awful.key({ "Mod1" }, "Tab",

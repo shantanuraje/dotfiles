@@ -268,6 +268,10 @@ in
     # Wayland/Hyprland ecosystem
     waybar
     rofi
+    rofi-calc          # Calculator mode for rofi
+    rofimoji           # Emoji/unicode picker for rofi
+    greenclip          # Clipboard history manager for rofi
+    libqalculate       # Backend for rofi-calc
     swaybg
     dunst
     playerctl
@@ -289,6 +293,7 @@ in
     xorg.xprop
     # xorg.xmodmap  # Commented out - interferes with VNC keyboard handling
     scrot
+    maim               # Screenshot tool with area selection + clipboard support
     
     # Polybar and audio controls
     polybar

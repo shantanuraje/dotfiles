@@ -201,6 +201,19 @@ alias zcstatus='systemctl --user status zeroclaw.service --no-pager'
 alias zcrestart='systemctl --user restart zeroclaw.service'
 alias zcstop='systemctl --user stop zeroclaw.service'
 
+# === Rofi Command Palette ===
+alias rr='~/.config/polybar/scripts/wm-actions.sh'          # actions
+alias ra='~/.config/polybar/scripts/wm-actions.sh apps'      # app launcher
+alias rw='~/.config/polybar/scripts/wm-actions.sh windows'   # window switcher
+alias rc='~/.config/polybar/scripts/wm-actions.sh clipboard' # clipboard history
+alias rcalc='~/.config/polybar/scripts/wm-actions.sh calc'   # calculator
+alias re='~/.config/polybar/scripts/wm-actions.sh emoji'     # emoji picker
+alias rn='~/.config/polybar/scripts/wm-actions.sh note'      # quick note
+alias rf='~/.config/polybar/scripts/wm-actions.sh files'     # file search
+alias rm_='~/.config/polybar/scripts/wm-actions.sh media'    # media control
+alias rs='~/.config/polybar/scripts/wm-actions.sh services'  # systemd services
+alias rk='~/.config/polybar/scripts/wm-actions.sh keys'      # keybindings
+
 # === Conditional Aliases (fallbacks) ===
 # If modern tools aren't available, these provide fallbacks
 command -v eza >/dev/null || alias ls='ls --color=auto'
