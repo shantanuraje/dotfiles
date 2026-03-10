@@ -32,6 +32,7 @@
 }
 
 configuration {
+    font: "JetBrainsMono Nerd Font 11";
     show-icons: true;
     icon-theme: "Papirus";
     drun-display-format: "{name}";
@@ -44,7 +45,7 @@ window {
     location: center;
     anchor: center;
     fullscreen: false;
-    width: 600px;
+    width: 720px;
 
     enabled: true;
     border-radius: 10px;
@@ -63,22 +64,24 @@ mainbox {
     children: [ "inputbar", "mode-switcher", "listbox" ];
 }
 
-/* ---- Tab Bar ---- */
+/* ---- Tab Bar (icon-only) ---- */
 mode-switcher {
     enabled: true;
-    spacing: 0px;
-    padding: 4px 12px;
+    spacing: 2px;
+    padding: 6px 10px;
     background-color: @bg1;
     text-color: @fg0;
 }
 
 button {
-    padding: 6px 16px;
-    border-radius: 6px 6px 0px 0px;
+    padding: 6px 4px;
+    border-radius: 8px;
     background-color: transparent;
     text-color: @fg2;
     cursor: pointer;
-    font: "Iosevka Nerd Font 10";
+    font: "JetBrainsMono Nerd Font 11";
+    horizontal-align: 0.5;
+    markup: true;
 }
 
 button selected {
@@ -107,7 +110,7 @@ textbox-prompt-colon {
     border-radius: 6px;
     background-color: @accent;
     text-color: @bg0;
-    font: "JetBrains Mono Nerd Font 11";
+    font: "JetBrainsMono Nerd Font 11";
 }
 
 entry {

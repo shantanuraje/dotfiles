@@ -429,6 +429,13 @@ in
     nerd-fonts.jetbrains-mono
     nerd-fonts.ubuntu-mono
   ];
+
+  # Default system fonts — Nerd Font variants so glyphs render everywhere
+  fonts.fontconfig.defaultFonts = {
+    monospace = [ "JetBrainsMono Nerd Font" "FiraCode Nerd Font" ];
+    sansSerif = [ "JetBrainsMono Nerd Font" "DejaVu Sans" ];
+    serif = [ "DejaVu Serif" ];
+  };
   
   # NixOS version
   system.stateVersion = "24.11";

@@ -2,7 +2,7 @@
 
 # Unified Command Palette for AwesomeWM
 # All modes in one tabbed rofi: apps, windows, actions, clipboard,
-# calculator, files, media, services, keybindings
+# calculator, files, media, services, keybindings, datetime
 #
 # Usage:
 #   wm-actions.sh              - opens on Actions tab
@@ -10,6 +10,7 @@
 #   wm-actions.sh windows      - opens on Windows tab
 #   wm-actions.sh clipboard    - opens on Clipboard tab
 #   wm-actions.sh calc         - opens on Calculator tab
+#   wm-actions.sh datetime     - opens on DateTime tab
 #   wm-actions.sh emoji        - opens emoji picker (rofimoji)
 #   wm-actions.sh note         - opens quick note prompt
 #   wm-actions.sh <any-mode>   - opens on that tab
@@ -39,19 +40,23 @@ case "$MODE" in
     media)      SHOW="media" ;;
     serv*)      SHOW="services" ;;
     keys*)      SHOW="keys" ;;
+    date*|time*|clock*) SHOW="clock" ;;
     *)          SHOW="actions" ;;
 esac
 
-rofi -modi "drun,window,actions:${SCRIPTS}/wm-actions-mode.sh,clipboard:greenclip print,calc,files:${SCRIPTS}/file-search-mode.sh,media:${SCRIPTS}/media-control-mode.sh,services:${SCRIPTS}/systemd-mode.sh,keys:${SCRIPTS}/keybindings-mode.sh" \
+rofi -font "JetBrainsMono Nerd Font 11" \
+     -plugin-path /run/current-system/sw/lib/rofi \
+     -modi "drun,window,actions:${SCRIPTS}/wm-actions-mode.sh,clipboard:greenclip print,calc,files:${SCRIPTS}/file-search-mode.sh,media:${SCRIPTS}/media-control-mode.sh,services:${SCRIPTS}/systemd-mode.sh,keys:${SCRIPTS}/keybindings-mode.sh,clock:${SCRIPTS}/datetime-mode.sh" \
      -show "$SHOW" \
      -theme "$THEME" \
-     -display-drun "󰀻 Apps" \
-     -display-window "󰖲 Windows" \
-     -display-actions "󰣆 Actions" \
-     -display-clipboard "󰅇 Clipboard" \
-     -display-calc "󰃬 Calc" \
-     -display-files "󰈔 Files" \
-     -display-media "󰎈 Media" \
-     -display-services "󰒓 Services" \
-     -display-keys "󰌌 Keys" \
+     -display-drun "Apps" \
+     -display-window "Win" \
+     -display-actions "Act" \
+     -display-clipboard "Clip" \
+     -display-calc "Calc" \
+     -display-files "Find" \
+     -display-media "Media" \
+     -display-services "Svc" \
+     -display-keys "Keys" \
+     -display-clock "Time" \
      2>/dev/null
