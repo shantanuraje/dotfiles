@@ -104,6 +104,34 @@ in
   
   # Printing support
   services.printing.enable = true;
+
+  # Tailscale VPN — mesh networking for remote access (VNC, SSH, etc.)
+  # See docs/system/2026-03-09 Tailscale VPN Setup.md for full documentation
+  services.tailscale.enable = true;
+
+  # Prevent Tailscale from injecting permissive iptables rules that bypass NixOS firewall.
+  # Without this, Tailscale auto-adds a ts-input chain accepting ALL traffic on tailscale0.
+  # With nodivert, we control exactly which ports are reachable via NixOS firewall rules.
+  services.tailscale.extraSetFlags = [ "--netfilter-mode=nodivert" ];
+
+  # Loose reverse path filtering — required for Tailscale.
+  # Strict mode drops legitimate WireGuard packets due to asymmetric routing.
+  networking.firewall.checkReversePath = "loose";
+
+  # Firewall: enabled, selective port exposure on tailscale0
+  networking.firewall.enable = true;
+  networking.firewall.allowedUDPPorts = [ 41641 ];  # Direct WireGuard peer connections
+
+  # Only allow specific services over Tailscale (defense in depth alongside Tailscale ACLs)
+  networking.firewall.interfaces.tailscale0 = {
+    allowedTCPPorts = [ 5901 ];  # VNC (x11vnc)
+  };
+
+  # Disable upstream debug logging for privacy
+  services.tailscale.extraDaemonFlags = [ "--no-logs-no-support" ];
+
+  # systemd-resolved for MagicDNS (hostname-based access between tailnet devices)
+  services.resolved.enable = true;
   
   # Sound system
   security.rtkit.enable = true;
