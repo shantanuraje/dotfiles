@@ -214,6 +214,56 @@ alias rm_='~/.config/polybar/scripts/wm-actions.sh media'    # media control
 alias rs='~/.config/polybar/scripts/wm-actions.sh services'  # systemd services
 alias rk='~/.config/polybar/scripts/wm-actions.sh keys'      # keybindings
 
+# === Obsidian Periodic Notes (Terminal) ===
+# Open daily/weekly/yearly notes in nvim with offset-based cycling
+# Usage: dn (today), dn -1 (yesterday), dn +1 (tomorrow)
+#        wn (this week), wn -1 (last week), yn (this year)
+VAULT="$HOME/Documents/personal"
+
+dn() {
+    local offset="${1:-0}"
+    local d=$(date -d "today ${offset} days" +%Y-%m-%d)
+    local year=$(date -d "$d" +%G)
+    local week=$(date -d "$d" +%V)
+    nvim "${VAULT}/06-Journal/06-02 Daily/${year}/${year}-W${week}/${d}/${d}.md"
+}
+
+wn() {
+    local offset_weeks="${1:-0}"
+    local dow=$(date +%u)
+    local monday=$(date -d "today -$(( dow - 1 )) days +$(( offset_weeks * 7 )) days" +%Y-%m-%d)
+    local sunday=$(date -d "$monday +6 days" +%Y-%m-%d)
+    local iso_year=$(date -d "$monday" +%G)
+    local iso_week=$(date -d "$monday" +%V)
+    nvim "${VAULT}/06-Journal/06-01 Weekly/${iso_year}/${iso_year}-W${iso_week} ${monday} to ${sunday}.md"
+}
+
+yn() {
+    local offset="${1:-0}"
+    local year=$(date -d "today ${offset} years" +%Y)
+    nvim "${VAULT}/06-Journal/06-00 Yearly/${year}.md"
+}
+
+# Journal Notes: open daily + weekly + yearly as nvim vertical splits
+# Usage: jn (today's set), jn -1 (yesterday's set), jn +1 (tomorrow's set)
+#        :qa to quit, then jn <offset> to cycle
+jn() {
+    local offset="${1:-0}"
+    local d=$(date -d "today ${offset} days" +%Y-%m-%d)
+    local year=$(date -d "$d" +%G)
+    local week=$(date -d "$d" +%V)
+    local daily="${VAULT}/06-Journal/06-02 Daily/${year}/${year}-W${week}/${d}/${d}.md"
+    local dow=$(date -d "$d" +%u)
+    local monday=$(date -d "$d -$(( dow - 1 )) days" +%Y-%m-%d)
+    local sunday=$(date -d "$monday +6 days" +%Y-%m-%d)
+    local wy=$(date -d "$monday" +%G)
+    local ww=$(date -d "$monday" +%V)
+    local weekly="${VAULT}/06-Journal/06-01 Weekly/${wy}/${wy}-W${ww} ${monday} to ${sunday}.md"
+    local yearly="${VAULT}/06-Journal/06-00 Yearly/${year}.md"
+    mkdir -p "$(dirname "$daily")" "$(dirname "$weekly")" "$(dirname "$yearly")"
+    nvim -O "$daily" "$weekly" "$yearly"
+}
+
 # === Conditional Aliases (fallbacks) ===
 # If modern tools aren't available, these provide fallbacks
 command -v eza >/dev/null || alias ls='ls --color=auto'

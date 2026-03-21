@@ -227,7 +227,8 @@ in
     powerline
     jq
     ripgrep
-    
+    rclone
+
     # File Manager Trinity: nnn, lf, ranger + GUI file manager
     lf            # Fast terminal file manager with Miller columns
     ranger        # Python-based file manager with rich features
@@ -410,6 +411,8 @@ in
     "codex"                # OpenAI Codex - not needed
     "codex-acp"            # OpenAI Codex ACP variant - not needed
     "zeroclaw"             # Installed via local derivation (upstream flake is broken)
+    "cc-switch-cli"        # Disabled: upstream hash mismatch (source changed without hash update)
+    "beads-rust"           # Disabled: build failure (vendor staging cp error)
   ])) ++ [
 
     

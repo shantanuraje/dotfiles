@@ -94,13 +94,25 @@ selected_config="${machine_paths[$((choice-1))]}"
 log "Selected: $selected_machine"
 log "Config: $selected_config"
 
-# Create backup
+# Step 1: Optionally regenerate flake.lock in chezmoi source BEFORE copying
+if [[ -f "$SOURCE_DIR/flake.nix" ]]; then
+    read -p "Update flake inputs (nix flake update)? (y/N): " regen_lock
+    if [[ "$regen_lock" =~ ^[Yy]$ ]]; then
+        log "Updating flake inputs in chezmoi source..."
+        cd "$SOURCE_DIR"
+        nix flake update
+        cd - > /dev/null
+        success "Flake inputs updated"
+    fi
+fi
+
+# Step 2: Create backup of current /etc/nixos/
 BACKUP_DIR="/tmp/nixos-backup-$(date +%Y%m%d-%H%M%S)"
 log "Creating backup at $BACKUP_DIR"
 sudo mkdir -p "$BACKUP_DIR"
 sudo cp -r /etc/nixos/* "$BACKUP_DIR/" 2>/dev/null || true
 
-# Copy selected machine configuration as configuration.nix
+# Step 3: Copy selected machine configuration as configuration.nix
 log "Copying $selected_machine configuration as configuration.nix..."
 sudo cp "$selected_config" "/etc/nixos/configuration.nix"
 sudo chown root:root "/etc/nixos/configuration.nix"
@@ -115,7 +127,7 @@ if ! sudo nix-instantiate --parse "/etc/nixos/configuration.nix" > /dev/null 2>&
 fi
 success "Configuration syntax validated successfully"
 
-# Copy other essential files (excluding configuration.nix and hardware-configuration.nix)
+# Step 4: Copy other essential files (excluding configuration.nix and hardware-configuration.nix)
 log "Copying shared configuration files..."
 for file in "$SOURCE_DIR"/*; do
     if [[ -f "$file" ]]; then
@@ -131,7 +143,7 @@ for file in "$SOURCE_DIR"/*; do
     fi
 done
 
-# Copy machines directory structure (for imports like shared/hardware modules)
+# Step 5: Copy machines directory structure (for imports like shared/hardware modules)
 if [[ -d "$SOURCE_DIR/machines" ]]; then
     log "Copying machines directory structure..."
     # Clean up old machines directory to avoid stale files
@@ -143,55 +155,14 @@ if [[ -d "$SOURCE_DIR/machines" ]]; then
     success "Machines directory structure updated"
 fi
 
-# Check if flake.lock exists and offer to regenerate
-if [[ -f "$SOURCE_DIR/flake.lock" ]]; then
-    warning "Found existing flake.lock from another system"
-    echo "This may cause hash mismatches. Consider regenerating."
-    read -p "Regenerate flake.lock? (y/N): " regen_lock
-    if [[ "$regen_lock" =~ ^[Yy]$ ]]; then
-        log "Removing old flake.lock and regenerating..."
-        cd "$SOURCE_DIR"
-        rm -f flake.lock
-        nix flake lock
-        cd - > /dev/null
-        success "Flake lock regenerated"
-    fi
+# Step 6: Rebuild NixOS system
+log "Rebuilding NixOS system..."
+if sudo nixos-rebuild switch; then
+    success "NixOS system successfully rebuilt!"
+    success "Backup available at: $BACKUP_DIR"
+else
+    error "Rebuild failed! Restoring backup..."
+    sudo cp -r "$BACKUP_DIR"/* /etc/nixos/
+    sudo nixos-rebuild switch
+    exit 1
 fi
-
-# DISABLED: Custom gemini-cli hash generation (using nixpkgs version instead)
-# Check for gemini-cli hash script and offer to update hashes
-# if [[ -f "$SOURCE_DIR/packages/gemini-cli/get-gemini-hashes.sh" ]]; then
-#     warning "Gemini CLI package detected"
-#     echo "Consider updating hashes to ensure successful build."
-#     read -p "Update gemini-cli hashes? (y/N): " update_hashes
-#     if [[ "$update_hashes" =~ ^[Yy]$ ]]; then
-#         log "Updating gemini-cli hashes..."
-#         cd "$SOURCE_DIR"
-#         if bash packages/gemini-cli/get-gemini-hashes.sh; then
-#             success "Gemini CLI hashes updated"
-#             warning "Note: You may need to manually update npmDepsHash in gemini-cli.nix"
-#         else
-#             warning "Hash update failed, continuing with existing hashes..."
-#         fi
-#         cd - > /dev/null
-#     fi
-# fi
-
-# # Validate
-# log "Validating configuration..."
-# if ! sudo nixos-rebuild dry-build 2>/dev/null; then
-#     error "Configuration validation failed! Restoring backup..."
-#     sudo cp "$BACKUP_DIR"/* /etc/nixos/
-#     exit 1
-# fi
-
-# # Apply
-# log "Rebuilding NixOS system..."
-# if sudo nixos-rebuild switch; then
-#     success "NixOS system successfully rebuilt!"
-#     success "Backup: $BACKUP_DIR"
-# else
-#     error "Rebuild failed! Restoring backup..."
-#     sudo cp "$BACKUP_DIR"/* /etc/nixos/
-#     exit 1
-# fi

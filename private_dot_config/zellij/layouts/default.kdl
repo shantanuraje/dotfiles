@@ -1,15 +1,8 @@
 layout {
-    default_tab_template {
+    tab name="system" focus=true {
         pane size=1 borderless=true {
             plugin location="zellij:tab-bar"
         }
-        children
-        pane size=2 borderless=true {
-            plugin location="zellij:status-bar"
-        }
-    }
-
-    tab name="system" focus=true {
         pane split_direction="vertical" {
             // Left pane: gotop system monitor
             pane command="/run/current-system/sw/bin/gotop"
@@ -17,29 +10,49 @@ layout {
             // Right pane: nnn file manager in home directory
             pane command="/run/current-system/sw/bin/nnn" cwd="/home/shantanu"
         }
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
     }
 
     tab name="zeroclaw" {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
         pane split_direction="vertical" {
             pane cwd="/home/shantanu/.zeroclaw"  // Left pane - shell in .zeroclaw dir
             pane command="bash" {
                 args "-ic" "zclog"
             }  // Right pane - zeroclaw service logs
         }
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
     }
 
     tab name="dotfiles" cwd="/home/shantanu/.local/share/chezmoi" {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
         pane split_direction="vertical" {
             pane  // Left pane - shell in chezmoi dir
             pane  // Right pane - shell in chezmoi dir
         }
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
     }
 
     tab name="personal" cwd="/home/shantanu/Documents/personal" {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
         pane split_direction="vertical" {
             pane  // Left pane - shell in vault dir
             pane  // Right pane - shell in vault dir
         }
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
     }
 }
-
