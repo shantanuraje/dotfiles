@@ -52,6 +52,9 @@ in
     LC_TIME = "en_US.UTF-8";
   };
   
+  # Enable nix-ld for running dynamically linked binaries (e.g. Claude Desktop's bundled CLI)
+  programs.nix-ld.enable = true;
+
   # Desktop Environment stack (common to all machines)
   programs.hyprland.enable = true;
   services.xserver.enable = true;
@@ -145,7 +148,7 @@ in
   };
   
   # Common programs
-  programs.firefox.enable = true;
+  programs.firefox.enable = false;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -201,6 +204,7 @@ in
     wget
     git
     openssl
+    gh
     
     # Desktop applications (common across personal/work)
     vscode
@@ -360,6 +364,7 @@ in
     shotwell
     bambu-studio
     freecad
+    blender
     # libsForQt5.okular
     realvnc-vnc-viewer
     iwd
@@ -413,6 +418,7 @@ in
     "zeroclaw"             # Installed via local derivation (upstream flake is broken)
     "cc-switch-cli"        # Disabled: upstream hash mismatch (source changed without hash update)
     "beads-rust"           # Disabled: build failure (vendor staging cp error)
+    "bernstein"            # Disabled: upstream tarball 404 (v1.5.12)
   ])) ++ [
 
     
@@ -427,6 +433,7 @@ in
       curl-cffi
       playwright
       pyyaml
+      markdown
       networkx
       # Computer vision and image processing packages
       opencv4
