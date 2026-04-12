@@ -366,6 +366,7 @@ in
     freecad
     blender
     # libsForQt5.okular
+    remmina
     realvnc-vnc-viewer
     iwd
     zellij
