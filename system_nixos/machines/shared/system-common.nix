@@ -12,6 +12,33 @@ let
   opencode-desktop = pkgs.callPackage ../../opencode-desktop.nix {};
   # BambuStudio - AppImage wrapper (nixpkgs source build has broken OAuth login)
   bambu-studio = pkgs.callPackage ../../bambu-studio-appimage.nix {};
+
+  # Hermes Agent web dashboard frontend (built from source, bundled into python package)
+  hermes-agent-web = pkgs.buildNpmPackage {
+    pname = "hermes-agent-web";
+    inherit (nix-ai-tools.packages.${pkgs.system}.hermes-agent) version;
+    src = "${nix-ai-tools.packages.${pkgs.system}.hermes-agent.src}/web";
+    npmDepsHash = "sha256-kBq8QpUBmvfinqjGXT81TatWslql/uZN6Fd7b/We4VI=";
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out
+      # vite.config.ts writes build output to ../hermes_cli/web_dist (outside web/)
+      cp -r ../hermes_cli/web_dist/. $out/
+      runHook postInstall
+    '';
+  };
+
+  # Hermes Agent with web dashboard (fastapi + uvicorn + built frontend at web_dist/)
+  hermes-agent-with-web =
+    (nix-ai-tools.packages.${pkgs.system}.hermes-agent.overridePythonAttrs (old: {
+      dependencies = (old.dependencies or []) ++ (with pkgs.python3Packages; [
+        fastapi
+        uvicorn
+      ]);
+      postInstall = (old.postInstall or "") + ''
+        cp -r ${hermes-agent-web} $out/${pkgs.python3.sitePackages}/hermes_cli/web_dist
+      '';
+    }));
 in
 
 {
@@ -393,7 +420,7 @@ in
     zeroclaw
 
     # Claude Desktop app (via overlay from aaddrick/claude-desktop-debian)
-    claude-desktop
+    # claude-desktop
 
     # Claude Code usage monitor (real-time CLI dashboard)
     claude-monitor
@@ -409,9 +436,9 @@ in
     "coding-agent-search"  # Disabled: upstream tarball download corrupted
     "vibe-kanban"          # Disabled: upstream tarball download corrupted
     "goose-cli"            # Disabled: download failure
-    "openclaw"             # Disabled: download failure (still broken)
+    # "openclaw"             # Disabled: download failure (still broken)
     "agent-deck"              # Disabled: download failure
-    "agent-browser"           # Disabled: download failure
+    # "agent-browser"           # Disabled: download failure
     "flake-inputs"         # Not a package, just a file
     "code"                 # Collides with vscode bin/code
     "codex"                # OpenAI Codex - not needed
@@ -420,9 +447,12 @@ in
     "cc-switch-cli"        # Disabled: upstream hash mismatch (source changed without hash update)
     "beads-rust"           # Disabled: build failure (vendor staging cp error)
     "bernstein"            # Disabled: upstream tarball 404 (v1.5.12)
+    "gemini-cli"           # Disabled: download failure
+    "cc-sdd"
+    "hermes-agent"            # Replaced below with hermes-agent-with-web (built frontend + fastapi/uvicorn)
   ])) ++ [
+    hermes-agent-with-web
 
-    
     # Python development environment
     (python3.withPackages (ps: with ps; [
       requests

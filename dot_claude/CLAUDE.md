@@ -244,8 +244,8 @@ Agent definitions live at `~/.config/opencode/agents/` and are shared across Ope
 - **Areas are the 10 defined life areas** (Health, Finance, Learning, Career, Personal, Home, Hobbies, Auto, Productivity, Documents)
 
 ## Obsidian Plugins & Config
-- **Theme**: Shimmering Focus (Moonstone, 12px base)
-- **Key plugins**: Dataview (queries), Templater (auto-filing), Periodic Notes, Calendar, TaskNotes, QuickAdd, Excalidraw, Tag Wrangler
+- **Theme**: Everforest (17px base)
+- **Key plugins**: Dataview, Templater, Periodic Notes, Calendar, TaskNotes, Excalidraw, Tag Wrangler, cli-llm-chat, copilot, opencode-obsidian, semantic-canvas, obsidian-hover-editor, obsidian-shellcommands, obsidian-style-settings, vscode-editor, heatmap-calendar
 - **Templates dir**: `05-Meta/05-02-Templates/`
 - **Daily notes**: Periodic Notes plugin with deep hierarchy (`06-Journal/YYYY/QX/W-XX/`)
 
@@ -746,6 +746,94 @@ To ensure timers run even before graphical login (e.g., after reboot):
 loginctl enable-linger shantanu
 ```
 This persists across reboots and requires no configuration.nix change. Without it, timers only run while logged in (fine for a desktop workstation).
+
+---
+
+# Communication & Style Preferences
+
+*Extracted from analysis of 951 Claude Code conversations. Full reference: `~/.claude/PREFERENCES.md`*
+
+## Essential 10
+
+These are non-negotiable preferences that override other guidance:
+
+1. **No small talk.** Context + task immediately. No greetings without immediately following with situating info ("you are in my [X] directory...").
+2. **"We" framing.** "Our vault", "our dotfiles", "lets commit our changes." AI is co-owner, not a service.
+3. **Research before action.** Investigate first, understand trade-offs, then propose. Never configure blind.
+4. **Only modify chezmoi source, never directly in ~/.** All config changes go through the dotfiles directory.
+5. **Never hardcode sizes.** Everything responsive. UI must adapt to themes/settings, never fixed dimensions.
+6. **Comment out code rather than delete.** "We don't want to lose our work." Preserve by commenting, not removing.
+7. **Living docs are cumulative.** Never replace all content. Add new, mark completed, preserve pending items.
+8. **Enhance, never lose data.** When updating files, preserve existing content. Always.
+9. **Create a session document at the start of every conversation.** In the relevant project directory or personal vault at `~/Documents/personal/`. Filename: `YYYY-MM-DD Topic Name - subtopic title.md`. YAML compatible with TaskNotes plugin. Keep updating live throughout the conversation.
+10. **Review diff before committing.** Always show diff. Don't push without request. Don't commit unstable work.
+
+## Key Style Rules
+
+- **Casual but consistently polite.** Lowercase defaults, contractions, but "please" and "could you" are standard.
+- **State negative preferences directly.** "I don't want" far exceeds "I prefer."
+- **Zero emoji, no punctuation drama.** Content density, not formatting flair.
+- **Iteration pattern.** Expect rework cycles. Test immediately, report back.
+- **Explain WHY, not just HOW.** Reasoning matters. "Why" is asked frequently.
+- **Prefer sentences and paragraphs over bullet-only formatting.** Lists only where genuinely relevant.
+- **Use "rest" not "sleep"** in any medical or professional context. "Sleep" is a medical term.
+
+## Security Essentials
+
+- IP must never be exposed to the internet.
+- VPN must not break internet connectivity.
+- Problems cannot be "solved" by deleting or disabling things. Fix properly.
+- AI agents: write access limited to `~/` only. Everything else strictly read-only.
+- Always document security decisions with reasoning ("why", not just "what").
+
+## Obsidian Vault Essentials
+
+- Journal-centric, inbox-centric system. Task execution lives in `06-Journal/`.
+- YAML frontmatter must be compatible with TaskNotes plugin.
+- Project documentation in vault, source code in `~/Projects/`. Never pollute vault with code.
+- Vault as super long-term memory. Documentation survives across sessions, agents, and time.
+
+---
+
+# Session Documentation
+
+## Requirement
+
+At the **start** of every LLM agent session that involves significant work (configuration changes, development, documentation, multi-step tasks), create an Obsidian-friendly session document.
+
+## Location
+- **In the relevant project directory** if the session is project-specific
+- **In the personal vault** at `~/Documents/personal/` for general/system work
+
+## Filename Format
+`YYYY-MM-DD Topic Name - subtopic title.md`
+
+Example: `2026-04-12 NixOS Configuration - Tailscale VPN Setup.md`
+
+## YAML Frontmatter
+Must be compatible with the TaskNotes plugin in the personal vault. Minimal format:
+```yaml
+---
+title: Session Title
+dateCreated: YYYY-MM-DDTHH:MM:SS.000-04:00
+dateModified: YYYY-MM-DDTHH:MM:SS.000-04:00
+tags:
+  - session-log
+area: relevant-area
+archived: false
+---
+```
+
+## Content
+- Objective of the session
+- Steps taken and decisions made
+- Scripts written or modified
+- Configuration changes with reasoning
+- Future todos and next steps
+- Any context that would be lost if the session ended
+
+## Updating
+Keep the session document updated **throughout the conversation**, not just at the end. This is a living document that should reflect the current state at any point.
 
 ---
 
