@@ -170,4 +170,27 @@ in
   #   nix-prefetch-git
   #   nix-prefetch-github
   # ];
+
+  # ntfy-sh self-hosted notification server
+  # Exposed on tailnet only (port opened in services.tailscale firewall block above
+  # via system-common.nix list merge). Reach at http://beelink-ser8-desktop:8090
+  # from any tailnet device. No auth/TLS — tailnet ACLs are the access boundary.
+  services.ntfy-sh = {
+    enable = true;
+    settings = {
+      base-url = "http://beelink-ser8-desktop:8090";
+      listen-http = ":8090";
+      behind-proxy = false;
+      cache-file = "/var/lib/ntfy-sh/cache.db";
+      cache-duration = "12h";
+      attachment-cache-dir = "/var/lib/ntfy-sh/attachments";
+      # auth-default-access defaults to "read-write" (open). Tailnet ACLs are
+      # the access boundary. To tighten: set "deny-all" and `ntfy user add`.
+    };
+  };
+
+  # (CLI is installed by the ntfy-sh module itself — `ntfy` available system-wide.)
+
+  # Open ntfy port on tailnet interface only (merges with system-common.nix list)
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 8090 ];
 }
