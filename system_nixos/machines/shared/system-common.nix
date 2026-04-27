@@ -18,7 +18,7 @@ let
     pname = "hermes-agent-web";
     inherit (nix-ai-tools.packages.${pkgs.system}.hermes-agent) version;
     src = "${nix-ai-tools.packages.${pkgs.system}.hermes-agent.src}/web";
-    npmDepsHash = "sha256-kBq8QpUBmvfinqjGXT81TatWslql/uZN6Fd7b/We4VI=";
+    npmDepsHash = "sha256-TS/vrCHbdvXkPcAPxImKzAd2pdDCrKlgYZkXBMQ+TEg=";
     installPhase = ''
       runHook preInstall
       mkdir -p $out
@@ -29,14 +29,18 @@ let
   };
 
   # Hermes Agent with web dashboard (fastapi + uvicorn + built frontend at web_dist/)
+  # NOTE: fastapi/uvicorn must come from nix-ai-tools' pinned nixpkgs so they share the
+  # same python3 derivation as hermes-agent — pkgs.python3Packages.fastapi causes a
+  # "Python version mismatch" eval error since nix-ai-tools pins a different nixpkgs rev.
+  hermesUpstreamPkgs = nix-ai-tools.inputs.nixpkgs.legacyPackages.${pkgs.system};
   hermes-agent-with-web =
     (nix-ai-tools.packages.${pkgs.system}.hermes-agent.overridePythonAttrs (old: {
-      dependencies = (old.dependencies or []) ++ (with pkgs.python3Packages; [
+      dependencies = (old.dependencies or []) ++ (with hermesUpstreamPkgs.python3Packages; [
         fastapi
         uvicorn
       ]);
       postInstall = (old.postInstall or "") + ''
-        cp -r ${hermes-agent-web} $out/${pkgs.python3.sitePackages}/hermes_cli/web_dist
+        cp -r ${hermes-agent-web} $out/${hermesUpstreamPkgs.python3.sitePackages}/hermes_cli/web_dist
       '';
     }));
 in
@@ -154,7 +158,10 @@ in
 
   # Only allow specific services over Tailscale (defense in depth alongside Tailscale ACLs)
   networking.firewall.interfaces.tailscale0 = {
-    allowedTCPPorts = [ 5901 ];  # VNC (x11vnc)
+    allowedTCPPorts = [
+      5901   # VNC (x11vnc)
+      7000   # vault-api (lawyer-vault SPA + REST) — see ~/Projects/obsidian-vault-config/vault-api/
+    ];
   };
 
   # Disable upstream debug logging for privacy
@@ -259,6 +266,8 @@ in
     jq
     ripgrep
     rclone
+    sqlite
+    sqlitebrowser
 
     # File Manager Trinity: nnn, lf, ranger + GUI file manager
     lf            # Fast terminal file manager with Miller columns
@@ -447,6 +456,8 @@ in
     "cc-switch-cli"        # Disabled: upstream hash mismatch (source changed without hash update)
     "beads-rust"           # Disabled: build failure (vendor staging cp error)
     "bernstein"            # Disabled: upstream tarball 404 (v1.5.12)
+    "gitagent"             # Disabled: upstream tarball 404 (v0.3.2 yanked from GitHub releases)
+    "code-review-graph"    # Disabled: depends on python3.13-fastmcp-2.14.5 which has 3 flaky test failures (rate-limiting timing, openapi latency, task cancellation race) in nix-ai-tools' pinned nixpkgs as of 2026-04-26
     "gemini-cli"           # Disabled: download failure
     "cc-sdd"
     "hermes-agent"            # Replaced below with hermes-agent-with-web (built frontend + fastapi/uvicorn)

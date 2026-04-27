@@ -20,14 +20,17 @@
 
 let
   pname = "bambu-studio";
-  version = "02.05.00.67";
+  version = "02.06.00.51";
+  # Upstream changed the AppImage naming convention and no longer ships Ubuntu
+  # builds for v02.05.00.67 — this asset name includes a build timestamp suffix.
+  appimageBuildId = "20260417160415";
 in
 appimageTools.wrapType2 {
   inherit pname version;
 
   src = fetchurl {
-    url = "https://github.com/bambulab/BambuStudio/releases/download/v${version}/Bambu_Studio_ubuntu-24.04_PR-9540.AppImage";
-    hash = "sha256-3ubZblrsOJzz1p34QiiwiagKaB7nI8xDeadFWHBkWfg=";
+    url = "https://github.com/bambulab/BambuStudio/releases/download/v${version}/BambuStudio_ubuntu-24.04-v${version}-${appimageBuildId}.AppImage";
+    hash = "sha256-CYePefJ7FXcAK+OXsIaNRHkml18BA7um4W2+f6l49zQ=";
   };
 
   profile = ''
