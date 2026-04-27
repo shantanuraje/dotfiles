@@ -151,5 +151,8 @@ config that blocks LAN.
 
 ## Related
 
+- `docs/system/ntfy Android Setup.md` — phone subscription guide
+- `system_scripts/notify/lib.sh` — shell library used by deploy/battery/etc.
+- `system_scripts/notify/topics.md` — topic registry (publish/subscribe targets)
 - `docs/system/2026-03-09 Tailscale VPN Setup.md` — tailnet, MagicDNS, firewall pattern
 - `docs/system/VNC_Setup.md` — same tailnet-only firewall pattern, different service

@@ -1,0 +1,11 @@
+[Unit]
+Description=Hydration nudge every hour during work hours
+
+[Timer]
+# 09:00, 11:00, 13:00, 15:00, 17:00 every weekday — adjust to taste.
+OnCalendar=Mon..Fri *-*-* 09,11,13,15,17:00:00
+Persistent=false
+Unit=notify-hydration.service
+
+[Install]
+WantedBy=timers.target

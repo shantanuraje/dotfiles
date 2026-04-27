@@ -1,0 +1,13 @@
+[Unit]
+Description=Run systemd health monitor every 5 minutes
+Documentation=file:///home/shantanu/.local/share/chezmoi/docs/system/Systemd Health Monitor.md
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+AccuracySec=30s
+Persistent=true
+Unit=notify-systemd-health.service
+
+[Install]
+WantedBy=timers.target

@@ -75,13 +75,22 @@ send_notification() {
     local message="$2"
     local urgency="$3"
     local icon="$4"
-    
+
     notify-send \
         --app-name="$NOTIFICATION_APP" \
         --urgency="$urgency" \
         --expire-time="$NOTIFICATION_TIMEOUT" \
         "$icon $title" \
         "$message"
+}
+
+# Push to ntfy server (tailnet) for off-device delivery (phone, iPad, etc.).
+# Best-effort — never block the monitor on a network hiccup.
+send_ntfy_notification() {
+    local action="$1"   # low | critical | charging | full | unplugged
+    local capacity="$2"
+    local sender="${HOME}/.local/share/chezmoi/system_scripts/notify/send-power.sh"
+    [[ -x "$sender" ]] && "$sender" "$action" "$capacity" >/dev/null 2>&1 &
 }
 
 check_battery_status() {
@@ -115,6 +124,7 @@ check_battery_status() {
                     "Battery is now charging (${capacity}%)" \
                     "normal" \
                     "$ICON_CHARGING"
+                send_ntfy_notification charging "$capacity"
                 ;;
             "Discharging")
                 send_notification \
@@ -122,6 +132,7 @@ check_battery_status() {
                     "Running on battery power (${capacity}%)" \
                     "normal" \
                     "$ICON_DISCHARGING"
+                send_ntfy_notification unplugged "$capacity"
                 ;;
             "Full")
                 send_notification \
@@ -129,10 +140,11 @@ check_battery_status() {
                     "Battery is fully charged (${capacity}%)" \
                     "low" \
                     "$ICON_FULL"
+                send_ntfy_notification full "$capacity"
                 ;;
         esac
     fi
-    
+
     # Critical battery warnings
     if [[ "$status" == "Discharging" ]]; then
         if [[ $capacity -le $CRITICAL_BATTERY_THRESHOLD ]]; then
@@ -142,6 +154,12 @@ check_battery_status() {
                 "Battery critically low (${capacity}%)! Please connect charger immediately." \
                 "critical" \
                 "$ICON_LOW"
+            # Throttle ntfy critical to once per 5 minutes to avoid spam
+            local crit_notif_file="/tmp/battery_critical_notified"
+            if [[ ! -f "$crit_notif_file" ]] || [[ $(($(date +%s) - $(stat -c %Y "$crit_notif_file" 2>/dev/null || echo 0))) -gt 300 ]]; then
+                send_ntfy_notification critical "$capacity"
+                touch "$crit_notif_file"
+            fi
         elif [[ $capacity -le $LOW_BATTERY_THRESHOLD ]]; then
             # Send low battery warning only once per discharge cycle
             local low_notif_file="/tmp/battery_low_notified_${capacity}"
@@ -151,6 +169,7 @@ check_battery_status() {
                     "Battery is low (${capacity}%). Consider charging soon." \
                     "normal" \
                     "$ICON_LOW"
+                send_ntfy_notification low "$capacity"
                 # Create notification marker and clean up old ones
                 touch "$low_notif_file"
                 find /tmp -name "battery_low_notified_*" -mmin +60 -delete 2>/dev/null

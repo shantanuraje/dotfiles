@@ -1,0 +1,143 @@
+# Webhook action allowlist. Copy to ~/.config/notify/webhook-actions.yaml and edit.
+#
+# Each action has a unique name. Notifications target actions by name; the
+# server maps name → command (or HTTP proxy target). The phone cannot pass
+# arbitrary commands.
+#
+# Action types:
+#   command    — exec a static argv (no shell). {{params.X}} substitutes only
+#                into pre-declared positional slots.
+#   http_proxy — forward to a URL (typically loopback Hermes/Zeroclaw/etc).
+#                {{params.X}} substitutes into body_template.
+#
+# Safety:
+#   - Use sudo + NOPASSWD entries narrowed to specific commands (see notes).
+#   - Never put params directly in shell strings; always use the pre-declared
+#     positional placeholder pattern.
+#   - Set timeout_s to bound runtime.
+#   - follow_up_topic publishes the result back to the user.
+
+actions:
+  # ── System maintenance ────────────────────────────────────────────────────
+  run-gc:
+    type: command
+    description: Run nix-collect-garbage
+    command: ["sudo", "nix-collect-garbage", "-d"]
+    timeout_s: 600
+    follow_up_topic: actions
+
+  optimise-store:
+    type: command
+    description: Optimise nix store (dedupe)
+    command: ["sudo", "nix-store", "--optimise"]
+    timeout_s: 1800
+    follow_up_topic: actions
+
+  # ── Service management ────────────────────────────────────────────────────
+  restart-x11vnc:
+    type: command
+    description: Restart x11vnc
+    command: ["sudo", "systemctl", "restart", "x11vnc"]
+    timeout_s: 30
+    follow_up_topic: actions
+
+  restart-novnc:
+    type: command
+    description: Restart noVNC websockify
+    command: ["sudo", "systemctl", "restart", "novnc"]
+    timeout_s: 30
+    follow_up_topic: actions
+
+  restart-realvnc:
+    type: command
+    description: Restart RealVNC
+    command: ["sudo", "systemctl", "restart", "vncserver-x11-serviced"]
+    timeout_s: 30
+    follow_up_topic: actions
+
+  restart-ntfy:
+    type: command
+    description: Restart ntfy server
+    command: ["sudo", "systemctl", "restart", "ntfy-sh"]
+    timeout_s: 30
+    follow_up_topic: actions
+
+  # ── Vault automation ──────────────────────────────────────────────────────
+  process-inbox:
+    type: command
+    description: Process Obsidian inbox via Claude
+    command:
+      - "claude"
+      - "-p"
+      - "Process the inbox at ~/Documents/personal/00-Inbox per the Inbox Specialist protocol in ~/.config/opencode/agents/process.md. Report what you did concisely."
+    cwd: "/home/shantanu/Documents/personal"
+    timeout_s: 600
+    follow_up_topic: vault-inbox
+
+  vault-health:
+    type: command
+    description: Run vault health audit
+    command:
+      - "claude"
+      - "-p"
+      - "Run a vault health check on ~/Documents/personal: count files per top-level folder, find stray root files, find missing/malformed YAML frontmatter, find broken wikilinks. Report concisely."
+    cwd: "/home/shantanu/Documents/personal"
+    timeout_s: 600
+    follow_up_topic: vault-health
+
+  morning-briefing:
+    type: command
+    description: Manually trigger morning briefing
+    command:
+      - "claude"
+      - "-p"
+      - "Generate today's morning briefing per the protocol in ~/.claude/CLAUDE.md (Daily: Morning Briefing block)."
+    cwd: "/home/shantanu/Documents/personal"
+    timeout_s: 600
+    follow_up_topic: vault-briefing
+
+  # ── Snooze: write a sentinel file the publisher checks ────────────────────
+  snooze-topic:
+    type: command
+    description: Mark a topic snoozed
+    # Requires positional param: {{params.topic}} and {{params.minutes}}
+    command:
+      - "/home/shantanu/.local/share/chezmoi/system_scripts/notify/snooze.sh"
+      - "{{params.topic}}"
+      - "{{params.minutes}}"
+    timeout_s: 5
+    # No follow-up — silent
+
+  # ── HTTP proxy: agent integrations ────────────────────────────────────────
+  zeroclaw-prompt:
+    type: http_proxy
+    description: Send a prompt to Zeroclaw
+    target: "http://127.0.0.1:42617/api/prompt"
+    method: POST
+    body_template: '{"prompt": "{{params.prompt}}"}'
+    headers:
+      Content-Type: application/json
+      # Authorization: Bearer <zeroclaw-token>   # to be filled after pairing
+    timeout_s: 300
+    follow_up_topic: actions
+
+  hermes-health:
+    type: http_proxy
+    description: Hermes health check
+    target: "http://127.0.0.1:8642/v1/health"
+    method: GET
+    timeout_s: 5
+    follow_up_topic: actions
+
+# ── sudo NOPASSWD setup ──────────────────────────────────────────────────────
+# To allow the unprivileged user-owned receiver to run sudo commands, add a
+# narrow sudoers entry. Put this in /etc/sudoers.d/notify-webhook (mode 440):
+#
+#   shantanu ALL=(root) NOPASSWD: /run/current-system/sw/bin/nix-collect-garbage *
+#   shantanu ALL=(root) NOPASSWD: /run/current-system/sw/bin/nix-store --optimise
+#   shantanu ALL=(root) NOPASSWD: /run/current-system/sw/bin/systemctl restart x11vnc
+#   shantanu ALL=(root) NOPASSWD: /run/current-system/sw/bin/systemctl restart novnc
+#   shantanu ALL=(root) NOPASSWD: /run/current-system/sw/bin/systemctl restart vncserver-x11-serviced
+#   shantanu ALL=(root) NOPASSWD: /run/current-system/sw/bin/systemctl restart ntfy-sh
+#
+# The NixOS module (system_nixos/notify-webhook.nix) sets these declaratively.

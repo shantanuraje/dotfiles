@@ -1,0 +1,13 @@
+[Unit]
+Description=Stretch / posture nudge every 90 minutes during work hours
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 10:30:00
+OnCalendar=Mon..Fri *-*-* 12:00:00
+OnCalendar=Mon..Fri *-*-* 14:30:00
+OnCalendar=Mon..Fri *-*-* 16:00:00
+Persistent=false
+Unit=notify-posture.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,7 @@
+[Unit]
+Description=Personal — hydration nudge
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/share/chezmoi/system_scripts/notify/send-personal.sh hydration
+NoNewPrivileges=true

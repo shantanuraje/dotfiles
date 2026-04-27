@@ -1,0 +1,20 @@
+[Unit]
+Description=Notify on host-monitor transitions (disk, thermal, network)
+Documentation=file:///home/shantanu/.local/share/chezmoi/docs/system/Host Monitors.md
+
+[Service]
+Type=oneshot
+EnvironmentFile=-%h/.config/notify/webhook-env
+ExecStart=%h/.local/share/chezmoi/system_scripts/monitor/disk-health.sh
+ExecStart=%h/.local/share/chezmoi/system_scripts/monitor/thermal-health.sh
+ExecStart=%h/.local/share/chezmoi/system_scripts/monitor/network-health.sh
+
+# Tolerate transient failure (best-effort)
+SuccessExitStatus=0 1
+
+# Light hardening
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%S/disk-health %S/thermal-health %S/network-health
+PrivateTmp=true
+NoNewPrivileges=true

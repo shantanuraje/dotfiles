@@ -1,0 +1,20 @@
+[Unit]
+Description=Notify on systemd unit health transitions (system + user scope)
+Documentation=file:///home/shantanu/.local/share/chezmoi/system_scripts/monitor/systemd-health.sh
+
+[Service]
+Type=oneshot
+EnvironmentFile=-%h/.config/notify/webhook-env
+# Single invocation covers both scopes — reading state needs no privilege.
+ExecStart=%h/.local/share/chezmoi/system_scripts/monitor/systemd-health.sh --scope system
+ExecStart=%h/.local/share/chezmoi/system_scripts/monitor/systemd-health.sh --scope user
+
+# Network needed for ntfy publish; tolerate transient failure (best-effort)
+SuccessExitStatus=0 1
+
+# Light hardening — script reads systemd state and posts to local tailnet
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%S/systemd-health
+PrivateTmp=true
+NoNewPrivileges=true
