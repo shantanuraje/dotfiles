@@ -12,6 +12,8 @@ in
     ./machines/shared/system-common.nix
     # Base hardware scan
     ./hardware-configuration.nix
+    # ntfy action-button webhook receiver (port 9099 on tailnet)
+    ./notify-webhook.nix
   ];
 
   # Machine-specific configuration
@@ -134,14 +136,46 @@ in
     };
   };
 
-  # Open firewall port for VNC (for LAN access)
-  networking.firewall.allowedTCPPorts = [ 5901 ];
-  
-  # Custom iptables rule for VNC (alternative approach)
-  # This creates the exact iptables rule you specified
-  # networking.firewall.extraCommands = ''
-  #   iptables -I nixos-fw -p tcp --dport 5901 -j nixos-fw-accept
-  # '';
+  # ──────────────────────────────────────────────────────────────────────
+  # VNC / noVNC firewall rules
+  #
+  # Earlier this file had `networking.firewall.allowedTCPPorts = [ 5901 ]`,
+  # which was interface- and address-family-agnostic. Because this host has
+  # globally-routable IPv6 addresses on enp1s0/wlp2s0 and x11vnc binds dual
+  # stack, that rule exposed 5901 to the public internet via IPv6. Confirmed
+  # via audit on 2026-04-26 (see docs/system/VNC_Setup.md). The rule below
+  # restricts LAN access to the IPv4 LAN subnet only and leaves IPv6
+  # untouched (no extraCommandsForIPv6 → no IPv6 firewall opening). Tailnet
+  # access is provided separately on `tailscale0` in system-common.nix.
+  # ──────────────────────────────────────────────────────────────────────
+  networking.firewall.extraCommands = ''
+    # Allow x11vnc (5901) and noVNC (6080) from local LAN (IPv4 only)
+    iptables -I nixos-fw -p tcp -s 192.168.1.0/24 --dport 5901 -j nixos-fw-accept
+    iptables -I nixos-fw -p tcp -s 192.168.1.0/24 --dport 6080 -j nixos-fw-accept
+  '';
+  networking.firewall.extraStopCommands = ''
+    iptables -D nixos-fw -p tcp -s 192.168.1.0/24 --dport 5901 -j nixos-fw-accept 2>/dev/null || true
+    iptables -D nixos-fw -p tcp -s 192.168.1.0/24 --dport 6080 -j nixos-fw-accept 2>/dev/null || true
+  '';
+
+  # ──────────────────────────────────────────────────────────────────────
+  # noVNC — browser-based VNC client (HTML5/WebSocket → x11vnc on :5901)
+  # Reach at http://beelink-ser8-desktop:6080/vnc.html from tailnet or LAN.
+  # Auth is the same VNC password as ~/.vnc/passwd (websockify is a dumb
+  # proxy; the noVNC client speaks the RFB handshake end-to-end with x11vnc).
+  # ──────────────────────────────────────────────────────────────────────
+  systemd.services.novnc = {
+    description = "noVNC — websockify proxy serving noVNC HTML to x11vnc :5901";
+    after = [ "x11vnc.service" "network.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.python3Packages.websockify}/bin/websockify --web=${pkgs.novnc}/share/webapps/novnc 6080 127.0.0.1:5901";
+      Restart = "on-failure";
+      RestartSec = "5s";
+      DynamicUser = true;
+    };
+  };
   
   # # Personal-specific packages (additions to the base set from system-common.nix)
   # environment.systemPackages = with pkgs; [
@@ -191,6 +225,7 @@ in
 
   # (CLI is installed by the ntfy-sh module itself — `ntfy` available system-wide.)
 
-  # Open ntfy port on tailnet interface only (merges with system-common.nix list)
-  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 8090 ];
+  # Tailnet ports opened on this host (merges with system-common.nix list).
+  # 8090 = ntfy-sh, 6080 = noVNC websockify proxy.
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 8090 6080 ];
 }
