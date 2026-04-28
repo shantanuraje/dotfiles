@@ -24,7 +24,8 @@ Suggested per-device subscription sets are at the bottom.
 | `vault-evening` | end-of-day | what shipped, what's pending | low | (design) |
 | `vault-health` | weekly audit | broken links, missing frontmatter | low | (design) |
 | `vault-due` / `vault-overdue` / `vault-reminders` | task-driven | due/overdue/scheduled task batches | normal/high | (design) |
-| `vault-capture` | capture confirmations | inbox arrivals, agent-created notes | low | (design) |
+| `vault-capture` | capture confirmations | inbox arrivals (with obsidian:// click), agent-created notes | low | `vault-capture/server.py` |
+| `vault-capture-in` | **inbound** — phone publishes thoughts here | listener writes them to `~/Documents/personal/00-Inbox/` | n/a | `vault-capture/server.py` (subscriber) |
 | `dev-builds` | ad-hoc `done` wrapper | `cargo test && done` | normal | (tier 3) |
 | `personal-hydration` | break reminders | water / stretch / posture | min | `notify-hydration.timer`, `notify-posture.timer` |
 | `personal-pomodoro` | focus | session start/end | low | `send-personal.sh` (manual invoke) |

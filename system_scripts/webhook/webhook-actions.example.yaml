@@ -129,6 +129,36 @@ actions:
     timeout_s: 5
     follow_up_topic: actions
 
+  # ── Hermes one-shot chat (via CLI — no rich HTTP API on its gateway port) ──
+  # `hermes chat -Q -q "prompt"` returns the model response on stdout. -Q
+  # suppresses banners/spinner; -q is one-shot non-interactive. Output also
+  # contains a "session_id: ..." line that can be used with --resume.
+  hermes-chat:
+    type: command
+    description: Ask Hermes (one-shot CLI chat)
+    command:
+      - "hermes"
+      - "chat"
+      - "-Q"
+      - "-q"
+      - "{{params.prompt}}"
+    timeout_s: 120
+    follow_up_topic: actions
+
+  hermes-chat-session:
+    type: command
+    description: Continue Hermes session
+    command:
+      - "hermes"
+      - "chat"
+      - "-Q"
+      - "-q"
+      - "{{params.prompt}}"
+      - "--resume"
+      - "{{params.session_id}}"
+    timeout_s: 120
+    follow_up_topic: actions
+
 # ── sudo NOPASSWD setup ──────────────────────────────────────────────────────
 # To allow the unprivileged user-owned receiver to run sudo commands, add a
 # narrow sudoers entry. Put this in /etc/sudoers.d/notify-webhook (mode 440):

@@ -1,0 +1,28 @@
+[Unit]
+Description=Vault capture-in — listen on ntfy and write incoming messages to vault inbox
+Documentation=file:///home/shantanu/.local/share/chezmoi/docs/system/Vault Capture-In.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/env python3 %h/.local/share/chezmoi/system_scripts/vault-capture/server.py
+Restart=on-failure
+RestartSec=5
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%h/Documents/personal/00-Inbox
+PrivateTmp=true
+
+# Reasonable limits — not expected to be busy
+MemoryMax=128M
+TasksMax=16
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

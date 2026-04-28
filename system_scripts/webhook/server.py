@@ -56,7 +56,12 @@ BIND_PORT = int(os.environ.get("WEBHOOK_BIND_PORT", "9099"))
 
 NONCE_TTL = 600  # seconds — replay window
 PARAM_KEY_RE = re.compile(r"^[a-zA-Z0-9_.-]{1,64}$")
-PARAM_VALUE_RE = re.compile(r"^[a-zA-Z0-9_.@:/-]{0,256}$")
+# Param values are ONLY ever substituted into pre-declared argv slots
+# (never concatenated into a shell string), so the threat model is much
+# narrower than a free-form shell exec. We forbid only null bytes and
+# bound the length. Spaces, punctuation, and Unicode are allowed —
+# necessary for natural-language prompts ("Ask Hermes …").
+PARAM_VALUE_MAX_LEN = 4096
 
 # ── Globals ───────────────────────────────────────────────────────────────────
 log = logging.getLogger("notify-webhook")
@@ -128,14 +133,21 @@ def _audit(event: str, **fields: Any) -> None:
 
 
 def _validate_params(params: dict[str, Any]) -> dict[str, str]:
-    """Reject anything that isn't string-valued or contains shell-special chars."""
+    """Sanity-check param keys + values.
+
+    Values go into pre-declared argv slots only (never shell strings), so
+    we only need to forbid null bytes and bound length. Natural-language
+    prompts with spaces / punctuation / Unicode all pass.
+    """
     clean: dict[str, str] = {}
     for k, v in params.items():
         if not PARAM_KEY_RE.match(k):
             raise ValueError(f"bad param key: {k!r}")
         s = str(v)
-        if not PARAM_VALUE_RE.match(s):
-            raise ValueError(f"bad param value for {k}: {s!r}")
+        if len(s) > PARAM_VALUE_MAX_LEN:
+            raise ValueError(f"param {k} too long ({len(s)} > {PARAM_VALUE_MAX_LEN})")
+        if "\x00" in s:
+            raise ValueError(f"param {k} contains null byte")
         clean[k] = s
     return clean
 

@@ -188,7 +188,7 @@ The user maintains a PARA-based Obsidian vault at `~/Documents/personal/` with a
 │   ├── 05-02-Templates/
 │   ├── 05-03-Scripts/
 │   └── 05-04-System-Management/
-├── 06-Journal/        # Temporal daily notes (YYYY/QX/W-XX/YYYY-MM-DD/)
+├── 06-Journal/        # Temporal notes — 06-00 Yearly/, 06-01 Weekly/YYYY/, 06-02 Daily/YYYY/YYYY-WXX/YYYY-MM-DD/
 └── .obsidian/         # Vault config, plugins, themes
 ```
 
@@ -247,11 +247,12 @@ Agent definitions live at `~/.config/opencode/agents/` and are shared across Ope
 - **Theme**: Everforest (17px base)
 - **Key plugins**: Dataview, Templater, Periodic Notes, Calendar, TaskNotes, Excalidraw, Tag Wrangler, cli-llm-chat, copilot, opencode-obsidian, semantic-canvas, obsidian-hover-editor, obsidian-shellcommands, obsidian-style-settings, vscode-editor, heatmap-calendar
 - **Templates dir**: `05-Meta/05-02-Templates/`
-- **Daily notes**: Periodic Notes plugin with deep hierarchy (`06-Journal/YYYY/QX/W-XX/`)
+- **Daily notes**: Periodic Notes plugin with hierarchy `06-Journal/06-02 Daily/YYYY/YYYY-WXX/YYYY-MM-DD/`. Top-level `06-Journal/` also has `06-00 Yearly/` and `06-01 Weekly/YYYY/`.
 
 ## Known Issues to Monitor
 - **Stray root-level daily notes**: `2025-12-14.md` and `2025-12-17.md` exist at vault root instead of in `06-Journal/` hierarchy -- should be moved during maintenance
-- **Inbox backlog**: 12 unprocessed items (oldest from 2025-05-30) need routing per Inbox Specialist protocol
+- **Inbox backlog**: small (≈3 items as of 2026-04-27, two of them historical reports — `Vault Dashboard.md` and `2026-04-12 Vault Summary…`). Actual capture-rate is low; the "12 items oldest from 2025-05-30" claim was stale and has been processed.
+- **Stray top-level `02-Journal/` directory** with a `02-01-Daily/` subdir at vault root. Looks like a botched move/rename — should be merged into `06-Journal/` or archived.
 - **Empty directories**: `TaskNotes/`, `05-01-Dashboards/`, `05-03-Scripts/` (partially empty) need populating or cleanup
 - **Sparse Resources**: `03-Resources/` has minimal content (1 file + 1 PDF) relative to vault size
 
@@ -259,7 +260,7 @@ Agent definitions live at `~/.config/opencode/agents/` and are shared across Ope
 When Claude is asked to work on the vault or suggests maintenance:
 1. **Read the relevant agent file from `~/.config/opencode/agents/`** before making changes
 2. **Preserve existing frontmatter** -- update `dateModified` when editing, never overwrite `dateCreated`
-3. **Use the correct date hierarchy** for journal content: `06-Journal/YYYY/QX/W-XX/YYYY-MM-DD/`
+3. **Use the correct date hierarchy** for journal content: `06-Journal/06-02 Daily/YYYY/YYYY-WXX/YYYY-MM-DD/`
 4. **Route content through the agent system** -- don't bypass the Inbox Specialist for new captures
 5. **Validate wikilinks** when moving files -- update any `[[references]]` that would break
 6. **Never delete content without archiving first** unless it's truly worthless
@@ -272,7 +273,7 @@ The following tasks should be set up as systemd user timers (see "Scheduled Auto
 #### Daily: Morning Briefing (7:30 AM, Mon-Sun)
 ```
 claude -p "Morning briefing for ~/Documents/personal/:
-1. Ensure today's daily note exists at 06-Journal/YYYY/QX/W-XX/YYYY-MM-DD/ using the Daily Note Template from 05-Meta/05-02-Templates/. If it doesn't exist, create it with proper frontmatter.
+1. Ensure today's daily note exists at 06-Journal/06-02 Daily/YYYY/YYYY-WXX/YYYY-MM-DD/ using the Daily Note Template from 05-Meta/05-02-Templates/. If it doesn't exist, create it with proper frontmatter.
 2. List all tasks with status 'open' that have 'due' or 'scheduled' dates of today or earlier (overdue).
 3. List tasks with recurrence patterns that are due today.
 4. Show inbox item count.

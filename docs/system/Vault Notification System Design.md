@@ -13,8 +13,8 @@ These are real issues to fix *before* wiring vault notifications:
 
 1. **CLAUDE.md scheduled vault tasks are not wired.** No `claude-vault-*.{service,timer}` files exist in `~/.config/systemd/user/`. The 7 scheduled tasks listed in CLAUDE.md ("Scheduled Vault Maintenance Tasks") are aspirational, not running.
 2. **Internal CLAUDE.md inconsistency**: the intro says state/wrappers/logs go in `05-Meta/05-03-Scripts/.vault-automation/`, but the prompts redirect logs to `~/.local/share/claude-cron/`. Pick one before wiring.
-3. **Stale agent docs**: `vault.md`, `capture.md`, etc. all reference 10 areas. Reality: **7 areas** (Health, Finance, Learning, Career, Personal, Home, Hobbies — no Auto, Productivity, Documents).
-4. **Journal hierarchy mismatch**: CLAUDE.md says `06-Journal/YYYY/QX/W-XX/YYYY-MM-DD/`. Reality: `06-Journal/06-02 Daily/YYYY/YYYY-WXX/YYYY-MM-DD/` — no `QX/`, no `W-` prefix. Every agent prompt that calculates journal paths is wrong by one level.
+3. ~~Stale agent docs claim 10 areas, reality is 7.~~ **Retracted 2026-04-27**: there ARE 10 areas (Health, Finance, Learning, Career, Personal, Home, Hobbies, Auto, Productivity, Documents). My earlier survey used `ls -la | head` which truncated at 7. CLAUDE.md is correct on this.
+4. **Journal hierarchy mismatch**: CLAUDE.md (now fixed) said `06-Journal/YYYY/QX/W-XX/YYYY-MM-DD/`. Reality is `06-Journal/06-02 Daily/YYYY/YYYY-WXX/YYYY-MM-DD/` — with sibling top-level dirs `06-00 Yearly/` and `06-01 Weekly/YYYY/`. Fixed in CLAUDE.md as of 2026-04-27.
 5. **Stray `02-Journal/`** directory at vault root, duplicate of canonical `06-Journal/`. Hygiene cleanup.
 6. **Inbox claim is stale**: CLAUDE.md says 12 unprocessed items oldest from 2025-05-30; actual is 2 items only. Backlog has been processed.
 7. **`05-03-Scripts/` is not empty** as CLAUDE.md claims — it has `python_task_manager`, `dashboard`, `Kimi-vault-migration-scripts`, `fun`.
