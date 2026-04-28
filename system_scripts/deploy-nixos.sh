@@ -130,7 +130,19 @@ LOG_FILE="$NEW_LOG_FILE"
 ln -sfn "$LOG_FILE" "${LOG_DIR}/latest.log"
 log "Log file renamed: $LOG_FILE"
 
-# Step 1: Optionally regenerate flake.lock in chezmoi source BEFORE copying
+# Step 1a: Push dotfile changes to disk via chezmoi.
+# Needed because the user systemd units, scripts under ~/.local/share/chezmoi,
+# and webhook config files are all chezmoi-managed. Without this, a fresh edit
+# to (e.g.) lib.sh or a notify-*.timer wouldn't be live before the rebuild
+# tries to use it.
+log "Applying chezmoi to push dotfile changes..."
+if chezmoi apply 2>&1 | grep -v '^$' | head -20; then
+    success "Chezmoi apply complete"
+else
+    warning "Chezmoi apply produced output (review above)"
+fi
+
+# Step 1b: Optionally regenerate flake.lock in chezmoi source BEFORE copying
 if [[ -f "$SOURCE_DIR/flake.nix" ]]; then
     read -p "Update flake inputs (nix flake update)? (y/N): " regen_lock
     if [[ "$regen_lock" =~ ^[Yy]$ ]]; then
@@ -207,6 +219,30 @@ if sudo nixos-rebuild switch; then
     success "Backup available at: $BACKUP_DIR"
     success "Full deploy log: $LOG_FILE"
     success "    (also at:    ${LOG_DIR}/latest.log)"
+
+    # Step 7: Refresh user systemd + restart long-lived services whose
+    # chezmoi-tracked scripts may have changed (NixOS-rebuild only restarts
+    # services whose .nix module changed, not those with absolute-path
+    # references to chezmoi-managed scripts).
+    log "Refreshing user systemd (daemon-reload)..."
+    systemctl --user daemon-reload || warning "user daemon-reload returned non-zero"
+
+    log "Restarting long-lived services with chezmoi-tracked scripts..."
+    # System-scope: notify-webhook (NOPASSWD via sudoers from notify-webhook.nix)
+    if systemctl is-active notify-webhook >/dev/null 2>&1; then
+        if sudo -n systemctl restart notify-webhook 2>/dev/null; then
+            success "  ↻ notify-webhook (system) restarted"
+        else
+            warning "  ↻ notify-webhook restart needs sudo password — run manually: sudo systemctl restart notify-webhook"
+        fi
+    fi
+    # User-scope: vault-capture-in (no sudo needed)
+    if systemctl --user is-active vault-capture-in >/dev/null 2>&1; then
+        systemctl --user restart vault-capture-in && success "  ↻ vault-capture-in (user) restarted"
+    fi
+    # Note: notify-host-monitors and notify-systemd-health are oneshot timers —
+    # next firing (every 5min) picks up script changes automatically. No restart needed.
+
     [[ -x "$NOTIFY_DEPLOY" ]] && "$NOTIFY_DEPLOY" ok "$duration" || true
 else
     elapsed=$((SECONDS - deploy_start))

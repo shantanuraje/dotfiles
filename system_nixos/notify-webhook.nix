@@ -93,6 +93,9 @@ in
         { command = "/run/current-system/sw/bin/systemctl restart novnc";                    options = [ "NOPASSWD" ]; }
         { command = "/run/current-system/sw/bin/systemctl restart vncserver-x11-serviced";   options = [ "NOPASSWD" ]; }
         { command = "/run/current-system/sw/bin/systemctl restart ntfy-sh";                  options = [ "NOPASSWD" ]; }
+        # Restart the receiver itself — needed by deploy-nixos.sh auto-refresh
+        # so post-deploy can pick up server.py edits without manual sudo.
+        { command = "/run/current-system/sw/bin/systemctl restart notify-webhook";           options = [ "NOPASSWD" ]; }
       ];
     }
   ];
