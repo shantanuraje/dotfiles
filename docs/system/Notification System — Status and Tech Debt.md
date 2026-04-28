@@ -359,6 +359,21 @@ Even with auto-`chezmoi apply` in the deploy script, the temptation is to "edit 
 
 Since action buttons can't take free-form input, agent-interaction notifications work by *capturing the relevant context at notification-publish time* and embedding it in the action body. E.g., a deploy-failure notification publishes with an "Ask Hermes to diagnose" button that has the journal tail as the prompt. This is more useful than it initially seems — most agent questions in this stack are about *specific failures* whose context is naturally available where the failure originates.
 
+### h. Hermes is project-blind; Claude with `cwd` is project-aware
+
+Tested 2026-04-27: tapping "Ask Hermes" with prompt "Suggest one improvement for this notification stack" got two responses across re-taps:
+- **Generic guess** — "Add a rate limit so burst events don't flood mako" (sounded plausible, but Hermes has zero knowledge of the codebase).
+- **Honest "I need context"** — "I don't have context about this stack — point me at the config files."
+
+Both are *correct* responses for a context-free LLM. But neither is useful when the user wants an answer.
+
+`claude -p` works differently: it reads `CLAUDE.md` from cwd automatically and has filesystem tool access (Glob/Grep/Read), so a `claude-ask-dotfiles` action with `cwd: ~/.local/share/chezmoi` can grep for relevant files and read them itself. The trade-off: slower (claude-p has more tooling overhead) and potentially more expensive in tokens — but for "ask about my system" questions, it's the right tool.
+
+**Rule of thumb**:
+- **Hermes** for questions where the prompt is self-contained (e.g., "What's a good Python regex for ISO 8601?", "Translate this to French").
+- **Claude with cwd** for questions about the project ("What does this dotfile do?", "Why is x11vnc bound dual-stack?").
+- **Pre-baked context + Hermes** for *specific* events with known context ("Diagnose this deploy log: <embedded log>").
+
 ---
 
 ## 6. What I would do differently if starting over

@@ -159,6 +159,27 @@ actions:
     timeout_s: 120
     follow_up_topic: actions
 
+  # ── Claude with project context — claude -p loads CLAUDE.md from cwd
+  # automatically and has filesystem tool access (Glob/Grep/Read), so it
+  # answers questions about the surrounding project without pre-baking
+  # context in the prompt. Use this for "ask about my system" questions
+  # where Hermes (which is project-blind) gives generic answers.
+  claude-ask-dotfiles:
+    type: command
+    description: Ask Claude about the dotfiles project
+    command: ["claude", "-p", "{{params.prompt}}"]
+    cwd: "/home/shantanu/.local/share/chezmoi"
+    timeout_s: 300
+    follow_up_topic: actions
+
+  claude-ask-vault:
+    type: command
+    description: Ask Claude about the Obsidian vault
+    command: ["claude", "-p", "{{params.prompt}}"]
+    cwd: "/home/shantanu/Documents/personal"
+    timeout_s: 300
+    follow_up_topic: actions
+
 # ── sudo NOPASSWD setup ──────────────────────────────────────────────────────
 # To allow the unprivileged user-owned receiver to run sudo commands, add a
 # narrow sudoers entry. Put this in /etc/sudoers.d/notify-webhook (mode 440):
