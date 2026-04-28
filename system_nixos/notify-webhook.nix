@@ -36,6 +36,16 @@ in
       ReadWritePaths = [
         "/home/shantanu/.local/state/notify-webhook"
         "/home/shantanu/.local/state/notify-snooze"
+        # Hermes writes ~/.hermes/logs/agent.log when invoked. Without write
+        # access here, `hermes-chat` action fails with `Errno 30 Read-only
+        # file system`.
+        "/home/shantanu/.hermes"
+        # Same defensive whitelist for vault writes. The receiver itself
+        # doesn't write to the vault, but `process-inbox` and other Claude
+        # actions might.
+        "/home/shantanu/Documents/personal"
+        # ~/.cache for any tool that warms a cache during exec.
+        "/home/shantanu/.cache"
       ];
 
       # Hardening
