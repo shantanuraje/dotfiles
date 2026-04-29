@@ -218,6 +218,10 @@ in
       cache-file = "/var/lib/ntfy-sh/cache.db";
       cache-duration = "12h";
       attachment-cache-dir = "/var/lib/ntfy-sh/attachments";
+      # Expose /metrics endpoint (Prometheus format) — counters for topics,
+      # subscribers, messages. Lights up the "Metrics" panel in the web/app
+      # dashboard. Doesn't expose message contents, just aggregate counters.
+      enable-metrics = true;
       # auth-default-access defaults to "read-write" (open). Tailnet ACLs are
       # the access boundary. To tighten: set "deny-all" and `ntfy user add`.
     };
