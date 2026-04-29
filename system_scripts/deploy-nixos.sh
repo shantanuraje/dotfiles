@@ -154,7 +154,15 @@ if [[ -f "$SOURCE_DIR/flake.nix" ]]; then
     fi
 fi
 
-# Step 2: Create backup of current /etc/nixos/
+# Step 2a: Prune old backups (keep last 5).
+# Without this, /tmp accumulates one nixos-backup-* dir per deploy.
+old_backups=$(ls -td /tmp/nixos-backup-* 2>/dev/null | tail -n +6)
+if [[ -n "$old_backups" ]]; then
+    log "Pruning $(echo "$old_backups" | wc -l) old /tmp/nixos-backup-* dirs (keeping last 5)..."
+    echo "$old_backups" | xargs -r sudo rm -rf
+fi
+
+# Step 2b: Create backup of current /etc/nixos/
 BACKUP_DIR="/tmp/nixos-backup-$(date +%Y%m%d-%H%M%S)"
 log "Creating backup at $BACKUP_DIR"
 sudo mkdir -p "$BACKUP_DIR"

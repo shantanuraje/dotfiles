@@ -198,6 +198,34 @@ in
     user = "shantanu";
   };
   
+  # ──────────────────────────────────────────────────────────────────────
+  # Nix store hygiene
+  #
+  # Without these, /nix/store grows ~5-15G per `nix flake update` cycle
+  # because nix-ai-tools tools (rust/npm/python) aren't in cache.nixos.org
+  # and every deploy rebuilds them locally — old derivations accumulate.
+  #
+  # See `docs/system/Nix Store Hygiene.md` for the full picture.
+  # ──────────────────────────────────────────────────────────────────────
+  nix.settings = {
+    # Hardlink identical files across /nix/store. Saves ~15-25% typically.
+    # Trade-off: small CPU cost during builds. Worth it.
+    auto-optimise-store = true;
+  };
+
+  # Weekly automatic garbage collection — removes derivations not reachable
+  # from any current generation, profile, or GC root.
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+    persistent = true;  # run on next boot if missed
+  };
+
+  # Cap retained system generations in the boot menu. Each generation
+  # pins a closure; fewer generations = more derivations available for GC.
+  boot.loader.systemd-boot.configurationLimit = lib.mkDefault 10;
+
   # Automatic swap activation
   swapDevices = [
     {
