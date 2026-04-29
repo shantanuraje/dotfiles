@@ -432,6 +432,7 @@ in
     # libsForQt5.okular
     remmina
     realvnc-vnc-viewer
+    meld   # GUI diff/merge tool
     iwd
     zellij
     libreoffice-qt
