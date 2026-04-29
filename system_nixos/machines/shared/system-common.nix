@@ -458,6 +458,7 @@ in
     "bernstein"            # Disabled: upstream tarball 404 (v1.5.12)
     "gitagent"             # Disabled: upstream tarball 404 (v0.3.2 yanked from GitHub releases)
     "code-review-graph"    # Disabled: depends on python3.13-fastmcp-2.14.5 which has 3 flaky test failures (rate-limiting timing, openapi latency, task cancellation race) in nix-ai-tools' pinned nixpkgs as of 2026-04-26
+    "letta-code"           # Disabled: npm-deps fetch fails on @img/sharp-libvips-linux-x64 with "HTTP/2 framing layer Stream error" (registry.npmjs.org transient or stale narHash) as of 2026-04-29
     "gemini-cli"           # Disabled: download failure
     "cc-sdd"
     "hermes-agent"            # Replaced below with hermes-agent-with-web (built frontend + fastapi/uvicorn)
