@@ -113,11 +113,23 @@ Currently the flake follows latest. Each `nix flake update` rebuilds everything 
 
 Trade-off: not done because user wants latest tools by default. Document as a fall-back if disk pressure becomes urgent.
 
-### Convert nix-ai-tools `removeAttrs [...]` to allowlist
+### Convert nix-ai-tools `removeAttrs [...]` to allowlist — DONE 2026-04-29
 
-Currently we use `removeAttrs nix-ai-tools.packages [<failing-list>]` — every new tool numtide adds is auto-included. Each addition is one more local build per deploy.
+Switched on 2026-04-29. Old config was `removeAttrs [...big list of broken packages...]` which auto-included ~80 of the 96 packages numtide ships. New config is an explicit allowlist of 14 packages user actually uses:
 
-Better: explicit `keepAttrs` allowlist of tools we *actually use*. Today this would cut maybe 20-30 packages of dead weight. Effort: 15 minutes of mapping. **Worth doing — adding to tech-debt list.**
+```
+claude-code, claude-agent-acp, opencode, agent-browser, gemini-cli,
+openclaw, pi, copilot-cli, qwen-code, ccstatusline, ccusage,
+ccusage-opencode, ccusage-pi, toon
+```
+
+Plus separately:
+- `hermes-agent` → overridden as `hermes-agent-with-web` (bundles FastAPI dashboard)
+- `zeroclaw` → local derivation (upstream flake broken)
+
+To add a tool: add its name to the allowlist in `system-common.nix`. To remove one: delete the line. Result: dropped roughly 70 packages from the local-build queue per deploy — substantial disk + time win.
+
+Trade-off: when numtide adds a new tool we don't auto-include it. We have to opt in. That's the whole point — every auto-include was a potential build-blocker (3 deploys this session were wedged by an upstream tool we don't use).
 
 ### Remove android-studio if unused
 

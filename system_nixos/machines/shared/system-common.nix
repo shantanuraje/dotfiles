@@ -469,29 +469,38 @@ in
     # RealVNC Server for remote access (runs on port 5902)
     realvnc-server
 
-    # AI and specialized tools from nix-ai-tools (excluding broken packages)
-  ] ++ (builtins.attrValues (removeAttrs nix-ai-tools.packages.${pkgs.system} [
-    "coding-agent-search"  # Disabled: upstream tarball download corrupted
-    "vibe-kanban"          # Disabled: upstream tarball download corrupted
-    "goose-cli"            # Disabled: download failure
-    # "openclaw"             # Disabled: download failure (still broken)
-    "agent-deck"              # Disabled: download failure
-    # "agent-browser"           # Disabled: download failure
-    "flake-inputs"         # Not a package, just a file
-    "code"                 # Collides with vscode bin/code
-    "codex"                # OpenAI Codex - not needed
-    "codex-acp"            # OpenAI Codex ACP variant - not needed
-    "zeroclaw"             # Installed via local derivation (upstream flake is broken)
-    "cc-switch-cli"        # Disabled: upstream hash mismatch (source changed without hash update)
-    "beads-rust"           # Disabled: build failure (vendor staging cp error)
-    "bernstein"            # Disabled: upstream tarball 404 (v1.5.12)
-    "gitagent"             # Disabled: upstream tarball 404 (v0.3.2 yanked from GitHub releases)
-    "code-review-graph"    # Disabled: depends on python3.13-fastmcp-2.14.5 which has 3 flaky test failures (rate-limiting timing, openapi latency, task cancellation race) in nix-ai-tools' pinned nixpkgs as of 2026-04-26
-    "letta-code"           # Disabled: npm-deps fetch fails on @img/sharp-libvips-linux-x64 with "HTTP/2 framing layer Stream error" (registry.npmjs.org transient or stale narHash) as of 2026-04-29
-    "gemini-cli"           # Disabled: download failure
-    "cc-sdd"
-    "hermes-agent"            # Replaced below with hermes-agent-with-web (built frontend + fastapi/uvicorn)
-  ])) ++ [
+    # ── AI tools from nix-ai-tools — explicit allowlist ──────────────────
+    # Switched from `removeAttrs` blacklist on 2026-04-29 because
+    # nix-ai-tools ships ~96 packages, ~80 of which we don't use. Each
+    # auto-included package adds local-build time + disk + risk of an
+    # upstream tarball/hash failure wedging our deploy. To add a tool:
+    # add its name below. To remove one: delete the line. Anything not
+    # in this list is not built or installed.
+    #
+    # Excluded but available via separate code paths:
+    #   - hermes-agent  → overridden as `hermes-agent-with-web` below
+    #                     (bundles the FastAPI web dashboard)
+    #   - zeroclaw      → local derivation in system_nixos/zeroclaw.nix
+    #                     (upstream nix-ai-tools flake is broken)
+    #
+    # See `docs/system/Nix Store Hygiene.md` for the rationale + full
+    # picture of what was disabled and why.
+  ] ++ (map (n: nix-ai-tools.packages.${pkgs.system}.${n}) [
+    "claude-code"        # primary Claude Code CLI
+    "claude-agent-acp"   # Claude Agent ACP server (formerly claude-code-acp)
+    "opencode"           # OpenCode CLI/server — chat platform backend
+    "agent-browser"      # Vercel Labs CLI browser automation (per CLAUDE.md)
+    "gemini-cli"         # Google Gemini CLI (intermittently upstream-broken)
+    "openclaw"           # Claude wrapper
+    "pi"                 # status display utility
+    "copilot-cli"        # GitHub Copilot CLI
+    "qwen-code"          # Qwen coding agent
+    "ccstatusline"       # Claude status-line readout
+    "ccusage"            # Claude token usage tracker
+    "ccusage-opencode"   # OpenCode token usage tracker
+    "ccusage-pi"         # pi-display token usage
+    "toon"               # toon
+  ]) ++ [
     hermes-agent-with-web
 
     # Python development environment
