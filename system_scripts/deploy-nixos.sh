@@ -24,6 +24,34 @@
 
 set -euo pipefail
 
+# ── Concurrency lock — prevent multiple deploys racing the nix daemon ─────────
+# We hit a real failure on 2026-04-29: a deploy got SIGSTOP'd (Ctrl-Z in a
+# terminal that closed), held the nix daemon lock indefinitely, and every
+# subsequent deploy queued behind it for hours. See `docs/system/Deploy
+# Concurrency.md` for the full incident write-up.
+#
+# Mechanism: a lockfile in /tmp records this script's PID. If a prior
+# instance is still alive (kill -0), we refuse to start. If the prior PID
+# is dead but the lockfile is stale, we override and continue. The lockfile
+# is removed on EXIT via trap.
+DEPLOY_LOCK=/tmp/nixos-deploy.lock
+if [[ -f "$DEPLOY_LOCK" ]]; then
+    prior_pid=$(cat "$DEPLOY_LOCK" 2>/dev/null || true)
+    if [[ -n "$prior_pid" ]] && kill -0 "$prior_pid" 2>/dev/null; then
+        echo -e "\033[0;31m[NIXOS-DEPLOY]\033[0m Another deploy is already running (PID $prior_pid)."
+        echo -e "\033[0;31m[NIXOS-DEPLOY]\033[0m Check it with: ps -p $prior_pid -o pid,etime,stat,cmd"
+        echo -e "\033[0;31m[NIXOS-DEPLOY]\033[0m If it's stuck (T-state) or you want to abort it:"
+        echo -e "\033[0;31m[NIXOS-DEPLOY]\033[0m   sudo kill -9 \$(pgrep -f 'nixos-rebuild') $prior_pid"
+        echo -e "\033[0;31m[NIXOS-DEPLOY]\033[0m   rm -f $DEPLOY_LOCK"
+        exit 1
+    fi
+    # Stale lockfile (prior process is dead) — log and continue.
+    echo -e "\033[1;33m[NIXOS-DEPLOY]\033[0m Stale lockfile from PID $prior_pid (process gone) — overriding."
+    rm -f "$DEPLOY_LOCK"
+fi
+echo $$ > "$DEPLOY_LOCK"
+trap 'rm -f "$DEPLOY_LOCK"' EXIT
+
 # ── Logging setup (must run before anything noisy) ────────────────────────────
 TS="$(date +%Y%m%d-%H%M%S)"
 LOG_DIR="${HOME}/.local/state/nixos-deploy"
