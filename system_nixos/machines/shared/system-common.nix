@@ -1,7 +1,7 @@
 # Shared system configuration for all machines
 # Contains common settings like autologin, swap management, and base system config
 
-{ config, pkgs, lib, nix-ai-tools, kimi-cli, ... }:
+{ config, pkgs, lib, nix-ai-tools, kimi-cli, googleworkspace-cli, ... }:
 
 let
   # RealVNC Server package
@@ -453,6 +453,10 @@ in
 
     # Kimi Code CLI - AI coding agent
     kimi-cli.packages.${pkgs.system}.default
+
+    # Google Workspace CLI (`gws` binary) — Rust-based dynamic CLI for
+    # Drive/Gmail/Calendar/etc. with structured JSON output.
+    googleworkspace-cli.packages.${pkgs.system}.gws
 
     # ZeroClaw - lightweight AI assistant infrastructure (pre-built binary)
     zeroclaw
