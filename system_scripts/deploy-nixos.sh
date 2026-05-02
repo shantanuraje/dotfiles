@@ -163,7 +163,28 @@ log "Log file renamed: $LOG_FILE"
 # and webhook config files are all chezmoi-managed. Without this, a fresh edit
 # to (e.g.) lib.sh or a notify-*.timer wouldn't be live before the rebuild
 # tries to use it.
-log "Applying chezmoi to push dotfile changes..."
+#
+# Pre-flight conflict check: chezmoi apply prompts interactively when a
+# managed file has been modified outside chezmoi (e.g. /tmp/mimeapps.list
+# auto-edited by a tool installer). Without this check, the deploy hangs
+# indefinitely waiting for stdin. We detect conflicts via `chezmoi status`
+# (which is non-interactive) and abort with a clear message rather than
+# silently overwriting or hanging.
+log "Checking for chezmoi conflicts before apply..."
+chezmoi_conflicts=$(chezmoi status 2>/dev/null | awk '$1 ~ /M/ {print $2}' || true)
+if [[ -n "$chezmoi_conflicts" ]]; then
+    warning "These chezmoi-managed files were modified outside chezmoi:"
+    while IFS= read -r path; do
+        warning "  - $path"
+    done <<< "$chezmoi_conflicts"
+    warning "Resolve before deploying. Options for each file:"
+    warning "  chezmoi add <path>          # capture local edits into the chezmoi source"
+    warning "  chezmoi apply --force <path>  # overwrite local with chezmoi source"
+    warning "  chezmoi diff <path>         # see the difference first"
+    error "Aborting deploy. Fix conflicts and re-run."
+    exit 1
+fi
+log "Applying chezmoi (no conflicts detected)..."
 if chezmoi apply 2>&1 | grep -v '^$' | head -20; then
     success "Chezmoi apply complete"
 else
