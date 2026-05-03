@@ -18,7 +18,7 @@ let
     pname = "hermes-agent-web";
     inherit (nix-ai-tools.packages.${pkgs.system}.hermes-agent) version;
     src = "${nix-ai-tools.packages.${pkgs.system}.hermes-agent.src}/web";
-    npmDepsHash = "sha256-TS/vrCHbdvXkPcAPxImKzAd2pdDCrKlgYZkXBMQ+TEg=";
+    npmDepsHash = "sha256-HWB1piIPglTXbzQHXFYHLgVZIbDb60esupXSQGa1+lI=";
     installPhase = ''
       runHook preInstall
       mkdir -p $out

@@ -1,3 +1,16 @@
 {{ if .opencode.is_work_machine }}
 private_dot_config/opencode/agents/algo-sensei.md.tmpl
 {{ end }}
+
+# These directories live IN the chezmoi source tree but are NOT meant to be
+# deployed to ~/. They are consumed in-place by the deploy script:
+#   - system_nixos/   → copied to /etc/nixos/ by `bash system_scripts/deploy-nixos.sh`
+#   - system_scripts/ → invoked directly from the source dir (deploy-nixos.sh, notify/, monitor/, etc.)
+#   - docs/           → reference docs read in source
+# Without this ignore, chezmoi creates duplicate copies at ~/system_nixos/
+# and ~/system_scripts/ that nothing reads, and the deploy script's
+# `nix flake update` step makes them appear as drift on every subsequent
+# pre-flight check (`chezmoi status` reports them as Modified).
+system_nixos
+system_scripts
+docs
