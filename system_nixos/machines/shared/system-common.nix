@@ -458,6 +458,10 @@ in
     # Drive/Gmail/Calendar/etc. with structured JSON output.
     googleworkspace-cli.packages.${pkgs.system}.gws
 
+    # Google Cloud SDK (`gcloud`, `gsutil`, `bq`) — GCP control plane.
+    # Different from Workspace; this manages compute, storage, IAM, GKE, etc.
+    google-cloud-sdk
+
     # ZeroClaw - lightweight AI assistant infrastructure (pre-built binary)
     zeroclaw
 
