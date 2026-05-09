@@ -161,6 +161,11 @@ export PATH="$PATH:/opt/nvim/"
 export EDITOR="nvim"
 export VISUAL="nvim"
 
+# bhc-watcher: ntfy server reachable on the tailnet. Only needed for
+# interactive `python -m bhc_watcher ...` runs; the systemd units carry
+# their own Environment= line.
+export BHC_WATCHER_NTFY_URL="http://beelink-ser8-desktop:8090"
+
 # if [ -x "$(command -v fzf)"  ]; then
 #    source /data/data/com.termux/files/usr/share/fzf/key-bindings.bash
 # fi

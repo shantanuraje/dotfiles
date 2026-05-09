@@ -497,6 +497,7 @@ in
     "claude-code"        # primary Claude Code CLI
     "claude-agent-acp"   # Claude Agent ACP server (formerly claude-code-acp)
     "opencode"           # OpenCode CLI/server — chat platform backend
+    "codex"              # Codex CLI
     "agent-browser"      # Vercel Labs CLI browser automation (per CLAUDE.md)
     "gemini-cli"         # Google Gemini CLI (intermittently upstream-broken)
     "openclaw"           # Claude wrapper
@@ -507,6 +508,7 @@ in
     "ccusage"            # Claude token usage tracker
     "ccusage-opencode"   # OpenCode token usage tracker
     "ccusage-pi"         # pi-display token usage
+    "ccusage-codex"
     "toon"               # toon
   ]) ++ [
     hermes-agent-with-web
