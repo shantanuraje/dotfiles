@@ -35,4 +35,14 @@ Thumbs.db
 .env
 
 # System-specific files that shouldn't be shared
-system_nixos/hardware-configuration.nix.local.nanocoder/
+system_nixos/hardware-configuration.nix.local
+
+# Tool data dirs that don't belong in dotfiles
+.nanocoder/
+
+# bhc-watcher systemd units — owned by the ~/Projects/bhc_scraper project,
+# not these dotfiles. They live on disk under private_dot_config/ but are
+# version-controlled elsewhere (or installed by the bhc setup script).
+private_dot_config/systemd/user/claude-bhc-api.service
+private_dot_config/systemd/user/claude-bhc-poller.service
+private_dot_config/systemd/user/claude-bhc-poller.timer
