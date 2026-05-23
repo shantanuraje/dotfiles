@@ -177,12 +177,21 @@ in
   users.users.shantanu = {
     isNormalUser = true;
     description = "shantanu";
-    extraGroups = [ "networkmanager" "wheel" "adbusers" ];
+    extraGroups = [ "networkmanager" "wheel" "adbusers" "docker" ];
     packages = with pkgs; [];
   };
   
   # Common programs
   programs.firefox.enable = false;
+
+  # Docker daemon — local container workloads (Postgres+TimescaleDB+Kestra, etc).
+  # Membership in the `docker` group (added above) lets shantanu use the daemon
+  # without sudo. `autoPrune` reclaims space from stopped containers weekly.
+  virtualisation.docker = {
+    enable = true;
+    autoPrune.enable = true;
+    autoPrune.dates = "weekly";
+  };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -308,7 +317,10 @@ in
     w3m           # Text-based web browser for HTML previews
     atool         # Archive handling and extraction
     poppler-utils # PDF preview support (pdftotext)
+    ffmpeg             # Video/audio encoding (required by screen-recording agents)
     ffmpegthumbnailer  # Video thumbnail generation
+    xdotool            # X11 window/input automation (optional but helps cinematic focus)
+    obs-studio         # GUI screen recorder — fallback if agent automation is shaky
     highlight     # Syntax highlighting for code files
     tree          # Directory tree visualization
     imagemagick   # Image manipulation and thumbnails
@@ -404,6 +416,9 @@ in
     android-studio
     nodejs
     yarn           # Package manager for React Native
+    pnpm           # Monorepo package manager (Next.js + workspaces)
+    uv             # Fast Python package/project manager (ETL, connectors)
+    docker-compose # Multi-container orchestration (Postgres+TimescaleDB+Kestra)
     watchman       # File watching service for React Native
     openjdk17      # Java 17 for Android builds
     unzip          # For extracting packages
@@ -503,12 +518,9 @@ in
     "openclaw"           # Claude wrapper
     "pi"                 # status display utility
     "copilot-cli"        # GitHub Copilot CLI
-    "qwen-code"          # Qwen coding agent
+    # "qwen-code"        # disabled 2026-05-22: upstream npmDepsHash stale, re-add when fixed
     "ccstatusline"       # Claude status-line readout
-    "ccusage"            # Claude token usage tracker
-    "ccusage-opencode"   # OpenCode token usage tracker
-    "ccusage-pi"         # pi-display token usage
-    "ccusage-codex"
+    "ccusage"            # Claude/OpenCode/Codex/pi token usage tracker (upstream folded all variants into one package, 2026-05)
     "toon"               # toon
   ]) ++ [
     hermes-agent-with-web

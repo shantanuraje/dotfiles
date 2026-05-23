@@ -6,11 +6,11 @@
 
 stdenv.mkDerivation rec {
   pname = "zeroclaw";
-  version = "0.1.7";
+  version = "0.7.5";
 
   src = fetchurl {
     url = "https://github.com/zeroclaw-labs/zeroclaw/releases/download/v${version}/zeroclaw-x86_64-unknown-linux-gnu.tar.gz";
-    hash = "sha256-tbJvBq9Zc7cgZlYZCpTfO9KkIr8tQv1tXaJaQvL29tA=";
+    hash = "sha256-i8gnao2Prvs+SoJPM4dpKedGb2Mu58U2OTY2ihry5Pc=";
   };
 
   sourceRoot = ".";

@@ -41,15 +41,19 @@ in
     # This overlay bumps version and fixes the wrapper to handle both GUI and CLI modes
     (final: prev: {
       obsidian = prev.obsidian.overrideAttrs (old: rec {
-        version = "1.12.4";
+        version = "1.12.7";
         src = prev.fetchurl {
           url = "https://github.com/obsidianmd/obsidian-releases/releases/download/v${version}/obsidian-${version}.tar.gz";
-          hash = "sha256-cusm388SP44HvoCD90+gRfQAxx7B/mTlirkdnMCEyN4=";
+          hash = "sha256-/L4IsRHZwf2wm5wIlSsG4cgpxiFj66JYTEtOyFm+B50=";
         };
         installPhase =
           let
             electron = prev.electron;
-            commandLineArgs = "";
+            # Tell Electron's safeStorage to use libsecret (gnome-keyring) instead of
+            # the default "basic" plaintext backend. Without this, the Obsidian
+            # Keychain plugin reports "encryption not available" even though
+            # gnome-keyring-daemon is running and org.freedesktop.secrets is on D-Bus.
+            commandLineArgs = "--password-store=gnome-libsecret";
           in
           ''
             runHook preInstall

@@ -44,6 +44,7 @@ application/x-tar=org.gnome.FileRoller.desktop
 application/x-7z-compressed=org.gnome.FileRoller.desktop
 application/x-rar=org.gnome.FileRoller.desktop
 x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+x-scheme-handler/opencode=@opencode-aidesktop.desktop
 
 [Added Associations]
 # CLI-focused associations

@@ -6,13 +6,13 @@
 let
   # RealVNC Server deb file - fetched from official source
   realvncDebPath = pkgs.fetchurl {
-    url = "https://downloads.realvnc.com/download/file/vnc.files/VNC-Server-7.16.0-Linux-x64.deb";
-    sha256 = "0hpdlc3apld991vn7i4c9yfjd4vsqpc8ka1k6gjs33020r8is0jk";
+    url = "https://downloads.realvnc.com/download/file/vnc.files/VNC-Server-7.17.0-Linux-x64.deb";
+    sha256 = "1sx4cqjdjn5hmszk7bj3a9gilgiqmcf2ipdds9fa1qj50hf0y01y";
   };
 in
 pkgs.stdenv.mkDerivation rec {
   pname = "realvnc-server";
-  version = "7.16.0";
+  version = "7.17.0";
 
   src = realvncDebPath;
 
@@ -34,6 +34,7 @@ pkgs.stdenv.mkDerivation rec {
     xorg.libXrender
     gtk2-x11
     glib
+    wayland   # 7.17 added vncagent-wlr (Wayland agent) which links libwayland-client
     libGL
     systemd
     pam
