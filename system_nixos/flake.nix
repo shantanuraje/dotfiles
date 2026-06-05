@@ -15,7 +15,11 @@
     # };
   };
 
-  outputs = { self, nixpkgs, nix-ai-tools, kimi-cli, claude-desktop, googleworkspace-cli, ... }: {
+  outputs = { self, nixpkgs, nix-ai-tools, kimi-cli, claude-desktop, googleworkspace-cli, ... }:
+    let
+      awesomeLgiFix = import ./overlays/awesome-lgi-fix.nix;
+      commonOverlays = [ claude-desktop.overlays.default awesomeLgiFix ];
+    in {
     nixosConfigurations = {
       # Multiple host configurations - nixos-rebuild automatically uses current hostname
       samsung-laptop-personal = nixpkgs.lib.nixosSystem {
@@ -23,7 +27,7 @@
         specialArgs = { inherit nix-ai-tools kimi-cli googleworkspace-cli; };
         modules = [
           ./configuration.nix
-          { nixpkgs.overlays = [ claude-desktop.overlays.default ]; }
+          { nixpkgs.overlays = commonOverlays; }
         ];
       };
 
@@ -33,7 +37,7 @@
         specialArgs = { inherit nix-ai-tools kimi-cli googleworkspace-cli; };
         modules = [
           ./configuration.nix
-          { nixpkgs.overlays = [ claude-desktop.overlays.default ]; }
+          { nixpkgs.overlays = commonOverlays; }
         ];
       };
 
@@ -43,7 +47,7 @@
         specialArgs = { inherit nix-ai-tools kimi-cli googleworkspace-cli; };
         modules = [
           ./configuration.nix
-          { nixpkgs.overlays = [ claude-desktop.overlays.default ]; }
+          { nixpkgs.overlays = commonOverlays; }
         ];
       };
     };

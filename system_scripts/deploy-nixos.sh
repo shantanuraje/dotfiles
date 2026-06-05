@@ -260,6 +260,17 @@ if [[ -d "$SOURCE_DIR/machines" ]]; then
     success "Machines directory structure updated"
 fi
 
+# Step 5b: Copy overlays directory (referenced from flake.nix)
+if [[ -d "$SOURCE_DIR/overlays" ]]; then
+    log "Copying overlays directory..."
+    sudo rm -rf "/etc/nixos/overlays"
+    sudo cp -r "$SOURCE_DIR/overlays" "/etc/nixos/"
+    sudo chown -R root:root "/etc/nixos/overlays"
+    sudo find "/etc/nixos/overlays" -type f -exec chmod 644 {} \;
+    sudo find "/etc/nixos/overlays" -type d -exec chmod 755 {} \;
+    success "Overlays directory updated"
+fi
+
 # Step 6: Rebuild NixOS system
 log "Rebuilding NixOS system..."
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
