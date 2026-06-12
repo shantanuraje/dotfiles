@@ -13,6 +13,19 @@ let
   # BambuStudio - AppImage wrapper (nixpkgs source build has broken OAuth login)
   bambu-studio = pkgs.callPackage ../../bambu-studio-appimage.nix {};
 
+  # ── OBSOLETE (2026-06-10): superseded by upstream restructure ────────────────
+  # The nix-ai-tools bump to rev 0b3a6a2 restructured hermes upstream: the web
+  # dashboard and TUI are now built natively as `hermes-frontend` (npm workspaces
+  # off a single root package-lock.json), and the default `hermes-agent` wires
+  # it in via the wrapper (HERMES_WEB_DIST) AND already bundles fastapi+uvicorn
+  # (optionalDeps.gateway is folded into hermesDeps). So everything the two
+  # custom derivations below added by hand — the built frontend and the gateway
+  # python deps — ships in plain upstream `hermes-agent` now. They also no longer
+  # build: upstream removed web/package-lock.json (moved to repo root), so the
+  # old `${hermes-agent.src}/web` buildNpmPackage fails with "No lock file!".
+  # We now just install upstream `hermes-agent` directly (see package list below).
+  # Kept commented in case a future bump reverts the layout.
+  /*
   # Hermes Agent web dashboard frontend (built from source, bundled into python package)
   hermes-agent-web = pkgs.buildNpmPackage {
     pname = "hermes-agent-web";
@@ -43,6 +56,7 @@ let
         cp -r ${hermes-agent-web} $out/${hermesUpstreamPkgs.python3.sitePackages}/hermes_cli/web_dist
       '';
     }));
+  */
 in
 
 {
@@ -306,6 +320,16 @@ in
     sqlite
     sqlitebrowser
 
+    # Security & audit tools (added 2026-06-11)
+    lynis       # System hardening / security auditor (run: sudo lynis audit system)
+    vulnix      # Nix store CVE scanner — matches store paths against NVD (run: vulnix --system)
+    openscap    # SCAP compliance + vulnerability scanner (oscap CLI)
+    nftables    # nft CLI for inspecting/auditing firewall rules.
+                # NOTE: package only — we deliberately do NOT set networking.nftables.enable.
+                # The firewall stays on the iptables backend because desktop-beelink.nix uses
+                # networking.firewall.extraCommands with raw iptables syntax + a tuned Tailscale
+                # isolation setup; switching backends would break those and risk connectivity.
+
     # File Manager Trinity: nnn, lf, ranger + GUI file manager
     lf            # Fast terminal file manager with Miller columns
     ranger        # Python-based file manager with rich features
@@ -501,10 +525,13 @@ in
     # in this list is not built or installed.
     #
     # Excluded but available via separate code paths:
-    #   - hermes-agent  → overridden as `hermes-agent-with-web` below
-    #                     (bundles the FastAPI web dashboard)
     #   - zeroclaw      → local derivation in system_nixos/zeroclaw.nix
     #                     (upstream nix-ai-tools flake is broken)
+    #
+    # hermes-agent: was a custom `hermes-agent-with-web` override (see the
+    # commented OBSOLETE block near the top of this file). As of the 2026-06-10
+    # nix-ai-tools bump, upstream `hermes-agent` bundles the web dashboard and
+    # fastapi/uvicorn natively, so we just install it from the allowlist below.
     #
     # See `docs/system/Nix Store Hygiene.md` for the rationale + full
     # picture of what was disabled and why.
@@ -513,7 +540,10 @@ in
     "claude-agent-acp"   # Claude Agent ACP server (formerly claude-code-acp)
     "opencode"           # OpenCode CLI/server — chat platform backend
     "codex"              # Codex CLI
-    "agent-browser"      # Vercel Labs CLI browser automation (per CLAUDE.md)
+    # "agent-browser"    # disabled 2026-06-10: dashboard pnpm-deps FOD times out fetching npm
+    #                    packages (mermaid/@next/swc, ~40MB each, concurrent fetch saturates link).
+    #                    Transient upstream-fetch issue, not our config. Re-enable when the
+    #                    network is reliable or upstream lowers pnpm network-concurrency.
     "gemini-cli"         # Google Gemini CLI (intermittently upstream-broken)
     "openclaw"           # Claude wrapper
     "pi"                 # status display utility
@@ -522,8 +552,9 @@ in
     "ccstatusline"       # Claude status-line readout
     "ccusage"            # Claude/OpenCode/Codex/pi token usage tracker (upstream folded all variants into one package, 2026-05)
     "toon"               # toon
+    "hermes-agent"       # Hermes agent CLI — upstream now bundles web dashboard (HERMES_WEB_DIST) + fastapi/uvicorn natively (was custom hermes-agent-with-web, made obsolete by 2026-06-10 nix-ai-tools bump)
+    "hermes-desktop"     # Hermes desktop app (companion to hermes-agent), added 2026-06-10
   ]) ++ [
-    hermes-agent-with-web
 
     # Python development environment
     (python3.withPackages (ps: with ps; [
